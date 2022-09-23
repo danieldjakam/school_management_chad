@@ -75,7 +75,6 @@ module.exports.downloadBulletin = (req, res) => {
                         req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
                             const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
                             const g = stats.sort((a, b) => b.totalPoints - a.totalPoints);
-                            let firstPoints: number = g[0].totalPoints;
                             let lastPoints: number = 0;
                             g.forEach((ey: {
                                 totalPoints: number
@@ -122,7 +121,131 @@ module.exports.downloadBulletin = (req, res) => {
         })
     })
 }
+module.exports.downloadBulletinByClass = (req, res) => {
+    const zip = new admZip();
+    const { exam_id, student_id, class_id } = req.params;
+    const html = downloadFs.readFileSync('src/templates/Bulletin.html', 'utf-8');
+    let Promises = [];
 
+    req.connection.query('SELECT * FROM trims WHERE id = ?', [exam_id], (t, exam) => {
+        req.connection.query(`SELECT students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, 
+                                students.birthday, students.sex, class.name as cName  FROM students 
+                                LEFT JOIN class ON class.id = students.class_id 
+                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ?`, 
+            [class_id], function (err, students, fields) {
+            if (err) console.log(err);
+            else{
+                const dirPath = `docs/${students[0].cName}`;
+                if (!downloadFs.existsSync(dirPath)) downloadFs.mkdirSync(dirPath);
+                students.forEach(student => {
+                    let totalPoint: number = 0;
+                    let totalNote: number
+                    let diviser: number = 0;
+                    const student_id = student.id;
+                    const stud: {
+                        name: string,
+                        subname: string,
+                        cName: string,
+                        tName: string,
+                        tSubname: string,
+                        sex: string,
+                        birthday: string,
+                    } = students.find(s => s.id == student.id);
+                    let info: {
+                        className: string,
+                        teacherName: string
+                        teacherSubname: string
+                    } = {
+                        className: stud.cName,
+                        teacherName: stud.tName,
+                        teacherSubname: stud.tSubname,
+                    }
+                    stud.sex = stud.sex === 'm' ? 'Masculin' : 'Feminin';
+                    const date = new Date(stud.birthday).getDate() + ' ' + months[new Date(stud.birthday).getMonth()] + " " + new Date(stud.birthday).getUTCFullYear()
+                    stud.birthday = date;
+        
+                    req.connection.query('SELECT * FROM notes WHERE exam_id = ? AND class_id = ? AND student_id = ?', [exam_id, class_id, student_id], (err2, notes) => {
+                        if (err2) console.log(err2);
+                        notes.forEach(note => {
+                            totalPoint += parseInt(note.value);
+                        });
+                        req.connection.query(`SELECT subjects.name, subjects.id, subjects.over 
+                                                FROM subjects JOIN sections
+                                                ON sections.id = subjects.section 
+                                                WHERE sections.type = 1`, (err3, subjects) => {
+                            subjects.forEach((subject) => {
+                                const note = notes.filter(n => n.subject_id === subject.id.toString()).length > 0 ? 
+                                                            parseFloat(notes.filter(n => n.subject_id === subject.id.toString())[0].value) 
+                                                        : 0;
+                                subject.mi_over = subject.over / 2
+                                subject.value = note;
+                                diviser += subject.over
+                            })
+                            req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
+                                const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
+                                const g = stats.sort((a, b) => b.totalPoints - a.totalPoints);
+                                let lastPoints: number = 0;
+                                g.forEach((ey: {
+                                    totalPoints: number
+                                }) => {
+                                    lastPoints = ey.totalPoints;
+                                })
+                                let rang = 0;
+                                rangedArray.forEach((s: {
+                                    student_id: string
+                                }, c) => {
+                                    if (s.student_id === student_id) {
+                                        rang = c + 1
+                                    }
+                                })
+                                const document = {
+                                    html: html,
+                                    data: {
+                                        student: stud,
+                                        info: info,
+                                        diviser: diviser,
+                                        totalPoints: totalPoint,
+                                        rank: rang,
+                                        average: Math.round(((totalPoint / diviser) * 20) * 100) / 100,
+                                        totalNote: totalNote,
+                                        subjects,
+                                        exam: exam[0],
+                                        totalStudent: students.length,
+                                        notes: notes
+                                    },
+                                    path: `${dirPath}/${(stud.name + ' ' + stud.subname).replaceAll(' ', '_')}.pdf`
+                                };
+                                Promises.push(
+                                    pdf.create(document, optionsPdf)
+                                    .then(resp => {
+                                        zip.addLocalFile(`${dirPath}/${(student.name + ' ' + student.subname).replaceAll(' ', '_')}.pdf`);
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                        res.status(201).json({ err, f: document.data.subjects })
+                                    })
+                                )
+                            })
+                        })
+                    })
+                })
+
+                // Promise.all(Promises).then(() => {
+                //     students.forEach(student => {
+                //         const zipPath = `${dirPath}/Bulletins en ${students[0].cName}.zip`;
+                //         downloadFs.writeFileSync(zipPath, zip.toBuffer());
+                //         res.download(zipPath);
+                //     })
+                // }).catch((e) => {
+                //     console.log(e);
+                // })
+                console.log(Promises);
+                
+
+            }
+        });
+    })
+}
 module.exports.downloadBulletin2 = (req, res) => {
     const { exam_id, student_id, class_id } = req.params;
     const html = downloadFs.readFileSync('src/templates/Bulletin2.html', 'utf-8');
@@ -401,7 +524,7 @@ module.exports.downloadAnnualBulletin2 = (req, res) => {
     })
 }
 
-module.exports.downloadBulletinByClass = async (req, res) => {
+module.exports.downloadBulletinByClassCo = async (req, res) => {
     const zip = new admZip();
     const { class_id } = req.params;
     req.connection.query('SELECT students.id, students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, students.birthday, students.sex, class.name as cName  FROM students LEFT JOIN class ON class.id = students.class_id LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ?', [class_id], async (err, students) => {
