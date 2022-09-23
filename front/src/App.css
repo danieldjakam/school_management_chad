@@ -7,8 +7,8 @@
 }
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 :root {
-  --primary: rgba(171, 59, 117, 0.603);
-  --primary-opact: rgb(219, 12, 119);;
+  --primary: rgba(59, 68, 171, 0.603);
+  --primary-opact: rgb(38, 103, 189);;
   --vivid-sky-blue: #24c9ffff;
   --cornflower-blue: #598bfeff;
   --feldgrau: #526760ff;
@@ -483,7 +483,7 @@ body {
 }
 .clas > .top{
   position: relative;
-  background: rgb(219, 12, 119);
+  background: var(--primary);
   padding: 20px;
   /* height: 160px; */
   display: flex;
@@ -532,7 +532,7 @@ body {
   margin-left: 0;
 }
 .btn.btn-elementary{
-  background: rgba(196, 23, 112, 0.577);
+  background: var(--primary-opact)
 }
 
 .btn.btn-elementary:hover{
@@ -552,7 +552,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 20px;
-  background: rgb(219, 12, 119);
+  background: var(--primary);
   border-radius: 20px;
   cursor: pointer;
   color: #fff;
@@ -688,7 +688,7 @@ body {
   background-position: center;
 }
 .conError > h1{
-  color: rgb(219, 12, 119);
+  color: var(--primary);
   font-size: 80px;
   position: absolute;
   top: 20px;
@@ -747,7 +747,7 @@ body {
   border-radius: 50%;
   align-items: center;
   margin: 20px;
-  background: rgb(219, 12, 119);
+  background: var(--primary);
 }
 .pro img{
   width: 100px;
@@ -805,7 +805,7 @@ body {
   border-radius: 50%;
   align-items: center;
   margin-right: 10px;
-  background: rgb(219, 12, 119);
+  background: var(--primary);
 }
 .adminCard img{
   width: 45px;

@@ -25,209 +25,217 @@ const months = [
 module.exports.downloadBulletin = (req, res) => {
     const { exam_id, student_id, class_id } = req.params;
     const html = downloadFs.readFileSync('src/templates/Bulletin.html', 'utf-8');
-    let badCompetence: string[] = [];
     let totalPoint: number = 0;
     let totalNote: number
     let diviser: number = 0;
 
-    req.connection.query('SELECT * FROM students WHERE class_id = ?', [class_id], (errr, allStudents: []) => {
-        req.connection.query("SELECT students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, students.birthday, students.sex, class.name as cName  FROM students LEFT JOIN class ON class.id = students.class_id LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.id = ?", [student_id], function (err, student, fields) {
-            if (err) console.log(err);
-            const stud: {
-                name: string,
-                subname: string,
-                cName: string,
-                tName: string,
-                tSubname: string,
-                sex: string,
-                birthday: string,
-            } = student[0];
-            let info: {
-                className: string,
-                teacherName: string
-                teacherSubname: string
-            } = {
-                className: stud.cName,
-                teacherName: stud.tName,
-                teacherSubname: stud.tSubname,
-            }
-            stud.sex = stud.sex === 'm' ? 'Masculin' : 'Feminin';
-            const date = new Date(stud.birthday).getDate() + ' ' + months[new Date(stud.birthday).getMonth()] + " " + new Date(stud.birthday).getUTCFullYear()
-            stud.birthday = date;
-
-            req.connection.query('SELECT * FROM notes WHERE exam_id = ? AND class_id = ? AND student_id = ?', [exam_id, class_id, student_id], (err2, notes) => {
-                if (err2) console.log(err2);
-                notes.forEach(note => {
-                    totalPoint += parseInt(note.value);
-                });
-                req.connection.query(`SELECT subjects.name, subjects.id, subjects.over 
-                                        FROM subjects JOIN sections
-                                        ON sections.id = subjects.section 
-                                        WHERE sections.type = 1`, (err3, subjects) => {
-                    subjects.forEach((subject) => {
-                        const note = notes.filter(n => n.subject_id === subject.id.toString()).length > 0 ? 
-                                                    parseFloat(notes.filter(n => n.subject_id === subject.id.toString())[0].value) 
-                                                : 0;
-                        subject.mi_over = subject.over / 2
-                        subject.value = note;
-                        diviser += subject.over
-                    })
-                    req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
-                        const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
-                        const g = stats.sort((a, b) => b.totalPoints - a.totalPoints);
-                        let firstPoints: number = g[0].totalPoints;
-                        let lastPoints: number = 0;
-                        g.forEach((ey: {
-                            totalPoints: number
-                        }) => {
-                            lastPoints = ey.totalPoints;
+    req.connection.query('SELECT * FROM trims WHERE id = ?', [exam_id], (t, exam) => {
+        req.connection.query('SELECT * FROM students WHERE class_id = ?', [class_id], (errr, allStudents: []) => {
+            req.connection.query("SELECT students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, students.birthday, students.sex, class.name as cName  FROM students LEFT JOIN class ON class.id = students.class_id LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.id = ?", [student_id], function (err, student, fields) {
+                if (err) console.log(err);
+                const stud: {
+                    name: string,
+                    subname: string,
+                    cName: string,
+                    tName: string,
+                    tSubname: string,
+                    sex: string,
+                    birthday: string,
+                } = student[0];
+                let info: {
+                    className: string,
+                    teacherName: string
+                    teacherSubname: string
+                } = {
+                    className: stud.cName,
+                    teacherName: stud.tName,
+                    teacherSubname: stud.tSubname,
+                }
+                stud.sex = stud.sex === 'm' ? 'Masculin' : 'Feminin';
+                const date = new Date(stud.birthday).getDate() + ' ' + months[new Date(stud.birthday).getMonth()] + " " + new Date(stud.birthday).getUTCFullYear()
+                stud.birthday = date;
+    
+                req.connection.query('SELECT * FROM notes WHERE exam_id = ? AND class_id = ? AND student_id = ?', [exam_id, class_id, student_id], (err2, notes) => {
+                    if (err2) console.log(err2);
+                    notes.forEach(note => {
+                        totalPoint += parseInt(note.value);
+                    });
+                    req.connection.query(`SELECT subjects.name, subjects.id, subjects.over 
+                                            FROM subjects JOIN sections
+                                            ON sections.id = subjects.section 
+                                            WHERE sections.type = 1`, (err3, subjects) => {
+                        subjects.forEach((subject) => {
+                            const note = notes.filter(n => n.subject_id === subject.id.toString()).length > 0 ? 
+                                                        parseFloat(notes.filter(n => n.subject_id === subject.id.toString())[0].value) 
+                                                    : 0;
+                            subject.mi_over = subject.over / 2
+                            subject.value = note;
+                            diviser += subject.over
                         })
-                        let rang = 0;
-                        rangedArray.forEach((s: {
-                            student_id: string
-                        }, c) => {
-                            if (s.student_id === student_id) {
-                                rang = c + 1
-                            }
+                        req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
+                            const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
+                            const g = stats.sort((a, b) => b.totalPoints - a.totalPoints);
+                            let firstPoints: number = g[0].totalPoints;
+                            let lastPoints: number = 0;
+                            g.forEach((ey: {
+                                totalPoints: number
+                            }) => {
+                                lastPoints = ey.totalPoints;
+                            })
+                            let rang = 0;
+                            rangedArray.forEach((s: {
+                                student_id: string
+                            }, c) => {
+                                if (s.student_id === student_id) {
+                                    rang = c + 1
+                                }
+                            })
+                            const document = {
+                                html: html,
+                                data: {
+                                    student: stud,
+                                    info: info,
+                                    diviser: diviser,
+                                    totalPoints: totalPoint,
+                                    rank: rang,
+                                    average: Math.round(((totalPoint / diviser) * 20) * 100) / 100,
+                                    totalNote: totalNote,
+                                    subjects,
+                                    exam: exam[0],
+                                    totalStudent: allStudents.length,
+                                    notes: notes
+                                },
+                                path: `docs/${stud.name}.pdf`
+                            };
+                            pdf.create(document, optionsPdf)
+                                .then(resp => {
+                                    res.download(resp.filename)
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                    res.status(201).json({ err, f: document.data.subjects })
+                                })
                         })
-                        const document = {
-                            html: html,
-                            data: {
-                                student: stud,
-                                info: info,
-                                diviser: diviser,
-                                totalPoints: totalPoint,
-                                rank: rang,
-                                av: ((totalPoint / diviser) * 20) < 10 ? 'Oui' : 'Non',
-                                en: ((totalPoint / diviser) * 20) > 15 ? 'Oui' : 'Non',
-                                ho: ((totalPoint / diviser) * 20) > 18 ? 'Oui' : 'Non',
-                                average: Math.round(((totalPoint / diviser) * 20) * 100) / 100,
-                                totalNote: totalNote,
-                                subjects,
-                                totalStudent: allStudents.length,
-                                notes: notes
-                            },
-                            path: `docs/${stud.name}.pdf`
-                        };
-                        pdf.create(document, optionsPdf)
-                            .then(resp => {
-                                res.download(resp.filename)
-                            })
-                            .catch(err => {
-                                console.log(err);
-                                res.status(201).json({ err, f: document.data.subjects })
-                            })
                     })
                 })
-            })
-        });
+            });
+        })
     })
 }
 
 module.exports.downloadBulletin2 = (req, res) => {
     const { exam_id, student_id, class_id } = req.params;
-    const html = downloadFs.readFileSync('src/templates/Bulletin5.html', 'utf-8');
-    let badCompetence: string[] = [];
+    const html = downloadFs.readFileSync('src/templates/Bulletin2.html', 'utf-8');
     let totalPoint: number = 0;
-    let totalNote: number;
-    let to = 0;
+    let totalNote: number
+    let diviser: number = 0;
 
-    req.connection.query('SELECT * FROM students WHERE class_id = ?', [class_id], (errr, allStudents: []) => {
-        req.connection.query(`SELECT students.name, teachers.name as tName, teachers.subname as tSubname, 
+    req.connection.query('SELECT * FROM trims WHERE id = ?', [exam_id], (e, exam) => {
+        req.connection.query('SELECT * FROM students WHERE class_id = ?', [class_id], (errr, allStudents: []) => {
+            req.connection.query(`SELECT students.name, teachers.name as tName, teachers.subname as tSubname, 
                                 students.subname, students.birthday, students.sex, class.name as cName  FROM students 
                                 LEFT JOIN class ON class.id = students.class_id 
                                 LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.id = ?`, [student_id], function (err, student, fields) {
-            if (err) console.log(err);
-            const stud: {
-                name: string,
-                subname: string,
-                cName: string,
-                tName: string,
-                tSubname: string,
-                sex: string,
-                birthday: string,
-            } = student[0];
-            let info: {
-                className: string,
-                teacherName: string
-                teacherSubname: string
-            } = {
-                className: stud.cName,
-                teacherName: stud.tName,
-                teacherSubname: stud.tSubname,
-            }
-            stud.sex = stud.sex === 'm' ? 'Masculin' : 'Feminin';
-            const date = new Date(stud.birthday).getDate() + ' ' + months[new Date(stud.birthday).getMonth()] + " " + new Date(stud.birthday).getUTCFullYear()
-            stud.birthday = date;
-
-            req.connection.query('SELECT * FROM notesBySubject WHERE exam_id = ? AND class_id = ? AND student_id = ?', [exam_id, class_id, student_id], (err2, notes) => {
-                if (err2) console.log(err2);
-                notes.forEach(note => {
-                    totalPoint += parseInt(note.value);
-                });
-                req.connection.query(`SELECT subjects.name, subjects.id, subjects.over 
-                                    FROM subjects JOIN sections ON sections.id = subjects.section WHERE sections.type = 5`, (err3, subjects) => {
-
-                    req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
-                        const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
-                        const g = stats.sort((a, b) => b.totalPoints - a.totalPoints);
-                        let firstPoints: number = g[0].totalPoints;
-                        let lastPoints: number = 0;
-                        g.forEach((ey: {
-                            totalPoints: number
-                        }) => {
-                            lastPoints = ey.totalPoints;
+                if (err) console.log(err);
+                const stud: {
+                    name: string,
+                    subname: string,
+                    cName: string,
+                    tName: string,
+                    tSubname: string,
+                    sex: string,
+                    birthday: string,
+                } = student[0];
+                let info: {
+                    className: string,
+                    teacherName: string
+                    teacherSubname: string
+                } = {
+                    className: stud.cName,
+                    teacherName: stud.tName,
+                    teacherSubname: stud.tSubname,
+                }
+                stud.sex = stud.sex === 'm' ? 'Masculin' : 'Feminin';
+                const date = new Date(stud.birthday).getDate() + ' ' + months[new Date(stud.birthday).getMonth()] + " " + new Date(stud.birthday).getUTCFullYear()
+                stud.birthday = date;
+    
+                req.connection.query('SELECT * FROM notes_primary WHERE exam_id = ? AND class_id = ? AND student_id = ?', 
+                                    [exam_id, class_id, student_id], (err2, notes) => {
+                    if (err2) console.log(err2);
+                    notes.forEach(note => {
+                        totalPoint += parseInt(note.value);
+                    });
+                    req.connection.query(`SELECT subjects.name, subjects.id, subjects.over 
+                                            FROM subjects JOIN sections
+                                            ON sections.id = subjects.section 
+                                            WHERE sections.type = 2`, (err3, subjects) => {
+                        subjects.forEach((subject) => {
+                            
+                            const note1 = notes.filter(n => n.subject_id === subject.id.toString() 
+                                            && n.subject_type === 'devoir').length > 0 
+                                                ? 
+                                                    parseFloat(notes.filter(n => n.subject_id === subject.id.toString() 
+                                                    && n.subject_type === 'devoir')[0].value) 
+                                                : 0
+                            const note2 = notes.filter(n => n.subject_id === subject.id.toString() 
+                                && n.subject_type === 'compo').length > 0 
+                                    ? 
+                                        parseFloat(notes.filter(n => n.subject_id === subject.id.toString() 
+                                        && n.subject_type === 'compo')[0].value) 
+                                    : 0
+                            subject.note1 = note1
+                            subject.note2 = note2;
+                            subject.avera = (note1 + note2) / 2
+                            diviser += subject.over
                         })
-                        let rang = 0;
-                        rangedArray.forEach((s: {
-                            student_id: string
-                        }, c) => {
-                            if (s.student_id === student_id) {
-                                rang = c + 1
-                            }
-                        })
-                        subjects.forEach(d => {
-                            to += d.over;
-                            const note = notes.filter(n => n.subject_id == d.id).length > 0 ? parseFloat(notes.filter(n => n.subject_id == d.id)[0].value) : 0
-                            d.note = note;
-                            if (d.note < d.over / 2) {
-                                badCompetence.push(d.name)
-                            }
-                        })
-                        const document = {
-                            html: html,
-                            data: {
-                                student: stud,
-                                info: info,
-                                diviser: to,
-                                totalPoint,
-                                firstAverage: Math.round(((firstPoints / to) * 20) * 100) / 100,
-                                lastAverage: Math.round(((lastPoints / to) * 20) * 100) / 100,
-                                rang: rang,
-                                av: ((totalPoint / to) * 20) < 10 ? 'Oui' : 'Non',
-                                en: ((totalPoint / to) * 20) > 15 ? 'Oui' : 'Non',
-                                ho: ((totalPoint / to) * 20) > 18 ? 'Oui' : 'Non',
-                                moyenne: Math.round(((totalPoint / to) * 20) * 100) / 100,
-                                totalNote: totalNote,
-                                badCompetence: badCompetence,
-                                subjects: subjects,
-                                totalStudent: allStudents.length,
-                                notes: notes
-                            },
-                            path: `docs/${stud.name}.pdf`
-                        };
-                        pdf.create(document, optionsPdf)
-                            .then(resp => {
-                                res.download(resp.filename)
+                        req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
+                            const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
+                            const g = stats.sort((a, b) => b.totalPoints - a.totalPoints);
+                            let lastPoints: number = 0;
+                            g.forEach((ey: {
+                                totalPoints: number
+                            }) => {
+                                lastPoints = ey.totalPoints;
                             })
-                            .catch(err => {
-                                console.log(err);
-                                res.status(201).json({ err, f: document.data })
+                            let rang = 0;
+                            rangedArray.forEach((s: {
+                                student_id: string
+                            }, c) => {
+                                if (s.student_id === student_id) {
+                                    rang = c + 1
+                                }
                             })
+                            const document = {
+                                html: html,
+                                data: {
+                                    student: stud,
+                                    info: info,
+                                    diviser: diviser,
+                                    totalPoints: totalPoint,
+                                    rank: rang,
+                                    average: Math.round(((totalPoint / (diviser * 2)) * 20) * 100) / 100,
+                                    totalNote: totalNote,
+                                    subjects,
+                                    exam: exam[0],
+                                    totalStudent: allStudents.length,
+                                    notes: notes
+                                },
+                                path: `docs/${stud.name}.pdf`
+                            };
+                            
+                            pdf.create(document, optionsPdf)
+                                .then(resp => {
+                                    res.download(resp.filename)
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                    res.status(201).json({ err, f: document.data.subjects })
+                                })
+                        })
                     })
                 })
-            })
-        });
+            });
+        })
     })
 }
 
