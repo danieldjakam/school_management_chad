@@ -10,7 +10,7 @@
             .table1, .table2{
                 border-collapse: collapse;
                 width: 100%;
-                margin-top: 50px;
+                margin-top: 30px;
                 margin-bottom: 30px;
                 font-size: 12px;
             }
@@ -29,32 +29,53 @@
             .th{
                 width:300px;
             }
+
+            .head > .header h2{
+                font-size: 20px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head > .header h4{
+                font-size: 13px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head{
+                text-align: center;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head .body > h3{
+                font-size: 20px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head img{
+                width: 80px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
         </style>
         
         
-        <table class='table2'>
-            <tr>
-                <th>
-                    REPUBLIQUE DU CAMEROUN <br />
-                    Paix - Travail - Patrie <br />
-                    GROUPE SCOLAIRE BILINGUE PRIVE  <br />
-                    LAIC LA SEMENCE  <br />
-                    BP: 1661 DOUALA BANGUE <br />
-                    TEL: (237) 33 08 95 82/699717529 <br />
-                </th>
-                <th class=' '>
-                    <img  src='http://localhost:4000/public/sem.png' height={200} />
-                </th>
-                <th class=''>
-                    REPUBLIC OF CAMEROON  <br />
-                    Peace - Work - Father/land  <br />
-                    GROUPE SCOLAIRE BILINGUE PRIVE <br />
-                     LAIC LA SEMENCE  <br />
-                    P.O Box : 1661 DOUALA-BANGUE  <br />
-                    Tel : (237) 33089582 <br />
-                </th>
-            </tr>
-        </table>
+        <div class="head">
+            <div class="header">
+                <h2>REPUBLIQUE DU TCHAD</h2>
+                <h4>Unité - Travail - Progrès</h4>
+                <h4>***********</h4>
+                <h4>MINISTERE DE L'ENSEIGNEMENT PRIMAIRE ET DE L'EDUCATION CIVIQUE</h4>
+                <h4>INSPECTION PEDAGOGIQUE DE L'ENSEIGNEMENT PRIMAIRE DU 6<sup>eme</sup> ARRONSIDESSEMENT</h4>
+            </div>
+
+            <div class="body">
+                <img  src='http://localhost:4000/public/sem.png' height={200} />
+                <h3>CARNET DE NOTES</h3>
+                <p>
+                    ECOLE PRIVEE FRANCO - ANGLAISE <br/>
+                    "Living Word Missions Chad"
+                </p>
+            </div>
+        </div>
 
         <h2 style="text-align: center">
             BULLETIN D'EVALUATION 2021/2022
@@ -84,118 +105,59 @@
                
                 <table class='table1'>
                     <thead>
-                    <tr>
-                        <th rowspan=2 class="th">
-                            COMPETENCE
-                        </th>
-                        <th rowspan=2 class="th">
-                            SOUS-COMPETENCE
-                        </th>
-                        <th class='th'>
-                            UNITE D'APPRENTISSAGE
-                        </th>
-                        <th colspan=2>
-                            UA1
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>
-                            EVALUATION
-                        </th>
-                        <th>
-                            NOTES
-                        </th>
-                        <th>
-                            COTE
-                        </th>
-                    </tr>
-                    </thead>
-                {{#each competences as |com|}}
-                    <tr>
-                        <td rowSpan={{com.total}} className="table-dark">
-                            {{com.name}}
-                        </td>
-                    </tr>
-                    {{#each com.sub as |mat|}}
                         <tr>
-                            <td rowspan={{mat.t}}>{{mat.name}}</td>
-                        </tr>
-                        {{#each mat.tags as |tag|}}
                             <tr>
-                                <td>{{tag.name}}</td>
-                                <td>{{tag.value}}</td>
-                                <td>{{tag.over}}</td>
+                                <th align='center'>MATIERES</th>
+                                <th align='center'>NOTES</th>
+                            </tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each subjects as |subject|}}
+                            <tr>
+                                <td className="table-dark">
+                                    {{subject.name}}
+                                </td>
+                                
+                                <td>
+                                    {{#ifCond subject.value '>' subject.mi_over}}
+                                        <svg style=' font-size: 12rem; color: #000;' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z"/>
+                                                            <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
+                                                        </svg>
+                                    {{/ifCond}}
+                                </td>
                             </tr>
                         {{/each}}
-                        <tr>
-                            <td>Total</td>
-                            <td colSpan='2'> {{mat.total}} / {{mat.totalNote}}</td>
-                        </tr>
-                    {{/each}}
-                {{/each}}
-            </tbody>
-        </table>
-        <h6 style="text-align: center">
-            COTES : NA = Non Acquis, ECA = En Cours d’Acquisition, A = Acquis, A+ = Expert
-        </h6>
+                </tbody>
+            </table>
 
+            
             <table class="table1">
                 <tbody>
                     <tr>
                         <td>Total des points</td>
-                        <td>{{totalPoint}} / {{diviser}}</td>
-                        <td>Cotes</td>
-                        <td colSpan='2'>Conseil de classe</td>
+                        <td>{{totalPoints}} / {{ diviser }}</td>
                     </tr>
                     <tr>
                         <td>Moyenne</td>
-                        <td>{{moyenne}}</td>
-                        <td rowSpan='4'>ECA</td>
-                        <td>Avertissement Conduite</td>
-                        <td style="display: flex; justify-content: space-around">
-                            <span><input type="checkbox" />Oui</span>
-                            <span><input type="checkbox" />Non</span>
-                        </td>
+                        <td>{{average}} / 20</td>
                     </tr>
                     <tr>
                         <td>Rang</td>
-                        <td> {{rang}} / {{totalStudent}}</td>
-                        <td>Avertissement Travail</td>
-                        <td>{{av}}</td>
+                        <td> {{rank}} / {{totalStudent}}</td>
                     </tr>
                     <tr>
-                        <td>Moyenne du premier</td>
-                        <td> {{firstAverage}} </td>
-                        <td>Encouragement</td>
-                        <td>
-                            {{en}}
-                        </td>
+                        <td>Visa du parent</td>
+                        <td>Visa du chef d'etablissement</td>
                     </tr>
-                    <tr>
-                        <td>Moyenne du dernier</td>
-                        <td>{{lastAverage}}</td>
-                        <td>Tableau d'honneur</td>
-                        <td>{{ho}}</td>
-                    </tr>
-                    <tr>
-                        <td colSpan='2'>Observation de l'enseignant</td>
-                        <td>Visa du Parent</td>
-                        <td colSpan='2'>Visa du chef d'etablissement</td>
-                    </tr>
-                    <tr>
-                        <td colSpan='2'>
-                            Des efforts s'imposent en: <br /><br />
-                            <ul className="list" style="list-style: none">
-                                {{#each badCompetence as |bd|}}
-                                    <li>{{bd}}</li>
-                                {{/each}}
-                            </ul>
-                        </td>
+                    <tr style="height: 50px;">
                         <td></td>
-                        <td colSpan='2'></td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
+
         </div>
     </body>
 </html>

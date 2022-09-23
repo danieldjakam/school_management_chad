@@ -6,6 +6,7 @@ import BulletinEntete from '../../../components/BulletinEntete';
 import { downloadTraductions } from '../../../local/bulletin';
 import { host } from '../../../utils/fetch';
 import { getLang } from '../../../utils/lang';
+import check from '../../../images/check.png'
 
 const MatB = ({type}) => {
     const [student, setStudent ] = useState([]);
@@ -90,18 +91,22 @@ const MatB = ({type}) => {
                 <tr>
                     <th align='center'>MATIERES</th>
                     <th align='center'>NOTES</th>
-                    <th align='center'>SUR</th>
                 </tr>
             </thead>
             <tbody>
                 {
                     subjects.map((subject, id) => {
 
-                        const note = notes.filter(n => n.subject_id === subject.id.toString()).length > 0 ? parseFloat(notes.filter(n => n.subject_id === subject.id.toString())[0].value) : 0
+                        const note = notes.filter(n => n.subject_id === subject.id.toString()).length > 0 ? parseFloat(notes.filter(n => n.subject_id === subject.id.toString())[0].value) : 0;
                         return <tr>
                             <td>{subject.name}</td>
-                            <td align='center'>{note}</td>
-                            <td align='center'>{subject.over}</td>
+                            <td align='center'>
+                                {   
+                                    note > (subject.over / 2) ? 
+                                            <img src={check} width='20px' alt="" />
+                                        : ''
+                                }
+                            </td>
                         </tr>
                     })
                 }
