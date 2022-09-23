@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "allowJs": true,
+        "target": "es2021",
+        "lib": [
+          "ES2021"
+        ]
+    },
+        "include": [
+        "./src/**/*"
+    ]
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <mate charest="utf-8" />
+        <title>GSB La Semence</title>
+    </head>
+    <body>
+        <style>
+            
+            .table1, .table2{
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 50px;
+                margin-bottom: 30px;
+                font-size: 12px;
+            }
+            .com{
+                font-weight: bold;
+            }
+            .table1 td, .table1 th{
+                text-align: center;
+                border: 2px solid #000;
+            }
+
+            .table2 td, .table2 th{
+                text-align: center;
+            }
+
+            .th{
+                width:300px;
+            }
+        </style>
+        
+        
+        <table class='table2'>
+            <tr>
+                <th>
+                    REPUBLIQUE DU CAMEROUN <br />
+                    Paix - Travail - Patrie <br />
+                    GROUPE SCOLAIRE BILINGUE PRIVE  <br />
+                    LAIC LA SEMENCE  <br />
+                    BP: 1661 DOUALA BANGUE <br />
+                    TEL: (237) 33 08 95 82/699717529 <br />
+                </th>
+                <th class=' '>
+                    <img  src='http://localhost:4000/public/sem.png' height={200} />
+                </th>
+                <th class=''>
+                    REPUBLIC OF CAMEROON  <br />
+                    Peace - Work - Father/land  <br />
+                    GROUPE SCOLAIRE BILINGUE PRIVE <br />
+                     LAIC LA SEMENCE  <br />
+                    P.O Box : 1661 DOUALA-BANGUE  <br />
+                    Tel : (237) 33089582 <br />
+                </th>
+            </tr>
+        </table>
+
+        <h2 style="text-align: center">
+            BULLETIN D'EVALUATION 2021/2022
+        </h2>
+            
+            <table class='table1'>
+                <thead>
+                    <tr>
+                        <th>NOMS ET PRENOMS</th>
+                        <th colspan=3>{{ student.name }} {{student.subname}} </th>
+                    </tr>
+                    <tr>
+                        <th>DATE DE NAISSANCE</th>
+                        <th class='th'> {{student.birthday}} </th>
+                        <th>SEXE</th>
+                        <th> {{student.sex}} </th>
+                    </tr>
+                    <tr>
+                        <th>CLASSE</th>
+                        <th class='th'> {{student.cName}} </th>
+                        <th>ENSEIGNANT</th>
+                        <th class='th'> {{info.teacherName}} {{info.teacherSubname}} </th>
+                    </tr>
+                </thead>
+               </table>
+               </div>
+               
+                <table class='table1'>
+                    <thead>
+                    <tr>
+                        <th rowspan=2 class="th">
+                            COMPETENCE
+                        </th>
+                        <th rowspan=2 class="th">
+                            SOUS-COMPETENCE
+                        </th>
+                        <th class='th'>
+                            UNITE D'APPRENTISSAGE
+                        </th>
+                        <th colspan=2>
+                            UA1
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            EVALUATION
+                        </th>
+                        <th>
+                            NOTES
+                        </th>
+                        <th>
+                            COTE
+                        </th>
+                    </tr>
+                    </thead>
+                {{#each competences as |com|}}
+                    <tr>
+                        <td rowSpan={{com.total}} className="table-dark">
+                            {{com.name}}
+                        </td>
+                    </tr>
+                    {{#each com.sub as |mat|}}
+                        <tr>
+                            <td rowspan={{mat.t}}>{{mat.name}}</td>
+                        </tr>
+                        {{#each mat.tags as |tag|}}
+                            <tr>
+                                <td>{{tag.name}}</td>
+                                <td>{{tag.value}}</td>
+                                <td>{{tag.over}}</td>
+                            </tr>
+                        {{/each}}
+                        <tr>
+                            <td>Total</td>
+                            <td colSpan='2'> {{mat.total}} / {{mat.totalNote}}</td>
+                        </tr>
+                    {{/each}}
+                {{/each}}
+            </tbody>
+        </table>
+        <h6 style="text-align: center">
+            COTES : NA = Non Acquis, ECA = En Cours d’Acquisition, A = Acquis, A+ = Expert
+        </h6>
+
+            <table class="table1">
+                <tbody>
+                    <tr>
+                        <td>Total des points</td>
+                        <td>{{totalPoint}} / {{diviser}}</td>
+                        <td>Cotes</td>
+                        <td colSpan='2'>Conseil de classe</td>
+                    </tr>
+                    <tr>
+                        <td>Moyenne</td>
+                        <td>{{moyenne}}</td>
+                        <td rowSpan='4'>ECA</td>
+                        <td>Avertissement Conduite</td>
+                        <td style="display: flex; justify-content: space-around">
+                            <span><input type="checkbox" />Oui</span>
+                            <span><input type="checkbox" />Non</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Rang</td>
+                        <td> {{rang}} / {{totalStudent}}</td>
+                        <td>Avertissement Travail</td>
+                        <td>{{av}}</td>
+                    </tr>
+                    <tr>
+                        <td>Moyenne du premier</td>
+                        <td> {{firstAverage}} </td>
+                        <td>Encouragement</td>
+                        <td>
+                            {{en}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Moyenne du dernier</td>
+                        <td>{{lastAverage}}</td>
+                        <td>Tableau d'honneur</td>
+                        <td>{{ho}}</td>
+                    </tr>
+                    <tr>
+                        <td colSpan='2'>Observation de l'enseignant</td>
+                        <td>Visa du Parent</td>
+                        <td colSpan='2'>Visa du chef d'etablissement</td>
+                    </tr>
+                    <tr>
+                        <td colSpan='2'>
+                            Des efforts s'imposent en: <br /><br />
+                            <ul className="list" style="list-style: none">
+                                {{#each badCompetence as |bd|}}
+                                    <li>{{bd}}</li>
+                                {{/each}}
+                            </ul>
+                        </td>
+                        <td></td>
+                        <td colSpan='2'></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

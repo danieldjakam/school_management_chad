@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <mate charest="utf-8" />
+        <title>GSB La Semence</title>
+    </head>
+    <body>
+        <style>
+            .table1, .table2{
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 50px;
+                margin-bottom: 30px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 12px;
+            }
+            .com{
+                font-weight: bold;
+            }
+            .table1 td, .table1 th{
+                text-align: center;
+                border: 2px solid #000;
+            }
+        
+            .table2 td, .table2 th{
+                text-align: center;
+            }
+        
+            .th{
+                width:300px;
+            }
+        </style>
+            
+        <div>
+            
+        <table class='table2'>
+            <tr>
+                <th>
+                    REPUBLIQUE DU CAMEROUN <br />
+                    Paix - Travail - Patrie <br />
+                    GROUPE SCOLAIRE BILINGUE PRIVE  <br />
+                    LAIC LA SEMENCE  <br />
+                    BP: 1661 DOUALA BANGUE <br />
+                    TEL: (237) 33 08 95 82/699717529 <br />
+                </th>
+                <th class=' '>
+                    <img  src='http://localhost:4000/public/sem.png' height={200} />
+                </th>
+                <th class=''>
+                    REPUBLIC OF CAMEROON  <br />
+                    Peace - Work - Father/land  <br />
+                    GROUPE SCOLAIRE BILINGUE PRIVE <br />
+                     LAIC LA SEMENCE  <br />
+                    P.O Box : 1661 DOUALA-BANGUE  <br />
+                    Tel : (237) 33089582 <br />
+                </th>
+            </tr>
+        </table>
+
+            
+            <h2 style="text-align: center">
+                {{ name }}
+            </h2>
+
+        <table class="table1">
+            <thead class="table-dark" style="font-size: 1rem;">
+                <tr>
+                    <th>Noms et prenoms de l'eleve</th>
+                    <th>Classe</th>
+                    <th>Nom du recu</th>
+                    <th>Montant verse</th>
+                    <th>Jour</th>
+                </tr>
+            </thead>
+            <tbody style="font-size: 1rem;">
+                {{#ifCond isOverZero '===' true}}
+                    {{#each payments}}
+                        <tr>
+                            <td>{{this.name}} {{this.subname}}</td>
+                            <td>{{this.class_name}}</td>
+                            <td>{{ this.recu_name }}</td>
+                            <td>{{this.amount}}</td>
+                            <td>{{this.payment_date}}</td>
+                        </tr>
+                    {{/each}}
+                {{else}}
+                    <tr>
+                        <td colspan="5">{{error}}</td>
+                    </tr>
+                {{/ifCond}}
+                <tr>
+                    <td colspan="3">Total</td>
+                    <td>{{total}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>
+            Nombre d'eleves enregistres au total: {{ student_nber }}
+        </h3>
+
+
+        <table class="table1">
+            <thead class="table-dark" style="font-size: 1rem;">
+                <tr>
+                    <th rowspan="2">Bilan</th>
+                    <td colspan="7">Etat de la scolarite global</td>
+                </tr>
+                <tr>
+                    <td>
+                        Inscr
+                    </td>
+                    <td>
+                        1ere tran.
+                    </td>
+                    <td>
+                        2eme tran.
+                    </td>
+                    <td>
+                        3eme tran.
+                    </td>
+                    <!-- {{#ifCond info.graduation '!==' 0}} -->
+                        <td>
+                            Graduation
+                        </td>
+                    <!-- {{/ifCond}} -->
+                    <td>
+                        Sante
+                    </td>
+                    <td>
+                        Total
+                    </td>
+                </tr>
+            </thead>
+            <tbody style="font-size: 1rem;">
+                
+                <tr>
+                    <td>
+                        Nbre d'eleves ayant termine:
+                    </td>
+                    <td>
+                        {{global.payed.ins}}
+                    </td>
+                    <td>
+                        {{global.payed.ftr}}
+                    </td>
+                    <td>
+                        {{global.payed.str}}
+                    </td>
+                    <td>
+                        {{global.payed.ttr}}
+                    </td>
+                    <!-- {{#ifCond info.graduation '!==' 0}} -->
+                        <td>
+                            {{global.payed.gra}}
+                        </td>
+                    <!-- {{/ifCond}} -->
+                    <td>
+                        {{global.payed.ass}}
+                    </td>
+                    <td>
+                        {{global.payed.general}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Nbre d'eleves ayant avance:
+                    </td>
+                    <td>
+                        {{global.avanced.ins}}
+                    </td>
+                    <td>
+                        {{global.avanced.ftr}}
+                    </td>
+                    <td>
+                        {{global.avanced.str}}
+                    </td>
+                    <td>
+                        {{global.avanced.ttr}}
+                    </td>
+                    <!-- {{#ifCond info.graduation '!==' 0}} -->
+                        <td>
+                            {{global.avanced.gra}}
+                        </td>
+                    <!-- {{/ifCond}} -->
+                    <td>
+                        {{global.avanced.ass}}
+                    </td>
+                    <td>
+                        {{global.avanced.general}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Nbre d'eleves n'ayant rien verse:
+                    </td>
+                    <td>
+                        {{global.nothing.ins}}
+                    </td>
+                    <td>
+                        {{global.nothing.ftr}}
+                    </td>
+                    <td>
+                        {{global.nothing.str}}
+                    </td>
+                    <td>
+                        {{global.nothing.ttr}}
+                    </td>
+                    <!-- {{#ifCond info.graduation '!==' 0}} -->
+                        <td>
+                            {{global.nothing.gra}}
+                        </td>
+                    <!-- {{/ifCond}} -->
+                    <td>
+                        {{global.nothing.ass}}
+                    </td>
+                    <td>
+                        {{global.nothing.general}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Montant général encaissé dans l'ecole:
+                    </td>
+                    <td>
+                        {{global.total.inscription}}
+                    </td>
+                    <td>
+                        {{global.total.first_tranch}}
+                    </td>
+                    <td>
+                        {{global.total.second_tranch}}
+                    </td>
+                    <td>
+                        {{global.total.third_tranch}}
+                    </td>
+                    <!-- {{#ifCond info.graduation '!==' 0}} -->
+                        <td>
+                            {{global.total.graduation}}
+                        </td>
+                    <!-- {{/ifCond}} -->
+                    <td>
+                        {{global.total.assurance}}
+                    </td>
+                    <td>
+                        {{global.total.general}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

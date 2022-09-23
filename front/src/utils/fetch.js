@@ -1,0 +1,1 @@
+export const host = 'http://'+window.location.hostname+':4000'

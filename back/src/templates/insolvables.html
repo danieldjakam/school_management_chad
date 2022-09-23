@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <mate charest="utf-8" />
+        <title>GSB La Semence</title>
+    </head>
+    <body>
+        <style>
+            .table1, .table2{
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 50px;
+                margin-bottom: 30px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 12px;
+            }
+            .com{
+                font-weight: bold;
+            }
+            .table1 td, .table1 th{
+                text-align: center;
+                border: 2px solid #000;
+            }
+        
+            .table2 td, .table2 th{
+                text-align: center;
+            }
+        
+            .th{
+                width:300px;
+            }
+        </style>
+            
+        <div>
+            
+        <table class='table2'>
+            <tr>
+                <th>
+                    REPUBLIQUE DU CAMEROUN <br />
+                    Paix - Travail - Patrie <br />
+                    GROUPE SCOLAIRE BILINGUE PRIVE  <br />
+                    LAIC LA SEMENCE  <br />
+                    BP: 1661 DOUALA BANGUE <br />
+                    TEL: (237) 33 08 95 82/699717529 <br />
+                </th>
+                <th class=' '>
+                    <img  src='http://localhost:4000/public/sem.png' height={200} />
+                </th>
+                <th class=''>
+                    REPUBLIC OF CAMEROON  <br />
+                    Peace - Work - Father/land  <br />
+                    GROUPE SCOLAIRE BILINGUE PRIVE <br />
+                     LAIC LA SEMENCE  <br />
+                    P.O Box : 1661 DOUALA-BANGUE  <br />
+                    Tel : (237) 33089582 <br />
+                </th>
+            </tr>
+        </table>
+
+            
+            <h2 style="text-align: center">
+                Liste des insolvables en {{info.className}} au compte de {{ name }}
+            </h2>
+    
+        <div>
+            <table class="table1" style="font-size: 1rem; color: #000; font-weight: 600;">
+                <tbody>
+                    <tr>
+                        <td>Classe</td>
+                        <td>{{info.className}}</td>
+                    </tr>
+                    <tr>
+                        <td>Opérateur</td>
+                        <td>
+                            {{info.operator}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+        <table class="table1">
+            <thead class="table-dark" style="font-size: 1.7rem;">
+                <tr>
+                    <th>Noms</th>
+                    <td>Reste a payer</td>
+                </tr>
+            </thead>
+            <tbody style="font-size: 1.3rem;">
+                {{#each students}}
+                    <tr>
+                        <td>{{this.name}}</td>
+                        <td>{{ this.rest }}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </body>
+</html>

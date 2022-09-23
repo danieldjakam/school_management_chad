@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <mate charest="utf-8" />
+        <title>GSB La Semence</title>
+    </head>
+    <body>
+        <style>
+            
+            .table1, .table2{
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 50px;
+                margin-bottom: 30px;
+                font-size: 12px;
+            }
+            .com{
+                font-weight: bold;
+            }
+            .table1 td, .table1 th{
+                text-align: center;
+                border: 2px solid #000;
+            }
+
+            .table2 td, .table2 th{
+                text-align: center;
+            }
+
+            .th{
+                width:300px;
+            }
+        </style>
+        
+        <table class='table2'>
+            <tr>
+                <th>
+                    REPUBLIQUE DU CAMEROUN <br />
+                    Paix - Travail - Patrie <br />
+                    GROUPE SCOLAIRE BILINGUE PRIVE  <br />
+                    LAIC LA SEMENCE  <br />
+                    BP: 1661 DOUALA BANGUE <br />
+                    TEL: (237) 33 08 95 82/699717529 <br />
+                </th>
+                <th class=' '>
+                    <img  src='http://localhost:4000/public/sem.png' height={200} />
+                </th>
+                <th class=''>
+                    REPUBLIC OF CAMEROON  <br />
+                    Peace - Work - Father/land  <br />
+                    GROUPE SCOLAIRE BILINGUE PRIVE <br />
+                     LAIC LA SEMENCE  <br />
+                    P.O Box : 1661 DOUALA-BANGUE  <br />
+                    Tel : (237) 33089582 <br />
+                </th>
+            </tr>
+        </table>
+
+        <h2 style="text-align: center">
+            REPORT CARD  2021/2022
+        </h2>
+            
+            <table class='table1'>
+                <thead>
+                    <tr>
+                        <th>NAME AND SURNAME</th>
+                        <th colspan=3>{{ student.name }} {{student.subname}} </th>
+                    </tr>
+                    <tr>
+                        <th>DATE OF BIRTH</th>
+                        <th class='th'> {{student.birthday}} </th>
+                        <th>SEX</th>
+                        <th> {{student.sex}} </th>
+                    </tr>
+                    <tr>
+                        <th>CLASS</th>
+                        <th class='th'> {{student.cName}} </th>
+                        <th>TEACHER</th>
+                        <th class='th'> {{info.teacherName}} {{info.teacherSubname}} </th>
+                    </tr>
+                </thead>
+               </table>
+               </div>
+               
+                <table class='table1'>
+                    <thead>
+                        <tr>
+                            <th class="th" rowspan="2">
+                                DOMAINES
+                            </th>
+                            <th class="th" rowspan="2">
+                                ACTIVITES
+                            </th>
+                            <th class='th' colspan="3">
+                                APPRECIATIONS
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>
+                                Acquis
+                            </td>
+                            <td>
+                                En Cours D'Acquisition
+                            </td>
+                            <td>
+                                Non Acquis
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each domains as |domain|}}
+                            <tr>
+                                <td rowspan="{{ domain.total_activities }}">
+                                    {{domain.name}}
+                                </td>
+                            </tr>
+                            {{#each domain.activities as |activitie|}}
+                                <tr>
+                                    <td>{{ activitie.name }}</td>
+
+                                    <td>
+                                        {{#ifCond activitie.note '==' 1}}
+                                            <svg style=' font-size: 12rem; color: #000;' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                                <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z"/>
+                                                                <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
+                                                            </svg>
+                                        {{/ifCond}}
+                                    </td>
+                                    <td>
+                                        {{#ifCond activitie.note '==' 2}}
+                                            <svg style=' font-size: 12rem; color: #000;' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                                <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z"/>
+                                                                <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
+                                                            </svg>
+                                        {{/ifCond}}
+                                    </td>
+                                    <td>
+                                        {{#ifCond activitie.note '==' 3}}
+                                            <svg style=' font-size: 12rem; color: #000;' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                                <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z"/>
+                                                                <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
+                                                            </svg>
+                                        {{/ifCond}}
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        {{/each}}
+                    </tbody>
+            </tbody>
+        </table>
+        <h6 style="text-align: center">
+            OBSERVATION: Des efforts s'imposent dans les domaines suivants: {{#each badCompetence as |bd|}}<span>{{bd}}, </span> {{/each}}
+        </h6>
+
+            <table class="table1">
+                <thead>
+                    <tr>
+                        <th>L'ENSEIGNANT(E)</th>
+                        <th>LA DIRECTION/th>
+                        <th>LE PARENT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style=' height: 70px;'></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
