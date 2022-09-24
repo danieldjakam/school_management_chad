@@ -104,7 +104,7 @@ module.exports.downloadBulletin = (req, res) => {
                                     totalStudent: allStudents.length,
                                     notes: notes
                                 },
-                                path: `docs/${stud.name}.pdf`
+                                path: `docs/${stud.name}-${exam[0].name}.pdf`
                             };
                             pdf.create(document, optionsPdf)
                                 .then(resp => {
@@ -343,7 +343,7 @@ module.exports.downloadBulletin2 = (req, res) => {
                                     totalStudent: allStudents.length,
                                     notes: notes
                                 },
-                                path: `docs/${stud.name}.pdf`
+                                path: `docs/${stud.name}-${exam[0].name}.pdf`
                             };
                             
                             pdf.create(document, optionsPdf)
@@ -549,7 +549,7 @@ module.exports.downloadAnnualBulletin = (req, res) => {
                                         totalStudent: allStudents.length,
                                         notes: notes
                                     },
-                                    path: `docs/${stud.name}.pdf`
+                                    path: `docs/${stud.name}-${exam[0].name}.pdf`
                                 };
                                 pdf.create(document, optionsPdf)
                                     .then(resp => {
