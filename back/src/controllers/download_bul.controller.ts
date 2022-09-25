@@ -123,7 +123,7 @@ module.exports.downloadBulletin = (req, res) => {
 }
 module.exports.downloadBulletinByClass = (req, res) => {
     const zip = new admZip();
-    const { exam_id, student_id, class_id } = req.params;
+    const { exam_id, class_id } = req.params;
     const html = downloadFs.readFileSync('src/templates/Bulletin.html', 'utf-8');
     let Promises = [];
 

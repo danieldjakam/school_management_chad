@@ -105,7 +105,7 @@ const PrimA = ({type}) => {
                 <th colSpan={subjects.length}>
                   Matieres
                 </th>
-                <th colSpan={3} >
+                <th colSpan={2} >
                     {sequenceTraductions['fr'].essential}
                 </th>
                 <th colSpan={1} rowSpan={2}>
@@ -120,7 +120,7 @@ const PrimA = ({type}) => {
 				}
 				<th>{sequenceTraductions['fr'].totalOfPoints}</th>
 				<th>{sequenceTraductions['fr'].average}</th>
-				<th>{sequenceTraductions['fr'].rank}</th>
+				{/* <th>{sequenceTraductions['fr'].rank}</th> */}
             </tr>
         </thead>
         <tbody>
@@ -155,11 +155,6 @@ const PrimA = ({type}) => {
                                     (
                                         loading ? '0' : `${Math.round(to / totalPoints * 20 * 100) / 100} / 20`
                                     )
-                                }
-                            </td>
-                            <td>
-                                {
-                                    index + 1
                                 }
                             </td>
                             <td>
