@@ -37,6 +37,7 @@ import StudentsComp from './pages/comptables/Students';
 import ClassBySection from './pages/Class/ClassBySection';
 import TransfertStudent from './pages/Students/TransfertStudent';
 import StudentsByClass from './pages/comptables/StudentsByClass';
+import Promotion from './pages/Students/Promotion';
 
 function App() {
   let val = null;
@@ -46,55 +47,56 @@ function App() {
   const [user, setUser] = useState(val);
 
   return <div className="App">
-      <Router>
-        <Sidebar/>
-        <Routes>
-          {
-            user ? <>
-                    <Route path='/' element={<Home/>} />
-                    <Route path='/students-comp' element={<StudentsComp/>} />
-                    <Route path='/class-comp' element={<ClassCompt/>} />
-                    <Route path='/class-comp/:id' element={<StudentsByClass/>} />
-                    <Route path='/reduct-fees/:id' element={<ReductFees/>} />
-                    <Route path='/params-comp' element={<ParamsCompt/>} />
-                    <Route path='/class' element={<Class/>} /> 
-                    <Route path='/classBySection/:name' element={<ClassBySection />} /> 
-                    <Route path='/students/:id' element={<Student/>} />
-                    <Route path='/transfert/:id' element={<TransfertStudent/>} />
-                    <Route path='/teachers' element={<Teachers/>} />
-                    <Route path='/matieres' element={<Matiere/>} />  
-                    <Route path='/search' element={<SearchView/>}/>
-                    <Route path='/params' element={<Params/>}/>
-                    <Route path='/seqs' element={<SeqStu/>}/>
-                    <Route path='/settings' element={<Settings/>}/>
-                    <Route path='/trims' element={<TrimStu/>}/>
-                    <Route path='/stats' element={<Statistics/>}/>
+		<Router>
+			<Sidebar/>
+			<Routes>
+				{
+					user ? <>
+							<Route path='/' element={<Home/>} />
+							<Route path='/students-comp' element={<StudentsComp/>} />
+							<Route path='/class-comp' element={<ClassCompt/>} />
+							<Route path='/class-comp/:id' element={<StudentsByClass/>} />
+							<Route path='/reduct-fees/:id' element={<ReductFees/>} />
+							<Route path='/params-comp' element={<ParamsCompt/>} />
+							<Route path='/class' element={<Class/>} /> 
+							<Route path='/classBySection/:name' element={<ClassBySection />} /> 
+							<Route path='/students/:id' element={<Student/>} />
+							<Route path='/transfert/:id' element={<TransfertStudent/>} />
+							<Route path='/teachers' element={<Teachers/>} />
+							<Route path='/matieres' element={<Matiere/>} />  
+							<Route path='/search' element={<SearchView/>}/>
+							<Route path='/params' element={<Params/>}/>
+							<Route path='/seqs' element={<SeqStu/>}/>
+							<Route path='/settings' element={<Settings/>}/>
+							<Route path='/trims' element={<TrimStu/>}/>
+							<Route path='/stats' element={<Statistics/>}/>
+							<Route path='promotion/:exam_id/:class_id' element={<Promotion/>} />
+
+							<Route path='/trims1/:exam_id/:class_id' element={<Mat type={1}/>} /> 
+							{/* Routes for bulletins */}
+
+							<Route path='/annuals2/:exam_id/:class_id' element={<PrimA type={2}/>} /> 
+							<Route path='/annuals1/:exam_id/:class_id' element={<MatA type={1}/>} /> 
+							<Route path='/trims1/:exam_id/:class_id/:student_id' element={<MatB type={1}/>} /> 
+
+							<Route path='/annuals2/:exam_id/:class_id/:student_id' element={<PrimAB type={2}/>} />
+							<Route path='/trims2/:exam_id/:class_id/:student_id' element={<PrimB type={2}/>} />
+
+							{/* Route for see notes */}
+							<Route path='/annuals1/:exam_id/:class_id/:student_id' element={<MatAB type={1}/>} /> 
+							<Route path='/trims2/:exam_id/:class_id' element={<Prim type={2}/>} /> 
 
 
 
-                    <Route path='/trims1/:exam_id/:class_id' element={<Mat type={1}/>} /> 
-                    {/* Routes for bulletins */}
-
-                    <Route path='/annuals2/:exam_id/:class_id' element={<PrimA type={2}/>} /> 
-                    <Route path='/annuals1/:exam_id/:class_id' element={<MatA type={1}/>} /> 
-                    <Route path='/trims1/:exam_id/:class_id/:student_id' element={<MatB type={1}/>} /> 
-
-                    <Route path='/annuals2/:exam_id/:class_id/:student_id' element={<PrimAB type={2}/>} />
-                    <Route path='/trims2/:exam_id/:class_id/:student_id' element={<PrimB type={2}/>} />
-                    {/* Route for see notes */}
-                    <Route path='/annuals1/:exam_id/:class_id/:student_id' element={<MatAB type={1}/>} /> 
-                    <Route path='/trims2/:exam_id/:class_id' element={<Prim type={2}/>} /> 
-
-
-                    <Route path='*' element={<Error404/>} />
-                  </>
-                 : <> 
-                    <Route path='/login' element={<Login setUser={setUser}/>} />
-                    <Route path='*' element={<Login setUser={setUser} />} />
-                 </> 
-          }
-        </Routes>
-      </Router>
+							<Route path='*' element={<Error404/>} />
+						</>
+						: <> 
+							<Route path='/login' element={<Login setUser={setUser}/>} />
+							<Route path='*' element={<Login setUser={setUser} />} />
+						</> 
+				}
+			</Routes>
+		</Router>
     </div>
 }
 
