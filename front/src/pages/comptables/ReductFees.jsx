@@ -25,7 +25,6 @@ const ReductFees = () => {
 	const first_tranch = student.status === 'old' ? classs.first_tranch_olds_students : classs.first_tranch_news_students
 	const second_tranch = student.status === 'old' ? classs.second_tranch_olds_students : classs.second_tranch_news_students;
 	const third_tranch = student.status === 'old' ? classs.third_tranch_olds_students : classs.third_tranch_news_students;
-	const graduation = classs.graduation ? classs.graduation : 0;
 
 	useEffect(() => {
 		(
@@ -57,10 +56,10 @@ const ReductFees = () => {
 	}, [studentToEditId])
 	useEffect(() => {
 
-		if (amount > (inscription + first_tranch + second_tranch + third_tranch + graduation + 3000)) {
+		if (amount > (inscription + first_tranch + second_tranch + third_tranch)) {
 			// let t = amount;
-			setTotalAmount(inscription + first_tranch + second_tranch + third_tranch + graduation + 3000);
-			// t = inscription + first_tranch + second_tranch + third_tranch + graduation + 3000;
+			setTotalAmount(inscription + first_tranch + second_tranch + third_tranch);
+			// t = inscription + first_tranch + second_tranch + third_tranch;
 		}
 		if (amount > 0) {
 			let a = amount;
@@ -68,8 +67,6 @@ const ReductFees = () => {
 			const first_tranch_rest = first_tranch - student.first_tranch;
 			const second_tranch_rest = second_tranch - student.second_tranch;
 			const third_tranch_rest = third_tranch - student.third_tranch;
-			const graduation_rest = classs.graduation - student.graduation;
-			const assurance_rest = 3000 - student.assurance;
 
 			if (inscription_rest > 0 && a > 0 ) {
 				const price = a >= inscription_rest ? inscription_rest : a
@@ -94,16 +91,6 @@ const ReductFees = () => {
 				setStudent(val => {return {...val, third_tranch: parseInt(student.third_tranch) + price}});
 				a -= price;
 			}
-			if (graduation_rest > 0 && a > 0 ) {
-				const price = a >= graduation_rest ? graduation_rest : a
-				setStudent(val => {return {...val, graduation: parseInt(student.graduation) + price}});
-				a -= price;
-			}
-			if (assurance_rest > 0 && a > 0 ) {
-				const price = a >= assurance_rest ? assurance_rest : a
-				setStudent(val => {return {...val, assurance: parseInt(student.assurance) + price}});
-				a -= price;
-			}
 		}
 
 
@@ -114,32 +101,23 @@ const ReductFees = () => {
 		const ft =  parseInt(studentCopy.inscription) + 
 					parseInt(studentCopy.first_tranch) + 
 					parseInt(studentCopy.second_tranch) + 
-					parseInt(studentCopy.third_tranch) + 
-					parseInt(studentCopy.graduation) + 
-					parseInt(studentCopy.assurance);
+					parseInt(studentCopy.third_tranch)
 
 		const st =  parseInt(student.inscription) + 
 					parseInt(student.first_tranch) + 
 					parseInt(student.second_tranch) + 
-					parseInt(student.third_tranch) + 
-					parseInt(student.graduation) + 
-					parseInt(student.assurance);
+					parseInt(student.third_tranch) 
 
 		const inscription_rest = (inscription - studentCopy.inscription)
 		const first_tranch_rest = (first_tranch - studentCopy.first_tranch)
 		const second_tranch_rest = (second_tranch - studentCopy.second_tranch)
 		const third_tranch_rest = (third_tranch - studentCopy.third_tranch)
-		const graduation_rest = (graduation - studentCopy.graduation)
-		const assurance_rest = (3000 - studentCopy.assurance)
 
 		const totalRest =  inscription_rest + first_tranch_rest + 
-							second_tranch_rest + third_tranch_rest +
-							graduation_rest + assurance_rest 
+							second_tranch_rest + third_tranch_rest
 							
 							
 		let t = st - ft;
-		console.log(t, studentCopy.assurance, student.assurance, st, ft);
-		
 		if (st < ft) {
 			Swal.fire({
 				title: 'Entrer le mot de passe de l\'admin',
@@ -165,9 +143,9 @@ const ReductFees = () => {
 								.then((res) => res.json())
 								.then(res => {
 									if (res.success) {
-										if (totalAmount > (inscription + first_tranch + second_tranch + third_tranch + graduation + 3000)) {
-											setTotalAmount(inscription + first_tranch + second_tranch + third_tranch + graduation + 3000);
-											t = inscription + first_tranch + second_tranch + third_tranch + graduation + 3000;
+										if (totalAmount > (inscription + first_tranch + second_tranch + third_tranch)) {
+											setTotalAmount(inscription + first_tranch + second_tranch + third_tranch);
+											t = inscription + first_tranch + second_tranch + third_tranch;
 										}
 										if (totalAmount > totalRest) {
 											t = totalRest;
@@ -190,9 +168,9 @@ const ReductFees = () => {
 				.then((res) => res.json())
 				.then(res => {
 					if (res.success) {
-						if (totalAmount > (inscription + first_tranch + second_tranch + third_tranch + graduation + 3000)) {
-							setTotalAmount(inscription + first_tranch + second_tranch + third_tranch + graduation + 3000);
-							t = inscription + first_tranch + second_tranch + third_tranch + graduation + 3000;
+						if (totalAmount > (inscription + first_tranch + second_tranch + third_tranch)) {
+							setTotalAmount(inscription + first_tranch + second_tranch + third_tranch);
+							t = inscription + first_tranch + second_tranch + third_tranch;
 						}
 						if (totalAmount > totalRest) {
 							t = totalRest;
@@ -205,15 +183,9 @@ const ReductFees = () => {
 					}
 				})
 		}
-		// console.log(inscription_rest, first_tranch_rest, second_tranch_rest, third_tranch_rest , graduation_rest, assurance_rest , totalRest);
 		setLoading(false)
 	}
-	const completetheinsurance = () => {
-        setTotalAmount(v => v + 3000);
-		setStudent(val => {return {...val, assurance: 3000}})
-	}
 	const addTotalAmount = (one, two) => {
-		console.log(totalAmount);
 		const val = (parseInt(two) - parseInt(one));
 		const p = val > 0 ? totalAmount += val : totalAmount;
 		setTotalAmount(p);
@@ -286,34 +258,6 @@ const ReductFees = () => {
 									}
 								</td>
 							</tr>
-							{
-								classs.graduation ? 
-									<tr>
-										<td>Graduation</td>
-										<td>
-											<input type="number" className='form-control' min={0} max={classs.graduation} readOnly={student.graduation >= classs.graduation} style={{ width: '150px' }} value={student.graduation} onChange={(e) => {addTotalAmount(studentCopy.graduation, e.target.value); setStudent(val => {return {...val, graduation: e.target.value > classs.graduation ? classs.graduation : e.target.value}})}}/>
-										</td>
-										<td>
-											{
-												third_tranch
-											}
-										</td>
-									</tr>
-								: <></>
-							}
-							<tr>
-								<td>Assurance santé</td>
-								<td>
-									<input type="number" className='form-control' 
-										min={0} max={3000} readOnly={student.assurance >= 3000} 
-										style={{ width: '150px' }} value={student.assurance}/>
-								</td>
-								<td>
-									{
-										3000
-									}
-								</td>
-							</tr>
 						</tbody>
 					</table>
 					{
@@ -353,18 +297,6 @@ const ReductFees = () => {
                         3eme tranche<br />
                         
                     </th>
-                    {
-                        classs.graduation ? 
-                            <th align='center' style={{ textAlign: 'center' }}>
-                                Graduations <br />
-                                
-                            </th>
-                        : <></>
-                    }
-                    <th align='center' style={{ textAlign: 'center' }}>
-                        Assurance<br />
-                        
-                    </th>
                     <th align='center' style={{ textAlign: 'center' }}>
                         Total <br />
                     </th>
@@ -385,22 +317,12 @@ const ReductFees = () => {
 						<td>
 							{student.third_tranch} / {third_tranch}
 						</td>
-						{
-							classs.graduation ? 
-								<td>
-									{student.graduation} / {classs.graduation}
-								</td>
-							: <></>
-						}
-						<td>
-							{student.assurance} / {3000}
-						</td>
 						<td>
 							{
-								student.inscription + student.first_tranch + student.second_tranch + student.assurance + student.third_tranch + student.graduation
+								student.inscription + student.first_tranch + student.second_tranch + student.third_tranch
 							} /
 							{
-								inscription + 3000 + first_tranch + second_tranch + third_tranch + graduation
+								inscription + first_tranch + second_tranch + third_tranch
 							}
 						</td>
 					</tr> 
@@ -445,9 +367,8 @@ const ReductFees = () => {
 		</div>
 		<Modal isOpen={isEditAmount}>
 			<EditAmount 
-				setTotalAmount={setTotalAmount} completetheinsurance={completetheinsurance}  
+				setTotalAmount={setTotalAmount}
 				amount={amount} setAmount={setAmount} setIsAmount={setIsEditAmount} 
-				isLocked={student.assurance >= 3000} assur={student.assurance}
 			/>
 		</Modal>
 	</div>

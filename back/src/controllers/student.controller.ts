@@ -52,8 +52,8 @@ module.exports.addStudent = (req, res) => {
 module.exports.updateStudent = (req, res) => {
     const {id} = req.params;
     const {name, subname ,fatherName, phone_number, profession, email, sex, 
-        birthday_place, status, inscription, first_tranch, second_tranch, third_tranch,
-        graduation, assurance} = req.body;
+        birthday_place, status, inscription, first_tranch, second_tranch, third_tranch
+    } = req.body;
     if (name) {
         if (name.length < 3) {
             res.status(401).json({success: false, message: 'Le nom de l\'eleve doit avoir au moins 3 caracteres!!'})
@@ -74,10 +74,10 @@ module.exports.updateStudent = (req, res) => {
             req.connection.query(`UPDATE students SET name = ?, subname = ?, sex = ?, email = ?, 
                                     phone_number = ?, fatherName = ?, profession = ?, birthday_place = ?, 
                                     status = ?, inscription = ?, first_tranch = ?, second_tranch = ?, 
-                                    third_tranch = ?, graduation = ?, assurance = ? WHERE id = ? AND school_id = ?`, 
+                                    third_tranch = ? WHERE id = ? AND school_id = ?`, 
                                     [name, subname, sex, email, phone_number.toString(), 
                                         fatherName, profession, birthday_place, status, inscription, 
-                                        first_tranch, second_tranch, third_tranch, graduation, assurance,
+                                        first_tranch, second_tranch, third_tranch,
                                         id, req.payload.school_id], (err, resp) => {
                 if(err) console.log(err);
                 else res.status(201).json({success: true})

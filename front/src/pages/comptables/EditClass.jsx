@@ -95,16 +95,6 @@ const EditClass = ({error, setError, setIsEditClass, classToEditId}) => {
                                 <input type="number" readOnly={true} className='form-control' style={{ width: '150px' }} value={classs.third_tranch_olds_students} onChange={(e) => {setClasss(val => {return {...val, third_tranch_olds_students: e.target.value}})}}/>
                             </td>
                         </tr>
-                        {
-                            classs.graduation ? 
-                                <tr>
-                                    <td colSpan={2}>Graduation</td>
-                                    <td>
-                                        <input type="number" readOnly={true} className='form-control' style={{ width: '150px' }} value={classs.graduation} onChange={(e) => {setClasss(val => {return {...val, graduation: e.target.value}})}}/>
-                                    </td>
-                                </tr>
-                            : <></>
-                        }
                     </tbody>
                 </table>
                 {

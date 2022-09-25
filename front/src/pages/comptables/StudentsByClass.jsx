@@ -136,22 +136,6 @@ function StudentsByClass() {
                         href={host+'/download/pdf/insolvables/'+id+'/4/'+sessionStorage.user} className="btn btn-secondary">
                             Insolvables</a>
                     </th>
-                    {
-                        classs.graduation ? 
-                            <th align='center' style={{ textAlign: 'center' }}>
-                                Graduations <br />
-                                <a target={'_blank'} rel='noreferrer' 
-                                href={host+'/download/pdf/insolvables/'+id+'/5/'+sessionStorage.user} className="btn btn-secondary">
-                                    Insolvables</a>
-                            </th>
-                        : <></>
-                    }
-                    <th align='center' style={{ textAlign: 'center' }}>
-                        Assurance<br />
-                        <a target={'_blank'} rel='noreferrer' 
-                        href={host+'/download/pdf/insolvables/'+id+'/8/'+sessionStorage.user} className="btn btn-secondary">
-                            Insolvables</a>
-                    </th>
                     <th align='center' style={{ textAlign: 'center' }}>
                         Total <br />
                         <a target={'_blank'} rel='noreferrer' 
@@ -181,7 +165,6 @@ function StudentsByClass() {
                                 const first_tranch = student.status === 'old' ? classs.first_tranch_olds_students : classs.first_tranch_news_students
                                 const second_tranch = student.status === 'old' ? classs.second_tranch_olds_students : classs.second_tranch_news_students;
                                 const third_tranch = student.status === 'old' ? classs.third_tranch_olds_students : classs.third_tranch_news_students;
-                                const graduation = classs.graduation ? classs.graduation : 0;
                                 
                                 return <tr key={id}>
                                     <td>{id + 1}</td>
@@ -198,22 +181,12 @@ function StudentsByClass() {
                                     <td>
                                         {student.third_tranch} / {third_tranch}
                                     </td>
-                                    {
-                                        classs.graduation ? 
-                                            <td>
-                                                {student.graduation} / {classs.graduation}
-                                            </td>
-                                        : <></>
-                                    }
-                                    <td>
-                                        {student.assurance} / {3000}
-                                    </td>
                                     <td>
                                         {
-                                            student.inscription + student.first_tranch + student.second_tranch + student.assurance + student.third_tranch + student.graduation
+                                            student.inscription + student.first_tranch + student.second_tranch + student.third_tranch
                                         } /
                                         {
-                                            inscription + 3000 + first_tranch + second_tranch + third_tranch + graduation
+                                            inscription + first_tranch + second_tranch + third_tranch
                                         }
                                     </td>
                                     <td style={{display: 'flex', flexDirection:'column', alignItems:'center', justifyContent: 'space-between'}}>

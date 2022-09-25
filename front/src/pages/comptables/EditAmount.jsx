@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { classTraductions } from '../../local/class';
 import { getLang } from '../../utils/lang';
 
-function EditAmount({setAmount, setTotalAmount, isLocked, completetheinsurance, setIsAmount, assur}) {
+function EditAmount({setAmount, setTotalAmount, setIsAmount}) {
     const [edition, setEdition] = useState(0);
     const addAmount = (d) => {
         setEdition(v => v + d);
@@ -12,24 +12,10 @@ function EditAmount({setAmount, setTotalAmount, isLocked, completetheinsurance, 
     const handleCancel = () => {
       setIsAmount(v => !v)
     }
-    const isOk2 = () => {
-        if (!isLocked) {
-            setHasr(true);
-            setEdition(v => v);
-            completetheinsurance();
-        }else{
-            setHasr(true);
-            setEdition(v => v);
-            completetheinsurance();
-        }
-    }
     const isOk = () => {
         setAmount( edition );
-        // setAmounts(v => {return [...v, edition]})
         setIsAmount(false);
-		// amounts.forEach(am => {
         setTotalAmount(v => v += ( !hasr ? edition : edition - 3000 ));
-		// })
     }
     return (<div className="card login-card">
                 <div className="card-head">
@@ -41,9 +27,6 @@ function EditAmount({setAmount, setTotalAmount, isLocked, completetheinsurance, 
                     
                     <div>
                         <input className='form-control' type="number" value={edition} onChange={(e) => {setEdition(parseInt(e.target.value))}} />
-                        <h5 className="">
-                            Assurance: ({assur})
-                        </h5>
                         <div>
                             <button style={{ marginLeft: '10px', marginTop: '10px' }} onClick={() => {addAmount(500)}}>
                                 Ajouter 500
@@ -59,11 +42,6 @@ function EditAmount({setAmount, setTotalAmount, isLocked, completetheinsurance, 
                             </button>
                             <button style={{ marginLeft: '10px', marginTop: '10px' }} onClick={() => {addAmount(10000)}}>
                                 Ajouter 10000
-                            </button>
-                        </div>
-                        <div>
-                            <button className={isLocked ? 'disabled' : ''} style={{ marginLeft: '10px', marginTop: '10px' }} onClick={() => {isOk2()}}>
-                                Assurance(3000)
                             </button>
                         </div>
                     </div>

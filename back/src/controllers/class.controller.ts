@@ -4,8 +4,7 @@ module.exports.addClass = (req : any, res : any) => {
         inscriptions_olds_students, inscriptions_news_students, 
         first_tranch_news_students, first_tranch_olds_students, 
         second_tranch_news_students, second_tranch_olds_students,
-        third_tranch_news_students, third_tranch_olds_students,
-        graduation
+        third_tranch_news_students, third_tranch_olds_students
     } = req.body;
     level = parseInt(level)
     if (name && name !== '' && section && section !== '' && level) {
@@ -17,15 +16,15 @@ module.exports.addClass = (req : any, res : any) => {
                                     inscriptions_olds_students, inscriptions_news_students, 
                                     first_tranch_news_students, first_tranch_olds_students, 
                                     second_tranch_news_students, second_tranch_olds_students, 
-                                    third_tranch_news_students, third_tranch_olds_students,
-                                    graduation, school_id, school_year) 
-                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                    third_tranch_news_students, third_tranch_olds_students, 
+                                    school_id, school_year) 
+                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
                                     [req.jwt.sign(name, req.env.SECRET), 
                                         name, level, section,
                                         inscriptions_olds_students, inscriptions_news_students, 
                                         first_tranch_news_students, first_tranch_olds_students, 
                                         second_tranch_news_students, second_tranch_olds_students, 
-                                        third_tranch_news_students, graduation, third_tranch_olds_students, 
+                                        third_tranch_news_students, third_tranch_olds_students, 
                                         req.payload.school_id, req.school_year], (err: any, resp : any) => {
                 if(err) console.log(err);
                 else res.status(201).json({success: true})
@@ -43,9 +42,7 @@ module.exports.updateClass = (req : any, res : any) => {
         first_tranch_news_students, first_tranch_olds_students, 
         second_tranch_news_students, second_tranch_olds_students,
         third_tranch_news_students, third_tranch_olds_students,
-        graduation
     } = req.body;
-    graduation = graduation ? graduation : null;
     level = parseInt(level);    
     const {id} = req.params;
     if (name && section) {
@@ -57,15 +54,13 @@ module.exports.updateClass = (req : any, res : any) => {
                                     inscriptions_olds_students = ?, inscriptions_news_students = ?, 
                                     first_tranch_news_students = ?, first_tranch_olds_students = ?, 
                                     second_tranch_news_students = ?, second_tranch_olds_students = ?, 
-                                    third_tranch_news_students = ?, third_tranch_olds_students = ?,
-                                    graduation = ?
+                                    third_tranch_news_students = ?, third_tranch_olds_students = ?
                                     WHERE id = ? AND school_year = ?`, 
                                     [ name, section, level, 
                                         inscriptions_olds_students, inscriptions_news_students, 
                                         first_tranch_news_students, first_tranch_olds_students, 
                                         second_tranch_news_students, second_tranch_olds_students, 
-                                        third_tranch_news_students, third_tranch_olds_students, 
-                                        graduation,
+                                        third_tranch_news_students, third_tranch_olds_students,
                                         id, req.school_year], (err: any, resp : any) => {
                 if(err) console.log(err);
 
@@ -142,8 +137,7 @@ module.exports.getOneClass = (req : any, res : any) => {
                             class.inscriptions_news_students, class.inscriptions_olds_students, 
                             class.first_tranch_news_students, class.first_tranch_olds_students, 
                             class.second_tranch_news_students, class.second_tranch_olds_students, 
-                            class.third_tranch_news_students, class.third_tranch_olds_students, 
-                            class.graduation,
+                            class.third_tranch_news_students, class.third_tranch_olds_students,
                             class.level, sections.type, teachers.name as teacher_name, teachers.subname as teacher_subname, 
                             (select count(id) FROM students where students.class_id = class.id) as total_students 
                             FROM class JOIN sections ON sections.id = class.section 

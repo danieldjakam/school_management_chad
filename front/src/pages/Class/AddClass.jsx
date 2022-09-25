@@ -18,8 +18,7 @@ const AddClass = ({ error, setError, setIsAddClass}) => {
 			second_tranch_news_students: 0,
 			second_tranch_olds_students: 0,
 			third_tranch_news_students: 0,
-			third_tranch_olds_students: 0,
-			graduation: null
+			third_tranch_olds_students: 0
 	})
 	const [sections, setSections] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -143,12 +142,6 @@ const AddClass = ({ error, setError, setIsAddClass}) => {
 							<input type="number" className='form-control' 
 							style={{ width: '150px' }} value={data.third_tranch_olds_students} 
 							onChange={(e) => {setData(val => {return {...val, third_tranch_olds_students: e.target.value}})}}/>
-						</td>
-					</tr>
-					<tr>
-						<td colSpan={2}>Graduation</td>
-						<td>
-							<input type="number" className='form-control' style={{ width: '150px' }} value={data.graduation} onChange={(e) => {setData(val => {return {...val, graduation: e.target.value}})}}/>
 						</td>
 					</tr>
 				</tbody>

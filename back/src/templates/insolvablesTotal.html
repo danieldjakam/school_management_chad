@@ -86,7 +86,7 @@
             <thead class="table-dark" style="font-size: 1.7rem;">
                 <tr>
                     <th rowspan="2">Noms</th>
-                    <td {{#ifCond info.graduation '!==' 0 }} colspan="6" {{else}} colspan="5" {{/ifCond}} >Rese a payer</td>
+                    <td colspan="5">Reste a payer</td>
                 </tr>
                 <tr>
                     <td>
@@ -101,14 +101,6 @@
                     <td>
                         3eme tranche
                     </td>
-                    {{#ifCond info.graduation '!==' 0}}
-                        <td>
-                            Graduation
-                        </td>
-                    {{/ifCond}}
-                    <td>
-                        Assurance sante
-                    </td>
                     <td>
                         Total
                     </td>
@@ -122,12 +114,6 @@
                         <td>{{this.first_tranch_rest}}</td>
                         <td>{{this.second_tranch_rest}}</td>
                         <td>{{this.third_tranch_rest}}</td>
-                        {{#ifCond this.graduation_scolarity '!==' null}}
-                            <td>
-                                {{this.graduation_rest}}
-                            </td>
-                        {{/ifCond}}
-                        <td>{{this.assurance_rest}}</td>
                         <td>
                             {{this.restToPay}}
                         </td>

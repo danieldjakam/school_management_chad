@@ -7,7 +7,7 @@
 #
 # Host: localhost (MySQL 5.7.38)
 # Database: school_management_tchad
-# Generation Time: 2022-09-24 09:59:31 +0000
+# Generation Time: 2022-09-25 15:57:59 +0000
 # ************************************************************
 
 
@@ -63,17 +63,17 @@ CREATE TABLE `class` (
   `first_tranch_news_students` int(50) DEFAULT '0',
   `first_tranch_olds_students` int(50) DEFAULT '0',
   `second_tranch_news_students` int(50) DEFAULT '0',
-  `second_tranch_olds_students` int(50) DEFAULT '0',
-  `graduation` int(50) DEFAULT NULL
+  `second_tranch_olds_students` int(50) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 LOCK TABLES `class` WRITE;
 /*!40000 ALTER TABLE `class` DISABLE KEYS */;
 
-INSERT INTO `class` (`id`, `name`, `section`, `teacherId`, `level`, `school_id`, `school_year`, `third_tranch_olds_students`, `third_tranch_news_students`, `inscriptions_news_students`, `inscriptions_olds_students`, `first_tranch_news_students`, `first_tranch_olds_students`, `second_tranch_news_students`, `second_tranch_olds_students`, `graduation`)
+INSERT INTO `class` (`id`, `name`, `section`, `teacherId`, `level`, `school_id`, `school_year`, `third_tranch_olds_students`, `third_tranch_news_students`, `inscriptions_news_students`, `inscriptions_olds_students`, `first_tranch_news_students`, `first_tranch_olds_students`, `second_tranch_news_students`, `second_tranch_olds_students`)
 VALUES
-	('eyJhbGciOiJIUzI1NiJ9.VGVzdCBNYXRlcm5lbGxl.U2cW4FCVTsdwTON4s0MyF5H1Czteg3XteSrYqABSfqk','Test Maternelle','1','eyJhbGciOiJIUzI1NiJ9.dGVzdCBtYXQ.c_Ukv2McscWsntwIxm4WCe__T29XQBrvohwuxk4Z4hM',1,'eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU','2022',NULL,0,0,0,0,0,0,0,0),
-	('eyJhbGciOiJIUzI1NiJ9.VGVzdCBQcmltYWlyZQ.tICy1nN5jhurzvJCdLqT8MfcERMIFw1eLZpE_-7mOdI','Test Primaire','3','eyJhbGciOiJIUzI1NiJ9.dGVzdCBQcmlt.6m57FrIcHGl4_tMGAHWKMBJkhzCOF1b7QE_yQL218No',1,'eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU','2022',NULL,0,0,0,0,0,0,0,0);
+	('eyJhbGciOiJIUzI1NiJ9.VGVzdCBNYXRlcm5lbGxl.U2cW4FCVTsdwTON4s0MyF5H1Czteg3XteSrYqABSfqk','Test Maternelle','1','eyJhbGciOiJIUzI1NiJ9.dGVzdCBtYXQ.c_Ukv2McscWsntwIxm4WCe__T29XQBrvohwuxk4Z4hM',1,'eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU','2022',NULL,0,0,0,0,0,0,0),
+	('eyJhbGciOiJIUzI1NiJ9.VGVzdCBQcmltYWlyZQ.tICy1nN5jhurzvJCdLqT8MfcERMIFw1eLZpE_-7mOdI','Test Primaire','3','eyJhbGciOiJIUzI1NiJ9.dGVzdCBQcmlt.6m57FrIcHGl4_tMGAHWKMBJkhzCOF1b7QE_yQL218No',1,'eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU','2022',NULL,0,0,0,0,0,0,0),
+	('eyJhbGciOiJIUzI1NiJ9.VGVzdA.Q9I9ns4usVBJPzyPDT19fIwg-DOw1NZNPHrWV2d4qkU','Test','1','eyJhbGciOiJIUzI1NiJ9.VGVhY2g.L9aPmdPLJV5WCO_jnQ8XH0olbFd1oGo4DDDHcHj1ges',2,'eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU','2022',NULL,0,0,0,0,0,0,0);
 
 /*!40000 ALTER TABLE `class` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -398,23 +398,22 @@ CREATE TABLE `students` (
   `inscription` int(50) DEFAULT '0',
   `first_tranch` int(50) DEFAULT '0',
   `second_tranch` int(50) DEFAULT '0',
-  `graduation` int(50) DEFAULT '0',
   `birthday` datetime DEFAULT NULL,
-  `assurance` int(50) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `students` WRITE;
 /*!40000 ALTER TABLE `students` DISABLE KEYS */;
 
-INSERT INTO `students` (`id`, `name`, `fatherName`, `subname`, `email`, `phone_number`, `class_id`, `sex`, `birthday_place`, `school_year`, `status`, `school_id`, `third_tranch`, `profession`, `inscription`, `first_tranch`, `second_tranch`, `graduation`, `birthday`, `assurance`)
+INSERT INTO `students` (`id`, `name`, `fatherName`, `subname`, `email`, `phone_number`, `class_id`, `sex`, `birthday_place`, `school_year`, `status`, `school_id`, `third_tranch`, `profession`, `inscription`, `first_tranch`, `second_tranch`, `birthday`)
 VALUES
-	(1,'Mat 1','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBNYXRlcm5lbGxl.U2cW4FCVTsdwTON4s0MyF5H1Czteg3XteSrYqABSfqk','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,0,NULL,0),
-	(2,'Mat 2','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBNYXRlcm5lbGxl.U2cW4FCVTsdwTON4s0MyF5H1Czteg3XteSrYqABSfqk','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,0,NULL,0),
-	(3,'Mat 3','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBNYXRlcm5lbGxl.U2cW4FCVTsdwTON4s0MyF5H1Czteg3XteSrYqABSfqk','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,0,NULL,0),
-	(4,'Prim 1','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBQcmltYWlyZQ.tICy1nN5jhurzvJCdLqT8MfcERMIFw1eLZpE_-7mOdI','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,0,NULL,0),
-	(5,'Prim 2','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBQcmltYWlyZQ.tICy1nN5jhurzvJCdLqT8MfcERMIFw1eLZpE_-7mOdI','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,0,NULL,0),
-	(6,'Prim 3','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBQcmltYWlyZQ.tICy1nN5jhurzvJCdLqT8MfcERMIFw1eLZpE_-7mOdI','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,0,NULL,0);
+	(1,'Mat 1','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBNYXRlcm5lbGxl.U2cW4FCVTsdwTON4s0MyF5H1Czteg3XteSrYqABSfqk','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,NULL),
+	(2,'Mat 2','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBNYXRlcm5lbGxl.U2cW4FCVTsdwTON4s0MyF5H1Czteg3XteSrYqABSfqk','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,NULL),
+	(3,'Mat 3','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBNYXRlcm5lbGxl.U2cW4FCVTsdwTON4s0MyF5H1Czteg3XteSrYqABSfqk','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,NULL),
+	(4,'Prim 1','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBQcmltYWlyZQ.tICy1nN5jhurzvJCdLqT8MfcERMIFw1eLZpE_-7mOdI','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,NULL),
+	(5,'Prim 2','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBQcmltYWlyZQ.tICy1nN5jhurzvJCdLqT8MfcERMIFw1eLZpE_-7mOdI','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,NULL),
+	(6,'Prim 3','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBQcmltYWlyZQ.tICy1nN5jhurzvJCdLqT8MfcERMIFw1eLZpE_-7mOdI','m','','2022','new','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,NULL),
+	(7,'llll','','','','','eyJhbGciOiJIUzI1NiJ9.VGVzdA.Q9I9ns4usVBJPzyPDT19fIwg-DOw1NZNPHrWV2d4qkU','m','','2022','old','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU',0,'',0,0,0,NULL);
 
 /*!40000 ALTER TABLE `students` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -474,7 +473,8 @@ LOCK TABLES `teachers` WRITE;
 INSERT INTO `teachers` (`id`, `name`, `subname`, `class_id`, `matricule`, `password`, `sex`, `birthday`, `phone_number`, `school_id`, `school_year`)
 VALUES
 	('eyJhbGciOiJIUzI1NiJ9.dGVzdCBtYXQ.c_Ukv2McscWsntwIxm4WCe__T29XQBrvohwuxk4Z4hM','test mat','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBNYXRlcm5lbGxl.U2cW4FCVTsdwTON4s0MyF5H1Czteg3XteSrYqABSfqk','SEM-TESTMATERNELLE','9823','m',NULL,'','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU','2022'),
-	('eyJhbGciOiJIUzI1NiJ9.dGVzdCBQcmlt.6m57FrIcHGl4_tMGAHWKMBJkhzCOF1b7QE_yQL218No','test Prim','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBQcmltYWlyZQ.tICy1nN5jhurzvJCdLqT8MfcERMIFw1eLZpE_-7mOdI','SEM-TESTPRIMAIRE','0579','m',NULL,'','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU','2022');
+	('eyJhbGciOiJIUzI1NiJ9.dGVzdCBQcmlt.6m57FrIcHGl4_tMGAHWKMBJkhzCOF1b7QE_yQL218No','test Prim','','eyJhbGciOiJIUzI1NiJ9.VGVzdCBQcmltYWlyZQ.tICy1nN5jhurzvJCdLqT8MfcERMIFw1eLZpE_-7mOdI','SEM-TESTPRIMAIRE','0579','m',NULL,'','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU','2022'),
+	('eyJhbGciOiJIUzI1NiJ9.VGVhY2g.L9aPmdPLJV5WCO_jnQ8XH0olbFd1oGo4DDDHcHj1ges','Teach','','eyJhbGciOiJIUzI1NiJ9.VGVzdA.Q9I9ns4usVBJPzyPDT19fIwg-DOw1NZNPHrWV2d4qkU','SEM-TEST','1236','m',NULL,'','eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU','2022');
 
 /*!40000 ALTER TABLE `teachers` ENABLE KEYS */;
 UNLOCK TABLES;
