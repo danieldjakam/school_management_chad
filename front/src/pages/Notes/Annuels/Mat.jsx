@@ -83,7 +83,7 @@ const PrimA = ({type}) => {
                     <button onClick={() => {calc()}} style={{marginLeft: '10px'}} className="btn btn-primary">Calculer les notes</button>
                     {/* <label htmlFor='csvFile' style={{marginLeft: '10px'}} className="btn btn-success">{sequenceTraductions['fr'].importNotes}</label>
                     <input type="file" accept='.csv' id='csvFile' style={{display: 'none'}} onChange={(e) => {handleChangeCsvFile(e, '/upload/notes/csv', setError)}} /> */}
-                    <Link to={`/promotion/${exam_id}/${class_id}`} className='btn btn-primary' style={{ marginLeft: '10px' }}>
+                    <Link to={`/promotion/${exam_id}/${class_id}/${type}`} className='btn btn-primary' style={{ marginLeft: '10px' }}>
                         Promotion
                     </Link>
                 </ul>
@@ -187,7 +187,7 @@ const PrimA = ({type}) => {
                 </tr>
             }
         </tbody>
-    </table>
+        </table>
     {
         loading ? 'studentsPoints' : ''
     }

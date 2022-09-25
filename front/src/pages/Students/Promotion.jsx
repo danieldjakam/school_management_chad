@@ -2,19 +2,19 @@ import React from 'react'
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { studentTraductions } from '../../local/student';
 import { host } from '../../utils/fetch';
+import { getLang } from '../../utils/lang';
+import ReactLoading from 'react-loading';
 
-const Promotion = ({type}) => {
+const Promotion = () => {
     const [students, setStudents ] = useState([]);
     const [subjects, setSubjects ] = useState([]);
     const [ActualClass, setActualClass ] = useState({});
     const [actualExam, setActualExam ] = useState({});
-    const [totalPoints, setTotalPoints] = useState(0);
     const [loading, setLoading ] = useState(false);
-    const {exam_id, class_id} = useParams();
+    const {exam_id, class_id, type} = useParams();
     const [notes, setNotes] = useState({});
-    const [error, setError] = useState("");
-    const bulRef = useRef();
     useEffect(() => {
         (
             async () => {
@@ -41,12 +41,6 @@ const Promotion = ({type}) => {
                 }})
                 const data5 = await resp5.json();
                 
-                let tot = 0;
-                data4.forEach(sub => {
-                    tot += sub.over
-                })
-
-                setTotalPoints(tot);
                 setStudents(dat);
                 setActualExam(data);
                 setActualClass(data2);
@@ -56,24 +50,58 @@ const Promotion = ({type}) => {
             }
         )()
     }, []);
-
-    const calc = () => {
-        const data = {
-            exam_id,
-            class_id
-        }
-        fetch(host+'/notes/calTrimNotes', {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json', 'Authorization': sessionStorage.user}})
-            .then((res) => res.json())
-            .then(res => {
-                if (!res.success) {
-                    setError(res.message)
-                }else{
-                    window.location.reload()
-                }
-            })
-    }
     return <div className="container">
+        <h4 style={{ display: 'flex' }}>
+            Bienvenue dans la promotion des eleves de {ActualClass.name}
+            <div className="help" style={{ background: '#0c56ac', color: '#fff', marginLeft: '10px',
+                                            height: '30px', width: '30px', borderRadius: '50%',
+                                            display: 'flex', justifyContent: 'center', alignItems: 'center'
+                                        }}
+            > i </div>
+        </h4>
 
+
+        <table className="table table-dark table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td>{studentTraductions[getLang()].n} </td>
+                    <th>{studentTraductions[getLang()].name}</th>
+                    <th>{studentTraductions[getLang()].subname}</th>
+                    <th>{studentTraductions[getLang()].sex}</th>
+                    <th>Moyenne annuelle</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    loading ? <tr>
+                                <td colSpan={5} style={{justifyItems: 'center', paddingLeft: '50%'}}>
+                                    <ReactLoading color="#fff" type="cylon"/>
+                                </td>
+                            </tr> : students.length > 0 ? students.map((student, id) => {
+                                        let total = 0;
+                                        const herNotes = notes.filter(n => n.student_id == student.id);
+                                        herNotes.forEach(no => {
+                                            total += parseInt(no.value);
+                                        })
+                                        return <tr key={id}>
+                                            <td>{id + 1}</td>
+                                            <td>{student.name}</td>
+                                            <td>{student.subname}</td>
+                                            <td>{student.sex === 'm' ? studentTraductions[getLang()].m : studentTraductions[getLang()].f}</td>
+                                            <td>
+                                                {
+                                                    
+                                                }
+                                            </td>
+                                        </tr> 
+                                    }) : <tr> 
+                                        <td colSpan={7} style={{textAlign: 'center'}}>
+                                            {` ${studentTraductions[getLang()].noStudent} ${ActualClass.name}`}
+                                        </td>
+                                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 }
 

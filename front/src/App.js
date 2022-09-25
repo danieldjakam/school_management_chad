@@ -70,7 +70,7 @@ function App() {
 							<Route path='/settings' element={<Settings/>}/>
 							<Route path='/trims' element={<TrimStu/>}/>
 							<Route path='/stats' element={<Statistics/>}/>
-							<Route path='promotion/:exam_id/:class_id' element={<Promotion/>} />
+							<Route path='promotion/:exam_id/:class_id/:type' element={<Promotion/>} />
 
 							<Route path='/trims1/:exam_id/:class_id' element={<Mat type={1}/>} /> 
 							{/* Routes for bulletins */}
