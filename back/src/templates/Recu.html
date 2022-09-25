@@ -5,55 +5,74 @@
         <title>GSB La Semence</title>
     </head>
     <body>
-        <style>
-            
+        <style>   
             .table1, .table2{
                 border-collapse: collapse;
                 width: 100%;
+                margin-top: 30px;
+                margin-bottom: 30px;
                 font-size: 12px;
             }
             .com{
                 font-weight: bold;
             }
-
             .table1 td, .table1 th{
-                text-align: center;
+                /* text-align: center; */
                 border: 2px solid #000;
-            }
+            }  
 
-            .table2 td, .table2 th{
+            .table2 th, .table2 th, td.center{
                 text-align: center;
             }
-
             .th{
                 width:300px;
+            }
+
+            .head > .header h2{
+                font-size: 20px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head > .header h4{
+                font-size: 13px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head{
+                text-align: center;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head .body > h3{
+                font-size: 20px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head img{
+                width: 80px;
+                margin-top: 0;
+                margin-bottom: 0;
             }
         </style>
         
         <div>
-            <table class='table2'>
-                <tr>
-                    <th>
-                        REPUBLIQUE DU CAMEROUN <br />
-                        Paix - Travail - Patrie <br />
-                        GROUPE SCOLAIRE BILINGUE PRIVE  <br />
-                        LAIC LA SEMENCE  <br />
-                        BP: 1661 DOUALA BANGUE <br />
-                        TEL: (237) 33 08 95 82/699717529 <br />
-                    </th>
-                    <th class=' '>
-                        <img  src='http://localhost:4000/public/sem.png' height={200} />
-                    </th>
-                    <th class=''>
-                        REPUBLIC OF CAMEROON  <br />
-                        Peace - Work - Father/land  <br />
-                        GROUPE SCOLAIRE BILINGUE PRIVE <br />
-                         LAIC LA SEMENCE  <br />
-                        P.O Box : 1661 DOUALA-BANGUE  <br />
-                        Tel : (237) 33089582 <br />
-                    </th>
-                </tr>
-            </table>
+            <div class="head">
+                <div class="header">
+                    <h2>REPUBLIQUE DU TCHAD</h2>
+                    <h4>Unité - Travail - Progrès</h4>
+                    <h4>***********</h4>
+                    <h4>MINISTERE DE L'ENSEIGNEMENT PRIMAIRE ET DE L'EDUCATION CIVIQUE</h4>
+                    <h4>INSPECTION PEDAGOGIQUE DE L'ENSEIGNEMENT PRIMAIRE DU 6<sup>eme</sup> ARRONSIDESSEMENT</h4>
+                </div>
+    
+                <div class="body">
+                    <img  src='http://localhost:4000/public/sem.png' height={200} />
+                    <p>
+                        ECOLE PRIVEE FRANCO - ANGLAISE <br/>
+                        "Living Word Missions Chad"
+                    </p>
+                </div>
+            </div>
             <h2 style="text-align: center; margin: 5px 0px;">
                 Reçu/Receipt Nº {{ payment.recu_name }}
             </h2>
@@ -190,175 +209,6 @@
                 </div>
             </div>
             <p style="margin-top: 0;">
-                <b>Aucun remboursement, ni transfert n'est possible.</b>
-            </p>
-        
-            <p style="font-size: 1.2rem; text-align: center;">
-                Merci pour votre confiance !!!
-            </p>
-    
-        </div>
-        <hr style="border: 1px #000 dashed;">
-        
-        <div>
-            <table class='table2'>
-                <tr>
-                    <th>
-                        REPUBLIQUE DU CAMEROUN <br />
-                        Paix - Travail - Patrie <br />
-                        GROUPE SCOLAIRE BILINGUE PRIVE  <br />
-                        LAIC LA SEMENCE  <br />
-                        BP: 1661 DOUALA BANGUE <br />
-                        TEL: (237) 33 08 95 82/699717529 <br />
-                    </th>
-                    <th class=' '>
-                        <img  src='http://localhost:4000/public/sem.png' height={200} />
-                    </th>
-                    <th class=''>
-                        REPUBLIC OF CAMEROON  <br />
-                        Peace - Work - Father/land  <br />
-                        GROUPE SCOLAIRE BILINGUE PRIVE <br />
-                         LAIC LA SEMENCE  <br />
-                        P.O Box : 1661 DOUALA-BANGUE  <br />
-                        Tel : (237) 33089582 <br />
-                    </th>
-                </tr>
-            </table>
-    
-            <h2 style="text-align: center; margin: 5px 0px;">
-                Année scolaire: {{ school_year }} - {{ next_school_year  }}
-            </h2>
-            <h2 style="text-align: center; margin: 10px 0px;">
-                Reçu/Receipt Nº {{ payment.recu_name }}
-            </h2>
-                
-            <table class='table' style="width: 100%; font-size: .9rem;">
-                <tbody>
-                    <tr>
-                        <td>
-                            Opération/Operation: <b>Fees/Frais de Scolarité</b></td>
-                        <td> Noms de l'élève/ Names of the pupils:<b> {{ student.name }} {{ student.subname }}</b></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Numero du parent: {{ student.phone_number }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Montant encaissé/Boxed amount: <b>{{ amount }} Frs</b></td>
-                        <td> Classe/Class: <b>{{ classe.name }}</b> </td>
-                    </tr>
-                </tbody>
-            </table>
-    
-            <table class="table1" style="font-size: 1rem;">
-                <thead>
-                    <tr>
-                        <th>
-                            Nº Facture
-                        </th>
-                        <th>
-                            Montant a payer
-                        </th>
-                        <th>
-                            Montant Réglé
-                        </th>
-                        <th>
-                            Solde/Balance
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            {{ payment.id }}
-                        </td>
-                        <td>
-                            <b>{{ total }}</b>
-                        </td>
-                        <td>{{ totalPayed }}</td>
-                        <td>{{ difference }}</td>
-                    </tr>
-                </tbody>
-            </table>
-    
-            <h5 style="text-align: center; margin: 10px 0;">
-                DETAILS DU RECU/ DETAILS OF RECEIPTS
-            </h5>
-    
-    
-            <table class="table1" style="font-size: 1rem;">
-                <thead>
-                    <tr>
-                        <td>Divers/Various</td>
-                        <td>Montant Divers</td>
-                        <td>Nombre Tranche</td>
-                        <td>Montant Tranche</td>
-                        <td>Reste a payer</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Inscriptions
-                        </td>
-                        <td>
-                            {{ inscription }}
-                        </td>
-                        <td>
-                            1
-                        </td>
-                        <td>
-                            Tranche1: {{ inscription }}
-                        </td>
-                        <td>
-                            Tranche1: {{ inscription_rest }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b>SCOLARITES/FEES</b>
-                        </td>
-                        <td>
-                            {{ totalFees }}
-                        </td>
-                        <td>
-                            3
-                        </td>
-                        <td>
-                            Tranche1: {{ first_tranch }} <br>
-                            Tranche2: {{ second_tranch }} <br>
-                            Tranche3: {{ third_tranch }}
-                        </td>
-                        <td>
-                            Tranche1: {{ first_tranch_rest }} <br>
-                            Tranche2: {{ second_tranch_rest }} <br>
-                            Tranche3: {{  third_tranch_rest }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">
-                            <b>TOTAL RESTE A PAYER/TOTAL REMAINS TO BE PAID </b>
-                        </td>
-                        <td>
-                            {{ difference }}
-                        </td>
-                    </tr>
-                </thead>
-            </table>
-
-            <div>
-                <p style="float: left; width: 50%;">
-                    Nom de l'opérateur <u>{{ username }}</u> 
-                </p>
-                <div class="">
-                    <p>
-                        Signature
-                    </p>
-                    <p>
-                        Fait le: {{date}}
-                    </p>
-                </div>
-            </div>
-            <p>
                 <b>Aucun remboursement, ni transfert n'est possible.</b>
             </p>
         

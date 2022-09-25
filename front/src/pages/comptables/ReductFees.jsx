@@ -21,6 +21,7 @@ const ReductFees = () => {
 	const [studentCopy, setStudentCopy] = useState({});
 	const [payements, setPayements] = useState([]);
 	let [totalAmount, setTotalAmount] = useState(0);
+	
 	const inscription = student.status === 'old' ? classs.inscriptions_olds_students : classs.inscriptions_news_students
 	const first_tranch = student.status === 'old' ? classs.first_tranch_olds_students : classs.first_tranch_news_students
 	const second_tranch = student.status === 'old' ? classs.second_tranch_olds_students : classs.second_tranch_news_students;
