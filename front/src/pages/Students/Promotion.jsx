@@ -86,7 +86,7 @@ const Promotion = () => {
             method: 'PUT', body: JSON.stringify(
                 {
                     ids: [sid],
-                    classid
+                    class_id: classid
                 }
             ), 
             headers: {
@@ -104,10 +104,14 @@ const Promotion = () => {
     return <div className="container">
         <h4 style={{ display: 'flex' }}>
             Bienvenue dans la promotion des eleves de {ActualClass.name}
-            <div className="help" style={{ background: '#0c56ac', color: '#fff', marginLeft: '10px',
-                                            height: '30px', width: '30px', borderRadius: '50%',
-                                            display: 'flex', justifyContent: 'center', alignItems: 'center'
-                                        }}
+            <div className="help" 
+                onClick={() => {setShowInfos(v => !v)}}
+                style={{ background: '#0c56ac', color: '#fff', marginLeft: '10px',
+                            height: '30px', width: '30px', borderRadius: '50%',
+                            display: 'flex', justifyContent: 'center', alignItems: 'center',
+                            cursor: 'pointer'
+                        }}
+
             > i </div>
         </h4>
 
@@ -178,7 +182,7 @@ const Promotion = () => {
 
         
         <Modal isOpen={showInfos}>
-            <InfosPromo setIsEditAnnualExam={setShowInfos}/>
+            <InfosPromo setShowInfos={setShowInfos}/>
         </Modal>
     </div>
 }
