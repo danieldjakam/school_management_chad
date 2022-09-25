@@ -77,11 +77,15 @@ module.exports.updateClass = (req : any, res : any) => {
     }
 }
 
-// module.exports.getAllClass = (req : any, res : any) => {
-//     req.connection.query('SELECT teachers.name as tName, class.id, teachers.subname as ts, class.name, class.section, teachers.id as tId, teachers.subname FROM teachers LEFT JOIN class ON class.id = teachers.class_id WHERE class.school_id = ? AND section = ?', [req.payload.school_id, req.section_id], (err: any, resp : any) => {
-//         res.status(201).json(resp);
-//     })
-// }
+module.exports.getClassByLevel = (req : any, res : any) => {
+    
+    req.connection.query('SELECT * FROM class WHERE level = ?', [req.params.level.toString(), req.section_id], (err: any, resp : any) => {
+        if(err)console.log(err);
+        else{
+            res.status(201).json(resp);
+        }
+    })
+}
 module.exports.getAllClass = (req : any, res : any) => {
     req.connection.query(`SELECT class.name as name, class.id, inscriptions_olds_students, inscriptions_news_students, class.level, sections.name as sName, 
                             (select count(id) FROM students where students.class_id = class.id) as total_students  

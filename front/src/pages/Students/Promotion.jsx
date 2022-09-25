@@ -1,7 +1,7 @@
 import React from 'react'
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { studentTraductions } from '../../local/student';
 import { host } from '../../utils/fetch';
 import { getLang } from '../../utils/lang';
@@ -19,18 +19,18 @@ const Promotion = () => {
         (
             async () => {
                 setLoading(true)
+                const resp2 = await fetch(host+'/class/'+class_id, {headers: {
+                    'Authorization': sessionStorage.user
+                }})
+                const data2 = await resp2.json();
                 const re = await fetch(host+'/students/'+class_id, {headers: {
                     'Authorization': sessionStorage.user
                 }})
                 const dat = await re.json();
-                const resp = await fetch(host+'/classes/by-level/'+dat.level, {headers: {
+                const resp = await fetch(host+'/class/by-level/'+data2.level, {headers: {
                     'Authorization': sessionStorage.user
                 }})
                 const data = await resp.json();
-                const resp2 = await fetch(host+'/class/'+class_id, {headers: {
-                    'Authorization': sessionStorage.user
-                  }})
-                const data2 = await resp2.json();
                 const resp4 = await fetch(host+'/subjects/all2/'+type, {headers: {
                     'Authorization': sessionStorage.user
                 }})
@@ -78,7 +78,7 @@ const Promotion = () => {
                                 </td>
                             </tr> : students.length > 0 ? students.map((student, id) => {
                                         let total = 0;
-                                        const herNotes = notes.filter(n => n.student_id == student.id);
+                                        const herNotes = notes.filter(n => parseInt(n.student_id) === parseInt(student.id));
                                         herNotes.forEach(no => {
                                             total += parseInt(no.value);
                                         })
