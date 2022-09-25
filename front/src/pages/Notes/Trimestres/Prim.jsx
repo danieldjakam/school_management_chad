@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { sequenceTraductions } from '../../../local/sequence';
 import { host } from '../../../utils/fetch';
-import { handleChangeCsvFile } from '../../../utils/functions';
 
 const Prim = ({type}) => {
     const [students, setStudents ] = useState([]);
@@ -25,7 +24,6 @@ const Prim = ({type}) => {
                     'Authorization': sessionStorage.user
                   }})
                 const dat = await re.json();
-                console.log(dat);
                 const resp = await fetch(host+'/trim/'+exam_id, {headers: {
                     'Authorization': sessionStorage.user
                   }})

@@ -125,17 +125,15 @@ module.exports.downloadBulletinByClass = (req, res) => {
     const zip = new admZip();
     const { exam_id, class_id } = req.params;
     const html = downloadFs.readFileSync('src/templates/Bulletin.html', 'utf-8');
-    let Promises = [];
-
     req.connection.query('SELECT * FROM trims WHERE id = ?', [exam_id], (t, exam) => {
-        req.connection.query(`SELECT students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, 
+        req.connection.query(`SELECT students.id, students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, 
                                 students.birthday, students.sex, class.name as cName  FROM students 
                                 LEFT JOIN class ON class.id = students.class_id 
                                 LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ?`, 
             [class_id], function (err, students, fields) {
             if (err) console.log(err);
             else{
-                const dirPath = `docs/${students[0].cName}`;
+                const dirPath = `docs/${students[0].cName}-${exam[0].name}`;
                 if (!downloadFs.existsSync(dirPath)) downloadFs.mkdirSync(dirPath);
                 students.forEach(student => {
                     let totalPoint: number = 0;
@@ -183,18 +181,11 @@ module.exports.downloadBulletinByClass = (req, res) => {
                             })
                             req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
                                 const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
-                                const g = stats.sort((a, b) => b.totalPoints - a.totalPoints);
-                                let lastPoints: number = 0;
-                                g.forEach((ey: {
-                                    totalPoints: number
-                                }) => {
-                                    lastPoints = ey.totalPoints;
-                                })
                                 let rang = 0;
                                 rangedArray.forEach((s: {
                                     student_id: string
                                 }, c) => {
-                                    if (s.student_id === student_id) {
+                                    if (s.student_id == student_id) {
                                         rang = c + 1
                                     }
                                 })
@@ -215,33 +206,19 @@ module.exports.downloadBulletinByClass = (req, res) => {
                                     },
                                     path: `${dirPath}/${(stud.name + ' ' + stud.subname).replaceAll(' ', '_')}.pdf`
                                 };
-                                Promises.push(
-                                    pdf.create(document, optionsPdf)
+                                pdf.create(document, optionsPdf)
                                         .then(resp => {
                                             zip.addLocalFile(`${dirPath}/${(student.name + ' ' + student.subname).replaceAll(' ', '_')}.pdf`);
+                                            return resp;
                                         })
                                         .catch(err => {
                                             console.log(err);
                                             res.status(201).json({ err, f: document.data.subjects })
                                         })
-                                )
                             })
                         })
                     })
                 })
-
-                // Promise.all(Promises).then(() => {
-                //     students.forEach(student => {
-                //         const zipPath = `${dirPath}/Bulletins en ${students[0].cName}.zip`;
-                //         downloadFs.writeFileSync(zipPath, zip.toBuffer());
-                //         res.download(zipPath);
-                //     })
-                // }).catch((e) => {
-                //     console.log(e);
-                // })
-                console.log(Promises);
-                
-
             }
         });
     })
@@ -362,6 +339,135 @@ module.exports.downloadBulletin2 = (req, res) => {
     })
 }
 
+module.exports.downloadBulletinByClass2 = (req, res) => {
+    const zip = new admZip();
+    const { exam_id, class_id } = req.params;
+    const html = downloadFs.readFileSync('src/templates/Bulletin2.html', 'utf-8');
+
+    req.connection.query('SELECT * FROM trims WHERE id = ?', [exam_id], (t, exam) => {
+        req.connection.query(`SELECT students.id, students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, 
+                                students.birthday, students.sex, class.name as cName  FROM students 
+                                LEFT JOIN class ON class.id = students.class_id 
+                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ?`, 
+            [class_id], function (err, students, fields) {
+            if (err) console.log(err);
+            else{
+                const dirPath = `docs/${students[0].cName}-${exam[0].name}`;
+                if (!downloadFs.existsSync(dirPath)) downloadFs.mkdirSync(dirPath);
+                students.forEach(student => {
+                    let totalPoint: number = 0;
+                    let totalNote: number
+                    let diviser: number = 0;
+                    const student_id = student.id;
+                    const stud: {
+                        name: string,
+                        subname: string,
+                        cName: string,
+                        tName: string,
+                        tSubname: string,
+                        sex: string,
+                        birthday: string,
+                    } = students.find(s => s.id == student.id);
+                    let info: {
+                        className: string,
+                        teacherName: string
+                        teacherSubname: string
+                    } = {
+                        className: stud.cName,
+                        teacherName: stud.tName,
+                        teacherSubname: stud.tSubname,
+                    }
+                    stud.sex = stud.sex === 'm' ? 'Masculin' : 'Feminin';
+                    const date = new Date(stud.birthday).getDate() + ' ' + months[new Date(stud.birthday).getMonth()] + " " + new Date(stud.birthday).getUTCFullYear()
+                    stud.birthday = date;
+        
+                    
+                    req.connection.query('SELECT * FROM notes_primary WHERE exam_id = ? AND class_id = ? AND student_id = ?', 
+                                        [exam_id, class_id, student_id], (err2, notes) => {
+                        if (err2) console.log(err2);
+                        notes.forEach(note => {
+                            totalPoint += parseInt(note.value);
+                        });
+                        req.connection.query(`SELECT subjects.name, subjects.id, subjects.over 
+                                                FROM subjects JOIN sections
+                                                ON sections.id = subjects.section 
+                                                WHERE sections.type = 2`, (err3, subjects) => {
+                            subjects.forEach((subject) => {
+                                
+                                const note1 = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                && n.subject_type === 'devoir').length > 0 
+                                                    ? 
+                                                        parseFloat(notes.filter(n => n.subject_id === subject.id.toString() 
+                                                        && n.subject_type === 'devoir')[0].value) 
+                                                    : 0
+                                const note2 = notes.filter(n => n.subject_id === subject.id.toString() 
+                                    && n.subject_type === 'compo').length > 0 
+                                        ? 
+                                            parseFloat(notes.filter(n => n.subject_id === subject.id.toString() 
+                                            && n.subject_type === 'compo')[0].value) 
+                                        : 0
+                                subject.note1 = note1
+                                subject.note2 = note2;
+                                subject.avera = (note1 + note2) / 2
+                                diviser += subject.over
+                            })
+                            req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
+                                const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
+                                const g = stats.sort((a, b) => b.totalPoints - a.totalPoints);
+                                let lastPoints: number = 0;
+                                g.forEach((ey: {
+                                    totalPoints: number
+                                }) => {
+                                    lastPoints = ey.totalPoints;
+                                })
+                                let rang = 0;
+                                rangedArray.forEach((s: {
+                                    student_id: string
+                                }, c) => {
+                                    if (s.student_id == student_id) {
+                                        rang = c + 1
+                                    }
+                                })
+                                const document = {
+                                    html: html,
+                                    data: {
+                                        student: stud,
+                                        info: info,
+                                        diviser: diviser,
+                                        totalPoints: totalPoint,
+                                        rank: rang,
+                                        average: Math.round(((totalPoint / (diviser * 2)) * 20) * 100) / 100,
+                                        totalNote: totalNote,
+                                        subjects,
+                                        exam: exam[0],
+                                        totalStudent: students.length,
+                                        notes: notes
+                                    },
+                                    path: `${dirPath}/${stud.name}-${exam[0].name}.pdf`
+                                };
+                                
+                                pdf.create(document, optionsPdf)
+                                    .then(resp => {
+                                        // res.download(resp.filename)
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                        res.status(201).json({ err, f: document.data.subjects })
+                                    })
+                            })
+                        })
+                    })
+                })
+            }
+        });
+    })
+}
+
+
+
+
+
+
 module.exports.downloadAnnualBulletin = (req, res) => {
     const { exam_id, student_id, class_id } = req.params;
     const html = downloadFs.readFileSync('src/templates/BulletinAnnual.html', 'utf-8');
@@ -419,25 +525,27 @@ module.exports.downloadAnnualBulletin = (req, res) => {
                                                 WHERE sections.type = 1`, (err3, subjects) => {
                             subjects.forEach((subject) => {
                                 
-                                const note1 = notes.filter(n => n.subject_id === subject.id.toString() 
+                                
+                                
+                                const note1     = notes.filter(n => n.subject_id === subject.id.toString() 
                                                     && n.exam_id === trims[0].id).length > 0 
                                                 ? 
                                                     parseFloat(notes.filter(n => n.subject_id === subject.id.toString() 
-                                                    && n.subject_id === subject.id.toString())[0].value) 
+                                                    && n.exam_id === trims[0].id)[0].value)
                                                 : 0
 
-                                const note2 = notes.filter(n => n.subject_id === subject.id.toString() 
+                                const note2     = notes.filter(n => n.subject_id === subject.id.toString() 
                                                     && n.exam_id === trims[1].id).length > 0 
                                                 ? 
                                                     parseFloat(notes.filter(n => n.subject_id === subject.id.toString() 
-                                                    && n.subject_id === subject.id.toString())[1].value) 
+                                                    && n.exam_id === trims[1].id)[0].value) 
                                                 : 0
 
-                                const note3 = notes.filter(n => n.subject_id === subject.id.toString() 
+                                const note3     = notes.filter(n => n.subject_id === subject.id.toString() 
                                                     && n.exam_id === trims[2].id).length > 0 
                                                 ? 
                                                     parseFloat(notes.filter(n => n.subject_id === subject.id.toString() 
-                                                    && n.subject_id === subject.id.toString())[2].value) 
+                                                    && n.exam_id === trims[2].id)[0].value)
                                                 : 0
 
                                 subject.mi_over = subject.over / 2
@@ -566,9 +674,224 @@ module.exports.downloadAnnualBulletin = (req, res) => {
         })
     })
 }
+
+module.exports.downloadAnnualBulletinByClass = (req, res) => {
+    const zip = new admZip();
+    const { exam_id, class_id } = req.params;
+    const html = downloadFs.readFileSync('src/templates/BulletinAnnual.html', 'utf-8');
+    req.connection.query('SELECT * FROM annual_exams WHERE id = ?', [exam_id], (t, exam) => {
+        req.connection.query(`SELECT students.id, students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, 
+                                students.birthday, students.sex, class.name as cName  FROM students 
+                                LEFT JOIN class ON class.id = students.class_id 
+                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ?`, 
+        
+            [class_id], function (err, students) {
+                if (err) console.log(err);
+                else{
+                    req.connection.query('SELECT * FROM trims', (e, trims) => {
+                            const dirPath = `docs/${students[0].cName}-${exam[0].name}`;
+                            if (!downloadFs.existsSync(dirPath)) downloadFs.mkdirSync(dirPath);
+                            students.forEach(student => {
+                                let totalPoint: number = 0;
+                                let totalPoint1: number = 0;
+                                let totalPoint2: number = 0;
+                                let totalPoint3: number = 0;
+                                let totalNote: number
+                                let diviser: number = 0;
+                                const student_id = student.id;
+                                const stud: {
+                                    name: string,
+                                    subname: string,
+                                    cName: string,
+                                    tName: string,
+                                    tSubname: string,
+                                    sex: string,
+                                    birthday: string,
+                                } = students.find(s => s.id == student.id);
+                                let info: {
+                                    className: string,
+                                    teacherName: string
+                                    teacherSubname: string
+                                } = {
+                                    className: stud.cName,
+                                    teacherName: stud.tName,
+                                    teacherSubname: stud.tSubname,
+                                }
+                                stud.sex = stud.sex === 'm' ? 'Masculin' : 'Feminin';
+                                const date = new Date(stud.birthday).getDate() + ' ' + months[new Date(stud.birthday).getMonth()] + " " + new Date(stud.birthday).getUTCFullYear()
+                                stud.birthday = date;
+                    
+                                req.connection.query('SELECT * FROM notes WHERE class_id = ? AND student_id = ?', [class_id, student_id], (err2, notes) => {
+                                    if (err2) console.log(err2);
+                                    notes.filter(n => n.exam_id == exam_id).forEach(note => {
+                                        totalPoint += parseInt(note.value);
+                                    });
+                                    notes.filter(n => n.exam_id == trims[0].id).forEach(note => {
+                                        totalPoint1 += parseInt(note.value);
+                                    });
+                                    notes.filter(n => n.exam_id == trims[1].id).forEach(note => {
+                                        totalPoint2 += parseInt(note.value);
+                                    });
+                                    notes.filter(n => n.exam_id == trims[2].id).forEach(note => {
+                                        totalPoint3 += parseInt(note.value);
+                                    });
+                                    req.connection.query(`SELECT subjects.name, subjects.id, subjects.over 
+                                                            FROM subjects JOIN sections
+                                                            ON sections.id = subjects.section 
+                                                            WHERE sections.type = 1`, (err3, subjects) => {
+                                        subjects.forEach((subject) => {
+                                
+                                            const note1     = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                && n.exam_id === trims[0].id).length > 0 
+                                                            ? 
+                                                                parseFloat(notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                && n.exam_id === trims[0].id)[0].value)
+                                                            : 0
+            
+                                            const note2     = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                && n.exam_id === trims[1].id).length > 0 
+                                                            ? 
+                                                                parseFloat(notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                && n.exam_id === trims[1].id)[0].value) 
+                                                            : 0
+            
+                                            const note3     = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                && n.exam_id === trims[2].id).length > 0 
+                                                            ? 
+                                                                parseFloat(notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                && n.exam_id === trims[2].id)[0].value)
+                                                            : 0
+            
+                                            subject.mi_over = subject.over / 2
+                                            subject.note1 = note1;
+                                            subject.note2 = note2;
+                                            subject.note3 = note3;
+                                            diviser += subject.over
+                                        })
+                                        req.connection.query('SELECT * FROM stats WHERE class_id = ?', [class_id], (errrt, stats) => {
+                                            let rang = 0;
+                                            let rank1 = 0;
+                                            let rank2 = 0;
+                                            let rank3 = 0;
+                                            
+                                            const rangedArray = stats.filter(st => st.exam_id == exam_id).sort((a, b) => b.totalPoints - a.totalPoints);
+                                            const rangedArray1 = stats.filter(st => st.exam_id == trims[0].id).sort((a, b) => b.totalPoints - a.totalPoints);
+                                            const rangedArray2 = stats.filter(st => st.exam_id == trims[1].id).sort((a, b) => b.totalPoints - a.totalPoints);
+                                            const rangedArray3 = stats.filter(st => st.exam_id == trims[2].id).sort((a, b) => b.totalPoints - a.totalPoints);
+
+                                            let ids  = [];
+                                            let ids1 = [];
+                                            let ids2 = [];
+                                            let ids3 = [];
+                                            
+                                            let gAr  = [];
+                                            let gAr1 = [];
+                                            let gAr2 = [];
+                                            let gAr3 = [];
+
+                                            rangedArray.forEach(r => {
+                                                if (!ids.includes(r.student_id)) {
+                                                    ids.push(r.student_id);
+                                                    gAr.push(r);
+                                                }
+                                            })
+
+                                            rangedArray1.forEach(r => {
+                                                if (!ids1.includes(r.student_id)) {
+                                                    ids1.push(r.student_id);
+                                                    gAr1.push(r);
+                                                }
+                                            })
+                                            rangedArray2.forEach(r => {
+                                                if (!ids2.includes(r.student_id)) {
+                                                    ids2.push(r.student_id);
+                                                    gAr2.push(r);
+                                                }
+                                            })
+                                            rangedArray3.forEach(r => {
+                                                if (!ids3.includes(r.student_id)) {
+                                                    ids3.push(r.student_id);
+                                                    gAr3.push(r);
+                                                }
+                                            })
+
+                                            gAr.forEach((s: {student_id: string}, c: number) => {
+                                                if (s.student_id == student_id) {
+                                                    rang = c + 1
+                                                    return;
+                                                }
+                                            })
+
+                                            gAr1.forEach((s: {student_id: string}, c: number) => {
+                                                if (s.student_id == student_id) {
+                                                    rank1 = c + 1
+                                                    return;
+                                                }
+                                            })
+
+                                            gAr2.forEach((s: {student_id: string}, c: number) => {
+                                                if (s.student_id == student_id) {
+                                                    rank2 = c + 1
+                                                    return;
+                                                }
+                                            })
+
+                                            gAr3.forEach((s: {student_id: string}, c: number) => {
+                                                if (s.student_id == student_id) {
+                                                    rank3 = c + 1
+                                                    return;
+                                                }
+                                            })
+                                            // diviser = subjects.length * 20;
+                                            const document = {
+                                                html: html,
+                                                data: {
+                                                    student: stud,
+                                                    info: info,
+                                                    diviser: diviser,
+                                                    totalPoints: totalPoint,
+                                                    totalPoints1: totalPoint1,
+                                                    totalPoints2: totalPoint2,
+                                                    totalPoints3: totalPoint3,
+                                                    rank: rang,
+                                                    rank1,
+                                                    rank2,
+                                                    rank3,
+                                                    trims,
+                                                    average: Math.round((totalPoint / diviser) * 20 * 100) / 100,
+                                                    average1: Math.round((totalPoint1 / diviser) * 20 * 100) / 100,
+                                                    average2: Math.round((totalPoint2 / diviser) * 20 * 100) / 100,
+                                                    average3: Math.round((totalPoint3 / diviser) * 20 * 100) / 100,
+                                                    totalNote: totalNote,
+                                                    subjects,
+                                                    exam: exam[0],
+                                                    totalStudent: students.length,
+                                                    notes: notes
+                                                },
+                                                path: `${dirPath}/${stud.name}-${exam[0].name}.pdf`
+                                            };
+                                            pdf.create(document, optionsPdf)
+                                                .then(resp => {
+                                                    // res.download(resp.filename)
+                                                })
+                                                .catch(err => {
+                                                    console.log(err);
+                                                    res.status(201).json({ err, f: document.data.subjects })
+                                                })
+                                        })
+                                    })
+                                })
+                            })
+                    
+                })
+            }
+        });
+    })
+}
 module.exports.downloadAnnualBulletin2 = (req, res) => {
     const { exam_id, student_id, class_id } = req.params;
     const html = downloadFs.readFileSync('src/templates/BulletinAnnual2.html', 'utf-8');
+
     let totalPoint: number = 0;
     let totalPoint1: number = 0;
     let totalPoint2: number = 0;
@@ -819,158 +1142,264 @@ module.exports.downloadAnnualBulletin2 = (req, res) => {
     })
 }
 
-module.exports.downloadBulletinByClassCo = async (req, res) => {
+module.exports.downloadAnnualBulletinByClass2 = (req, res) => {
     const zip = new admZip();
-    const { class_id } = req.params;
-    req.connection.query('SELECT students.id, students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, students.birthday, students.sex, class.name as cName  FROM students LEFT JOIN class ON class.id = students.class_id LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ?', [class_id], async (err, students) => {
-        const dirPath = `docs/${students[0].cName}`;
-        if (!downloadFs.existsSync(dirPath)) downloadFs.mkdirSync(dirPath);
-        await new Promise((resolve, reject) => {
-            students.forEach(tt => {
-                const { exam_id, class_id } = req.params;
-                const html = downloadFs.readFileSync('src/templates/Bulletin.html', 'utf-8');
-                let badCompetence: string[] = [];
-                let totalPoint = 0;
-                let totalNote: number
-                let diviser: number = 0;
-                const stud = tt;
-                let info: {
-                    className: string,
-                    teacherName: string
-                    teacherSubname: string
-                } = {
-                    className: stud.cName,
-                    teacherName: stud.tName,
-                    teacherSubname: stud.tSubname,
-                }
-                stud.sex = stud.sex === 'm' ? 'Masculin' : 'Feminin';
-                const date = new Date(stud.birthday).getDate() + ' ' + months[new Date(stud.birthday).getMonth()] + " " + new Date(stud.birthday).getUTCFullYear()
-                stud.birthday = date;
+    const { exam_id, class_id } = req.params;
+    const html = downloadFs.readFileSync('src/templates/BulletinAnnual2.html', 'utf-8');
+    req.connection.query('SELECT * FROM annual_exams WHERE id = ?', [exam_id], (t, exam) => {
+        req.connection.query(`SELECT students.id, students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, 
+                                students.birthday, students.sex, class.name as cName  FROM students 
+                                LEFT JOIN class ON class.id = students.class_id 
+                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ?`, 
+        
+            [class_id], function (err, students) {
+                if (err) console.log(err);
+                else{
+                    req.connection.query('SELECT * FROM trims', (e, trims) => {
+                            const dirPath = `docs/${students[0].cName}-${exam[0].name}`;
+                            if (!downloadFs.existsSync(dirPath)) downloadFs.mkdirSync(dirPath);
+                            students.forEach(student => {
+                                let totalPoint: number = 0;
+                                let totalPoint1: number = 0;
+                                let totalPoint2: number = 0;
+                                let totalPoint3: number = 0;
+                                let totalNote: number
+                                let diviser: number = 0;
+                                const student_id = student.id;
+                                const stud: {
+                                    name: string,
+                                    subname: string,
+                                    cName: string,
+                                    tName: string,
+                                    tSubname: string,
+                                    sex: string,
+                                    birthday: string,
+                                } = students.find(s => s.id == student.id);
+                                let info: {
+                                    className: string,
+                                    teacherName: string
+                                    teacherSubname: string
+                                } = {
+                                    className: stud.cName,
+                                    teacherName: stud.tName,
+                                    teacherSubname: stud.tSubname,
+                                }
+                                stud.sex = stud.sex === 'm' ? 'Masculin' : 'Feminin';
+                                const date = new Date(stud.birthday).getDate() + ' ' + months[new Date(stud.birthday).getMonth()] + " " + new Date(stud.birthday).getUTCFullYear()
+                                stud.birthday = date;
+                    
+                                req.connection.query('SELECT * FROM notes_primary WHERE class_id = ? AND student_id = ?', [class_id, student_id], (err2, notes) => {
+                                    if (err2) console.log(err2);
+                                    notes.filter(n => n.exam_id == exam_id).forEach(note => {
+                                        totalPoint += parseInt(note.value);
+                                    });
+                                    notes.filter(n => n.exam_id == trims[0].id).forEach(note => {
+                                        totalPoint1 += parseInt(note.value);
+                                    });
+                                    notes.filter(n => n.exam_id == trims[1].id).forEach(note => {
+                                        totalPoint2 += parseInt(note.value);
+                                    });
+                                    notes.filter(n => n.exam_id == trims[2].id).forEach(note => {
+                                        totalPoint3 += parseInt(note.value);
+                                    });
+                                    req.connection.query(`SELECT subjects.name, subjects.id, subjects.over 
+                                                            FROM subjects JOIN sections
+                                                            ON sections.id = subjects.section 
+                                                            WHERE sections.type = 2`, (err3, subjects) => {
+                                        subjects.forEach((subject) => {
+                                            
+                                            
+                                    
+                                        const note1d = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                        && n.exam_id === trims[0].id
+                                                        && n.subject_type === 'devoir').length > 0 
+                                                            ? 
+                                                            notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                && n.exam_id === trims[0].id
+                                                                && n.subject_type === 'devoir')[0].value
+                                                            : 0
 
-                req.connection.query('SELECT * FROM notes WHERE exam_id = ? AND class_id = ? AND student_id = ?', [exam_id, class_id, stud.id], (err2, notes) => {
-                    if (err2) console.log(err2);
-                    notes.forEach((note: {
-                        value: string
-                    }) => {
-                        totalPoint += parseInt(note.value);
-                    });
-                    req.connection.query('SELECT * FROM matiere', (err3, mat: Matiere[]) => {
-                        mat.forEach(m => {
-                            const tags = JSON.parse(m.tags);
-                            const notesForThisMatiere = notes.filter(h => h.matiere_id === m.id);
-                            const t: number = JSON.parse(m.tags).length + 2;
-                            totalNote = 0;
-                            let total = 0;
-                            tags.map(tag => {
-                                const notesForThisTag = notesForThisMatiere.filter(h => h.tag_name === tag.name)[0];
-                                const note = notesForThisTag && notesForThisTag !== undefined ? parseInt(notesForThisTag.value) : 0;
-                                totalNote += note;
-                                total += parseInt(tag.over);
-                            })
-                            if (totalNote < (total / 2)) {
-                                badCompetence.push(m.name);
-                            }
-                        })
+                                        const note1c = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                        && n.exam_id === trims[0].id
+                                                        && n.subject_type === 'compo').length > 0 
+                                                            ? 
+                                                            notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                && n.exam_id === trims[0].id
+                                                                && n.subject_type === 'compo')[0].value
+                                                            : 0
+                                        
+                                        const note2d = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                        && n.exam_id === trims[1].id
+                                                        && n.subject_type === 'devoir').length > 0 
+                                                            ? 
+                                                            notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                && n.exam_id === trims[1].id
+                                                                && n.subject_type === 'devoir')[0].value
+                                                            : 0
+                    
+                                            const note2c = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                            && n.exam_id === trims[1].id
+                                                            && n.subject_type === 'compo').length > 0 
+                                                                ? 
+                                                                notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                    && n.exam_id === trims[1].id
+                                                                    && n.subject_type === 'compo')[0].value
+                                                                : 0
 
-                        mat.forEach(m => {
-                            const tags = JSON.parse(m.tags);
-                            tags.forEach(tag => {
-                                diviser += parseInt(tag.over);
-                            })
-                        })
+                                            const note3d = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                            && n.exam_id === trims[2].id
+                                                            && n.subject_type === 'devoir').length > 0 
+                                                                ? 
+                                                                notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                    && n.exam_id === trims[2].id
+                                                                    && n.subject_type === 'devoir')[0].value
+                                                                : 0
+                    
+                                            const note3c = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                            && n.exam_id === trims[2].id
+                                                            && n.subject_type === 'compo').length > 0 
+                                                                ? 
+                                                                notes.filter(n => n.subject_id === subject.id.toString() 
+                                                                    && n.exam_id === trims[2].id
+                                                                    && n.subject_type === 'compo')[0].value
+                                                                : 0
 
-                        req.connection.query('SELECT * FROM com', (err5, competences) => {
-                            mat.map((m) => {
-                                let t = 0;
-                                const tags = JSON.parse(m.tags);
-                                m.tags = tags;
-                                const notesForThisMatiere = notes.filter(h => h.matiere_id === m.id);
-                                tags.forEach(tag => {
-                                    const notesForThisTag = notesForThisMatiere.filter(h => h.tag_name === tag.name)[0];
-                                    const note = notesForThisTag && notesForThisTag !== undefined ? parseInt(notesForThisTag.value) : 0;
-                                    t += note;
-                                    tag.value = note
-                                })
-                                m.t = tags.length + 2;
-                                let o = 0;
-                                tags.forEach(t => {
-                                    o += parseInt(t.over)
-                                })
-                                m.totalNote = o;
-                                m.total = t;
-                            })
-                            competences.forEach(com => {
-                                let to = 0;
-                                com.sub = mat.filter(m => m.comId === com.id)
-                                mat.filter(m => m.comId === com.id).forEach(m => {
-                                    const tags = m.tags;
-                                    to += tags.length + 2;
-                                })
-                                com.total = to + 1;
-                            })
-                            req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
-                                const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
-                                const g = stats.sort((a, b) => b.totalPoints - a.totalPoints);
-                                let firstPoints: number = g[0].totalPoints;
-                                let lastPoints: number = 0;
-                                g.forEach(ey => {
-                                    lastPoints = ey.totalPoints;
-                                })
-                                let rang = 0;
-                                rangedArray.forEach((s: {
-                                    student_id: string
-                                }, c) => {
-                                    if (s.student_id === stud.id) {
-                                        rang = c + 1
-                                    }
-                                })
-                                const document = {
-                                    html: html,
-                                    data: {
-                                        student: stud,
-                                        info: info,
-                                        diviser: diviser,
-                                        totalPoint,
-                                        firstAverage: Math.round(((firstPoints / diviser) * 20) * 100) / 100,
-                                        lastAverage: Math.round(((lastPoints / diviser) * 20) * 100) / 100,
-                                        rang: rang,
-                                        av: ((totalPoint / diviser) * 20) < 10 ? 'Oui' : 'Non',
-                                        en: ((totalPoint / diviser) * 20) > 15 ? 'Oui' : 'Non',
-                                        ho: ((totalPoint / diviser) * 20) > 18 ? 'Oui' : 'Non',
-                                        moyenne: Math.round(((totalPoint / diviser) * 20) * 100) / 100,
-                                        totalNote: totalNote,
-                                        badCompetence: badCompetence,
-                                        mat: mat,
-                                        competences: competences,
-                                        totalStudent: students.length,
-                                        notes: notes
-                                    },
-                                    path: `${dirPath}/${(stud.name + ' ' + stud.subname).replaceAll(' ', '_')}.pdf`
-                                };
-                                pdf.create(document, optionsPdf)
-                                    .then(resp => {
+                                            const note1 = parseInt(note1c) + parseInt(note1d);
+                                            const note2 = parseInt(note2c) + parseInt(note2d);
+                                            const note3 = parseInt(note3c) + parseInt(note3d);
 
+                                            subject.note1d = note1d;
+                                            subject.note1c = note1c;
+
+                                            subject.note2d = note2d;
+                                            subject.note2c = note2c;
+                                            
+                                            subject.note3d = note3d;
+                                            subject.note3c = note3c;
+
+                                            subject.note1 = note1 / 2;
+                                            subject.note2 = note2 / 2;
+                                            subject.note3 = note3 / 2;
+
+                                            diviser += subject.over * 2;
+                                        })
+                                        req.connection.query('SELECT * FROM stats WHERE class_id = ?', [class_id], (errrt, stats) => {
+                                            let rang = 0;
+                                            let rank1 = 0;
+                                            let rank2 = 0;
+                                            let rank3 = 0;
+                                            
+                                            const rangedArray = stats.filter(st => st.exam_id == exam_id).sort((a, b) => b.totalPoints - a.totalPoints);
+                                            const rangedArray1 = stats.filter(st => st.exam_id == trims[0].id).sort((a, b) => b.totalPoints - a.totalPoints);
+                                            const rangedArray2 = stats.filter(st => st.exam_id == trims[1].id).sort((a, b) => b.totalPoints - a.totalPoints);
+                                            const rangedArray3 = stats.filter(st => st.exam_id == trims[2].id).sort((a, b) => b.totalPoints - a.totalPoints);
+
+                                            let ids  = [];
+                                            let ids1 = [];
+                                            let ids2 = [];
+                                            let ids3 = [];
+                                            
+                                            let gAr  = [];
+                                            let gAr1 = [];
+                                            let gAr2 = [];
+                                            let gAr3 = [];
+
+                                            rangedArray.forEach(r => {
+                                                if (!ids.includes(r.student_id)) {
+                                                    ids.push(r.student_id);
+                                                    gAr.push(r);
+                                                }
+                                            })
+
+                                            rangedArray1.forEach(r => {
+                                                if (!ids1.includes(r.student_id)) {
+                                                    ids1.push(r.student_id);
+                                                    gAr1.push(r);
+                                                }
+                                            })
+                                            rangedArray2.forEach(r => {
+                                                if (!ids2.includes(r.student_id)) {
+                                                    ids2.push(r.student_id);
+                                                    gAr2.push(r);
+                                                }
+                                            })
+                                            rangedArray3.forEach(r => {
+                                                if (!ids3.includes(r.student_id)) {
+                                                    ids3.push(r.student_id);
+                                                    gAr3.push(r);
+                                                }
+                                            })
+
+                                            gAr.forEach((s: {student_id: string}, c: number) => {
+                                                if (s.student_id == student_id) {
+                                                    rang = c + 1
+                                                    return;
+                                                }
+                                            })
+
+                                            gAr1.forEach((s: {student_id: string}, c: number) => {
+                                                if (s.student_id == student_id) {
+                                                    rank1 = c + 1
+                                                    return;
+                                                }
+                                            })
+
+                                            gAr2.forEach((s: {student_id: string}, c: number) => {
+                                                if (s.student_id == student_id) {
+                                                    rank2 = c + 1
+                                                    return;
+                                                }
+                                            })
+
+                                            gAr3.forEach((s: {student_id: string}, c: number) => {
+                                                if (s.student_id == student_id) {
+                                                    rank3 = c + 1
+                                                    return;
+                                                }
+                                            })
+                                            // diviser = subjects.length * 20;
+                                            const document = {
+                                                html: html,
+                                                data: {
+                                                    student: stud,
+                                                    info: info,
+                                                    diviser: diviser,
+                                                    totalPoints: totalPoint,
+                                                    totalPoints1: totalPoint1,
+                                                    totalPoints2: totalPoint2,
+                                                    totalPoints3: totalPoint3,
+                                                    rank: rang,
+                                                    rank1,
+                                                    rank2,
+                                                    rank3,
+                                                    trims,
+                                                    average: Math.round((totalPoint / diviser) * 20 * 100) / 100,
+                                                    average1: Math.round((totalPoint1 / diviser) * 20 * 100) / 100,
+                                                    average2: Math.round((totalPoint2 / diviser) * 20 * 100) / 100,
+                                                    average3: Math.round((totalPoint3 / diviser) * 20 * 100) / 100,
+                                                    totalNote: totalNote,
+                                                    subjects,
+                                                    exam: exam[0],
+                                                    totalStudent: students.length,
+                                                    notes: notes
+                                                },
+                                                path: `${dirPath}/${stud.name}-${exam[0].name}.pdf`
+                                            };
+                                            pdf.create(document, optionsPdf)
+                                                .then(resp => {
+                                                    // res.download(resp.filename)
+                                                })
+                                                .catch(err => {
+                                                    console.log(err);
+                                                    res.status(201).json({ err, f: document.data.subjects })
+                                                })
+                                        })
                                     })
-                                    .catch(err => {
-                                        console.log(err);
-                                        res.status(201).json({ err, f: document.data.competences })
-                                    })
+                                })
                             })
-                        })
-                    })
+                    
                 })
-            });
-
-            resolve({})
-        })
-
-        setTimeout(() => {
-            students.forEach(student => {
-                zip.addLocalFile(`${dirPath}/${(student.name + ' ' + student.subname).replaceAll(' ', '_')}.pdf`);
-                const zipPath = `${dirPath}/Bulletins en ${students[0].cName}.zip`;
-                downloadFs.writeFileSync(zipPath, zip.toBuffer());
-                res.download(zipPath);
-            })
-        }, 3000)
+            }
+        });
     })
 }
