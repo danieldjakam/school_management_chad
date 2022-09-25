@@ -6,6 +6,8 @@ import { studentTraductions } from '../../local/student';
 import { host } from '../../utils/fetch';
 import { getLang } from '../../utils/lang';
 import ReactLoading from 'react-loading';
+import { Modal } from 'reactstrap';
+import InfosPromo from './InfosPromo';
 
 const Promotion = () => {
     const [students, setStudents ] = useState([]);
@@ -15,31 +17,42 @@ const Promotion = () => {
     const [loading, setLoading ] = useState(false);
     const {exam_id, class_id, type} = useParams();
     const [notes, setNotes] = useState({});
+    const [showInfos, setShowInfos] = useState(true);
+    const [classeIds, setClassesIds] = useState([]);
     useEffect(() => {
         (
             async () => {
                 setLoading(true)
-                const resp2 = await fetch(host+'/class/'+class_id, {headers: {
-                    'Authorization': sessionStorage.user
-                }})
-                const data2 = await resp2.json();
                 const re = await fetch(host+'/students/'+class_id, {headers: {
                     'Authorization': sessionStorage.user
                 }})
                 const dat = await re.json();
-                const resp = await fetch(host+'/class/by-level/'+data2.level, {headers: {
+
+                const resp2 = await fetch(host+'/class/'+class_id, {headers: {
                     'Authorization': sessionStorage.user
                 }})
-                const data = await resp.json();
+                const data2 = await resp2.json();
+
                 const resp4 = await fetch(host+'/subjects/all2/'+type, {headers: {
                     'Authorization': sessionStorage.user
                 }})
                 const data4 = await resp4.json();
-                const resp5 = await fetch(host+'/notes/all/'+class_id+'/'+exam_id, {headers: {
+                
+                const resp5 = await fetch(host+`/notes/all${parseInt(type) === 1 ? '' : '2'}/${class_id}/${exam_id}`, {headers: {
                     'Authorization': sessionStorage.user
                 }})
                 const data5 = await resp5.json();
                 
+                const resp = await fetch(host+'/class/by-level/'+ (data2.level + 1), {headers: {
+                    'Authorization': sessionStorage.user
+                }})
+                const data = await resp.json();
+                
+                let arr = [];
+                data.forEach(classe => {
+                    arr[classe.id] = [];
+                });
+                setClassesIds(arr);
                 setClasses(data);
                 setStudents(dat);
                 setActualClass(data2);
@@ -49,6 +62,45 @@ const Promotion = () => {
             }
         )()
     }, []);
+
+    const checkClasse = (studentId, classId) => {
+        let arr = classeIds;
+        if (arr[classId].includes(studentId)) {
+            arr[classId] = arr[classId].filter(r => r !== studentId);
+        }else{
+            arr[classId].push(studentId);
+        }
+        // console.log(arr);
+        setClassesIds(arr);
+        // console.log(classeIds);
+    }
+
+    const check = (stId, clId) => {
+        const val = classeIds[clId].includes(stId);
+        return val;
+    }
+
+
+    const select = (classid, sid) => {
+        fetch(host+'/students/transfert-to', {  
+            method: 'PUT', body: JSON.stringify(
+                {
+                    ids: [sid],
+                    classid
+                }
+            ), 
+            headers: {
+                'Content-Type': 'application/json', 
+                'Authorization': sessionStorage.user
+            }
+        })
+            .then((res) => res.json())
+            .then(res => {
+                if (res.success) {
+                    window.location.reload()
+                }
+            })
+    }
     return <div className="container">
         <h4 style={{ display: 'flex' }}>
             Bienvenue dans la promotion des eleves de {ActualClass.name}
@@ -68,6 +120,13 @@ const Promotion = () => {
                     <th>{studentTraductions[getLang()].subname}</th>
                     <th>{studentTraductions[getLang()].sex}</th>
                     <th>Moyenne annuelle</th>
+                    {
+                        classes.map(r => {
+                            return <th key={r.id}>
+                                {r.name}
+                            </th>
+                        })
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -97,6 +156,16 @@ const Promotion = () => {
                                                     ${average} / 20
                                                 `}
                                             </td>
+                                            
+                                            {
+                                                classes.map(classd => {
+                                                    return <td key={classd.id}>
+                                                            <input checked={check(student.id, classd.id)} 
+                                                                onChange={() => {checkClasse(student.id, classd.id); select(classd.id, student.id)}} 
+                                                                type="checkbox"/>
+                                                    </td>
+                                                })
+                                            }
                                         </tr> 
                                     }) : <tr> 
                                         <td colSpan={7} style={{textAlign: 'center'}}>
@@ -106,6 +175,11 @@ const Promotion = () => {
                 }
             </tbody>
         </table>
+
+        
+        <Modal isOpen={showInfos}>
+            <InfosPromo setIsEditAnnualExam={setShowInfos}/>
+        </Modal>
     </div>
 }
 
