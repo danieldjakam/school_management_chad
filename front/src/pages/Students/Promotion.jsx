@@ -82,10 +82,10 @@ const Promotion = () => {
 
 
     const select = (classid, sid) => {
-        fetch(host+'/students/transfert-to', {  
-            method: 'PUT', body: JSON.stringify(
+        fetch(host+'/students/promote', {  
+            method: 'POST', body: JSON.stringify(
                 {
-                    ids: [sid],
+                    student: sid,
                     class_id: classid
                 }
             ), 
@@ -100,6 +100,7 @@ const Promotion = () => {
                     window.location.reload()
                 }
             })
+            .catch(e => console.log(e))
     }
     return <div className="container">
         <h4 style={{ display: 'flex' }}>

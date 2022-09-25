@@ -112,7 +112,7 @@ module.exports.getAllStudent = (req, res) => {
                                 s.second_tranch, s.third_tranch, s.birthday_place,
                                 s.class_id, s.sex, s.class_id
                                 FROM students s JOIN class c ON c.id = s.class_id 
-                                WHERE c.school_year = ? AND s.school_id = ? 
+                                WHERE s.school_year = ? AND s.school_id = ? 
                                 ORDER BY name ASC`, 
                                 [year_school, req.payload.school_id], (err, resp) => {
             if(err) console.log(err);
@@ -125,11 +125,13 @@ module.exports.getSpecificStudents = (req, res) => {
     req.connection.query('SELECT year_school FROM settings WHERE school_id = ?', [req.payload.school_id], (rerr, respe) => {
         const {year_school} = respe[0]
         
-        req.connection.query('SELECT * FROM students WHERE class_id = ? AND school_year = ? AND status = "old" AND school_id = ? AND school_year = ? ORDER BY name ASC', [req.params.id, year_school, req.payload.school_id, req.school_year] , (err, oldStudents) => {
+        req.connection.query('SELECT * FROM students WHERE class_id = ? AND status = "old" AND school_id = ? AND school_year = ? ORDER BY name ASC',
+                     [req.params.id, req.payload.school_id, year_school] , (err, oldStudents) => {
             
             if(err) console.log(err);
             else {
-                req.connection.query('SELECT * FROM students WHERE class_id = ? AND school_year = ? AND status = "new" AND school_id = ? AND school_year = ?', [req.params.id, year_school, req.payload.school_id, req.school_year] , (err, newStudents) => {
+                req.connection.query('SELECT * FROM students WHERE class_id = ? AND status = "new" AND school_id = ? AND school_year = ?', 
+                            [req.params.id, req.payload.school_id, year_school] , (err, newStudents) => {
                     let resp = [];
                     if (newStudents.length > 0) {
                         resp = [...oldStudents, ...newStudents]
@@ -219,3 +221,27 @@ module.exports.getTotal = (req, res) => {
         res.status(201).json(t)
     })
 } 
+
+module.exports.promoteStudent = (req, res) => {
+    let {class_id, student} = req.body;
+    req.connection.query('SELECT * FROM students WHERE id = ?', [student], (e, studentInfo) => {
+        let {name, subname, birthday ,fatherName, birthday_place, phone_number, profession, email, sex, status} = studentInfo[0];
+        console.log(studentInfo);
+        
+        
+        req.connection.query(`INSERT INTO students(name, subname, class_id, 
+                sex, fatherName, profession, birthday, birthday_place,
+                email, phone_number, school_year, status, 
+                school_id) 
+            VALUES(?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
+            ?, ?, ?)`, 
+            [name, subname, class_id, sex, 
+                fatherName, profession, birthday, birthday_place, email, 
+                phone_number, parseInt(req.school_year,) + 1, 
+                'old', req.payload.school_id], (err, respp, fields) => {
+                if(err) console.log(err);
+                else res.status(201).json({success: true, id: respp.insertId})
+            });
+    })
+}

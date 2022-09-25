@@ -11,6 +11,7 @@ routerForStudent.get('/getOrdonnedStudents/:id', authGlobalForStudent, authForSt
 routerForStudent.get('/one/:id', authGlobalForStudent, authForStudent, studentController.getOneStudent);
 routerForStudent.get('/payments/:id', authGlobalForStudent, authForStudent, studentController.getPayements);
 routerForStudent.get('/:id', authGlobalForStudent, authForStudent, studentController.getSpecificStudents);
+routerForStudent.post('/promote', authGlobalForStudent, authForStudent, studentController.promoteStudent)
 routerForStudent.post('/add/:id', authGlobalForStudent, authForStudent, studentController.addStudent);
 routerForStudent.put('/transfert-to', authGlobalForStudent, authAdminForStudent, studentController.transfertToAotherClass)
 routerForStudent.put('/:id', authGlobalForStudent, authForStudent, studentController.updateStudent);
