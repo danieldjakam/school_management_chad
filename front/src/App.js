@@ -66,7 +66,7 @@ function App() {
 							<Route path='/matieres' element={<Matiere/>} />  
 							<Route path='/search' element={<SearchView/>}/>
 							<Route path='/params' element={<Params/>}/>
-							<Route path='/seqs' element={<SeqStu/>}/>
+							<Route path='/annual-exams' element={<SeqStu/>}/>
 							<Route path='/settings' element={<Settings/>}/>
 							<Route path='/trims' element={<TrimStu/>}/>
 							<Route path='/stats' element={<Statistics/>}/>

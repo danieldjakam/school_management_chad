@@ -34,6 +34,7 @@ const Login = ({setUser}) => {
 				}
 				else{
 					sessionStorage.classId = res.classId
+					sessionStorage.classType = res.type;
 					navigate(`/students/${res.classId}`);
 				}
 				}else{

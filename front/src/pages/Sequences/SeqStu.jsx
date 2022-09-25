@@ -13,7 +13,7 @@ function SeqStu() {
         (
             async () => {
                 setLoading(true)
-                const resp = await fetch(host+'/seq/getAll', {headers: {
+                const resp = await fetch(host+'/annuals/all', {headers: {
                     'Authorization': sessionStorage.user
                   }})
                 const data = await resp.json();
@@ -36,7 +36,7 @@ function SeqStu() {
                         loading ? <tr ><td colSpan={5} style={{justifyItems: 'center', paddingLeft: '50%'}}><ReactLoading color="#fff" type="cylon"/></td></tr> : exams.length > 0 ? exams.map((exam, index) => {
                             return <tr key={index}>
                                 <td>{exam.name}</td>
-                                <td><Link style={{textDecoration: 'none', color: '#fff'}}  to={`/exams/${exam.id}/${sessionStorage.classId}`}>{sequenceTraductions[getLang()].enterData}</Link></td>
+                                <td><Link style={{textDecoration: 'none', color: '#fff'}}  to={`/annuals${sessionStorage.classType}/${exam.id}/${sessionStorage.classId}`}>{sequenceTraductions[getLang()].enterData}</Link></td>
                             </tr> }) : <tr> <td colSpan={5} style={{textAlign: 'center'}}>{sequenceTraductions[getLang()].noSeq}</td> </tr>
                     }
                 </tbody>

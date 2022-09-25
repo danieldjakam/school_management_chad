@@ -100,8 +100,8 @@ function Sidebar() {
             icon: <PeopleFill/>
         },
         {
-            name: 'Sequences',
-            href: '/seqs',
+            name: 'Annuel',
+            href: '/annual-exams',
             icon: <FileTextFill/>
         },
         {

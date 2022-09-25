@@ -36,7 +36,7 @@ function TrimStu() {
                         loading ? <tr ><td colSpan={5} style={{justifyItems: 'center', paddingLeft: '50%'}}><ReactLoading color="#fff" type="cylon"/></td></tr> : trims.length > 0 ? trims.map((trim, index) => {
                             return <tr key={index}>
                                 <td>{trim.name}</td>
-                                <td><a style={{textDecoration: 'none', color: '#fff'}} href={`/trims/${trim.id}/${sessionStorage.classId}`}>{trimTraductions[getLang()].seeData}</a></td>
+                                <td><a style={{textDecoration: 'none', color: '#fff'}} href={`/trims${sessionStorage.classType}/${trim.id}/${sessionStorage.classId}`}>{trimTraductions[getLang()].seeData}</a></td>
                             </tr> }) : <tr> <td colSpan={5} style={{textAlign: 'center'}}>{trimTraductions['fr'].nohavetrim}</td> </tr>
                     }
                 </tbody>

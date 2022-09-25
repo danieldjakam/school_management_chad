@@ -36,7 +36,9 @@ module.exports.login = (req, res) => {
             if (err) console.log(err);
             
             if(resp.length < 1){
-                req.connection.query('SELECT * FROM teachers WHERE matricule = ?', [username], (err2, resp2) => {
+                req.connection.query(`SELECT t.class_id, t.id, t.password, c.school_id, s.type FROM teachers t LEFT JOIN class c 
+                                ON c.id = t.class_id JOIN sections s ON s.id = c.section WHERE matricule = ? `, 
+                    [username], (err2, resp2) => {
                     if(resp2.length < 1){
                         res.status(401).json({success: false, message: 'Utilisateur non reconnu'})
                     }else{
@@ -46,7 +48,7 @@ module.exports.login = (req, res) => {
                                 role: 'teacher',
                                 school_id: resp2[0].school_id
                             }, req.env.SECRET)
-                            res.status(401).json({success: true, token, status: 'en', classId: resp2[0].class_id, school_id: resp2[0].school_id})
+                            res.status(401).json({success: true, token, status: 'en', classId: resp2[0].class_id, type: resp2[0].type, school_id: resp2[0].school_id})
                         }else{
                             res.status(401).json({success: false, message: 'Mot de passe incorrect!!'})
                         }
