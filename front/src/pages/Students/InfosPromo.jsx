@@ -22,7 +22,7 @@ function SelectClass({setShowInfos}) {
             </p>
             <p>
                 C'est une action irreversible. Une fois le bouton cliqué l'élève se retrouvera dans cette classe l'année prochaine. <br />
-                Tous les élèves dont la classe n'aura pas été choisie resteront et seront considérés comme redoublant. <br />
+                Tous les élèves pour qui ont aura cliquer sur redoublant seront dans la meme classe l'anne prochaine lorsque vous changerez les notes. <br />
             </p>
             <p>
                 Les moyennes annuelles sont là pour vous aider à délibérer.
