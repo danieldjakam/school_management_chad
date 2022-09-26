@@ -27,6 +27,10 @@ function SelectClass({setShowInfos}) {
             <p>
                 Les moyennes annuelles sont là pour vous aider à délibérer.
             </p>
+            <p className="text-danger">
+                Svp veuillez cliquer une fois sur le bouton parceque lors du clic l'enfant est envoye dans la classe pour l'annee prochaine ou redouble 
+                la classe l'annee prochaine mais il reste toujours dans la classe. Donc on ne saura pas quil a ete envoye mais il sera envoye.
+            </p>
         </div>
         <div className="card-footer">
             <button onClick={() => {handleCancel()}} type="reset">Compris</button>
