@@ -132,6 +132,7 @@ const Promotion = () => {
                             </th>
                         })
                     }
+                    <th>Redoublant</th>
                 </tr>
             </thead>
             <tbody>
@@ -171,6 +172,11 @@ const Promotion = () => {
                                                     </td>
                                                 })
                                             }
+                                            <td>
+                                                <input checked={check(student.id, class_id)} 
+                                                    onChange={() => {checkClasse(student.id, class_id); select(class_id, student.id)}} 
+                                                    type="checkbox"/>
+                                            </td>
                                         </tr> 
                                     }) : <tr> 
                                         <td colSpan={7} style={{textAlign: 'center'}}>
