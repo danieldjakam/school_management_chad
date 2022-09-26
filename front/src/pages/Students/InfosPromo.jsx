@@ -29,7 +29,8 @@ function SelectClass({setShowInfos}) {
             </p>
             <p className="text-danger">
                 Svp veuillez cliquer une fois sur le bouton parceque lors du clic l'enfant est envoye dans la classe pour l'annee prochaine ou redouble 
-                la classe l'annee prochaine mais il reste toujours dans la classe. Donc on ne saura pas quil a ete envoye mais il sera envoye.
+                la classe l'annee prochaine mais il reste toujours dans la classe. Donc on ne saura pas quil a ete envoye mais il sera envoye. <br />
+                Donc autant de fois que vous cliquerez pour un eleve autant de fois il sera envoye dans la classe.
             </p>
         </div>
         <div className="card-footer">
