@@ -52,6 +52,7 @@ const Promotion = () => {
                 data.forEach(classe => {
                     arr[classe.id] = [];
                 });
+                arr[class_id] = [];
                 setClassesIds(arr);
                 setClasses(data);
                 setStudents(dat);

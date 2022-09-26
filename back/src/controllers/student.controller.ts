@@ -225,8 +225,8 @@ module.exports.getTotal = (req, res) => {
 module.exports.promoteStudent = (req, res) => {
     let {class_id, student} = req.body;
     req.connection.query('SELECT * FROM students WHERE id = ?', [student], (e, studentInfo) => {
-        let {name, subname, birthday ,fatherName, birthday_place, phone_number, profession, email, sex, status} = studentInfo[0];
-        console.log(studentInfo);
+        let {name, subname, birthday ,fatherName, birthday_place, phone_number, profession, email, sex} = studentInfo[0];
+        // console.log(studentInfo);
         
         
         req.connection.query(`INSERT INTO students(name, subname, class_id, 
@@ -237,7 +237,7 @@ module.exports.promoteStudent = (req, res) => {
                     ?, ?, ?, ?, ?,
             ?, ?, ?)`, 
             [name, subname, class_id, sex, 
-                fatherName, profession, birthday, birthday_place, email, 
+                fatherName, profession, birthday ? birthday : null, birthday_place, email, 
                 phone_number, parseInt(req.school_year,) + 1, 
                 'old', req.payload.school_id], (err, respp, fields) => {
                 if(err) console.log(err);
