@@ -19,7 +19,7 @@ const MatB = ({type}) => {
     const [loading, setLoading ] = useState(false);
     const {exam_id, student_id, class_id} = useParams();
     const [notes, setNotes] = useState({});
-    const [tp, setTP] = useState({});
+    const [badCompetences, setBadCompetences] = useState({});
 
     useEffect(() => {
         (
@@ -54,8 +54,19 @@ const MatB = ({type}) => {
                 data5 = data5.filter(d => d.student_id === student_id)
                 let tot = 0;
                 let g = 0;
-                data4.forEach(sub => {
-                    tot += sub.over
+                let bc = [];
+                data4.forEach(subject => {
+                    tot += subject.over
+                    // const note = 0;
+                    const note = data5.filter(n => n.subject_id === subject.id.toString()).length > 0 
+                                    ? 
+                                        parseFloat(
+                                            data5.filter(n => n.subject_id === subject.id.toString()
+                                        )[0].value) 
+                                    : 0;
+                    if (note < (subject.over / 2)) {
+                        bc.push(subject.name)
+                    }
                 })
                 data5.forEach(u => {
                     let b = parseFloat(u.value);
@@ -67,6 +78,7 @@ const MatB = ({type}) => {
                     }
                 })
 
+                setBadCompetences(bc);
                 setTotalPoints(g)
                 setDiviser(tot);
                 setStudent(dat);
@@ -75,7 +87,6 @@ const MatB = ({type}) => {
                 setSubjects(data4);
                 setNotes(data5);
                 setLoading(false);
-                setTP(data6);
             }
         )()
     }, []);
@@ -118,22 +129,34 @@ const MatB = ({type}) => {
                 <tr>
                     <td>{downloadTraductions[getLang()].totalPoints}</td>
                     <td>{totalPoints} / {diviser}</td>
+                    <td>Encouragement</td>
+                    <td>oui</td>
                 </tr>
                 <tr>
                     <td>{downloadTraductions[getLang()].average}</td>
                     <td>{Math.round((totalPoints / diviser) * 20 * 100) / 100} / 20</td>
+                    <td>Encouragement</td>
+                    <td>oui</td>
                 </tr>
                 <tr>
-                    <td>{downloadTraductions[getLang()].rank}</td>
-                    <td> {rank} / {ActualClass.total_students}</td>
+                    <td colSpan={2}>{downloadTraductions[getLang()].rank}</td>
+                    <td colSpan={2}> {rank} / {ActualClass.total_students}</td>
                 </tr>
                 <tr>
+                    <td>Des efforts s'imposent en:</td>
                     <td>Visa du parent</td>
-                    <td>Visa du chef d'etablissement</td>
+                    <td colSpan={2}>Visa du chef d'etablissement</td>
                 </tr>
                 <tr style={{ height: '100px' }}>
+                    <td>
+                        {
+                            badCompetences.length > 0 ? 
+                                    badCompetences.map(bc => <li key={bc}>{bc}</li> )
+                                : <li>RAS</li>
+                        }
+                    </td>
                     <td></td>
-                    <td></td>
+                    <td colSpan={2}></td>
                 </tr>
             </tbody>
         </table>
