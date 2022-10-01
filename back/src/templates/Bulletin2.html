@@ -147,22 +147,36 @@
                     <tr>
                         <td class="com">Total des points Annuel</td>
                         <td class="center">{{totalPoints}} / {{ diviser }}</td>
+                        <td>Encouragement : </td>
+                        <td> {{#ifCond average '>' 12 }} oui {{else}} non {{/ifCond}}</td>
                     </tr>
                     <tr>
                         <td class='com'>Moyenne annuelle</td>
                         <td class="center">{{average}} / 20</td>
+                        <td>Félicitations :</td>
+                        <td> {{#ifCond average '>' 15}} oui {{else}} non {{/ifCond}}</td>
                     </tr>
                     <tr>
-                        <td class="com">Rang annuel</td>
-                        <td class="center">{{rank}} / {{totalStudent}}</td>
+                        <td class="com" colspan="2">Rang annuel</td>
+                        <td class="center" colspan="2">{{rank}} / {{totalStudent}}</td>
                     </tr>
                     <tr>
+                        <td>Des efforts s'imposent en</td>
                         <td class="center com">Visa du parent</td>
-                        <td class="center com">Visa du chef d'etablissement</td>
+                        <td class="center com" colspan="2">Visa du chef d'etablissement</td>
                     </tr>
                     <tr style="height: 50px;">
+                        <td>
+                            {{#if badCompetences}}
+                                {{#each badCompetences as |badCompetence|}}
+                                    <li>{{badCompetence}}</li>
+                                {{/each}}
+                            {{else}}
+                                <li>R.A.S</li>
+                            {{/if}}
+                        </td>
                         <td></td>
-                        <td></td>
+                        <td colspan="2"></td>
                     </tr>
                 </tbody>
             </table>

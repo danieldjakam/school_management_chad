@@ -26,8 +26,9 @@ module.exports.downloadBulletin = (req, res) => {
     const { exam_id, student_id, class_id } = req.params;
     const html = downloadFs.readFileSync('src/templates/Bulletin.html', 'utf-8');
     let totalPoint: number = 0;
-    let totalNote: number
+    let totalNote: number;
     let diviser: number = 0;
+    let badCompetences = [];
 
     req.connection.query('SELECT * FROM trims WHERE id = ?', [exam_id], (t, exam) => {
         req.connection.query('SELECT * FROM students WHERE class_id = ?', [class_id], (errr, allStudents: []) => {
@@ -70,7 +71,10 @@ module.exports.downloadBulletin = (req, res) => {
                                                     : 0;
                             subject.mi_over = subject.over / 2
                             subject.value = note;
-                            diviser += subject.over
+                            diviser += subject.over;
+                            if (note < 5) {
+                                badCompetences.push(subject.name);
+                            }
                         })
                         req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
                             const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
@@ -100,6 +104,7 @@ module.exports.downloadBulletin = (req, res) => {
                                     average: Math.round(((totalPoint / diviser) * 20) * 100) / 100,
                                     totalNote: totalNote,
                                     subjects,
+                                    badCompetences,
                                     exam: exam[0],
                                     totalStudent: allStudents.length,
                                     notes: notes
@@ -137,7 +142,8 @@ module.exports.downloadBulletinByClass = (req, res) => {
                 if (!downloadFs.existsSync(dirPath)) downloadFs.mkdirSync(dirPath);
                 students.forEach(student => {
                     let totalPoint: number = 0;
-                    let totalNote: number
+                    let totalNote: number;
+                    let badCompetences = [];
                     let diviser: number = 0;
                     const student_id = student.id;
                     const stud: {
@@ -178,6 +184,9 @@ module.exports.downloadBulletinByClass = (req, res) => {
                                 subject.mi_over = subject.over / 2
                                 subject.value = note;
                                 diviser += subject.over
+                                if (note < 5) {
+                                    badCompetences.push(subject.name);
+                                }
                             })
                             req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
                                 const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
@@ -201,6 +210,7 @@ module.exports.downloadBulletinByClass = (req, res) => {
                                         totalNote: totalNote,
                                         subjects,
                                         exam: exam[0],
+                                        badCompetences,
                                         totalStudent: students.length,
                                         notes: notes
                                     },
@@ -227,7 +237,8 @@ module.exports.downloadBulletin2 = (req, res) => {
     const { exam_id, student_id, class_id } = req.params;
     const html = downloadFs.readFileSync('src/templates/Bulletin2.html', 'utf-8');
     let totalPoint: number = 0;
-    let totalNote: number
+    let totalNote: number;
+    let badCompetences = [];
     let diviser: number = 0;
 
     req.connection.query('SELECT * FROM trims WHERE id = ?', [exam_id], (e, exam) => {
@@ -287,6 +298,10 @@ module.exports.downloadBulletin2 = (req, res) => {
                             subject.note2 = note2;
                             subject.avera = (note1 + note2) / 2
                             diviser += subject.over
+                            
+                            if ((note1 + note2) < 5) {
+                                badCompetences.push(subject.name);
+                            }
                         })
                         req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
                             const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
@@ -318,7 +333,8 @@ module.exports.downloadBulletin2 = (req, res) => {
                                     subjects,
                                     exam: exam[0],
                                     totalStudent: allStudents.length,
-                                    notes: notes
+                                    notes: notes,
+                                    badCompetences
                                 },
                                 path: `docs/${stud.name}-${exam[0].name}.pdf`
                             };
@@ -358,6 +374,7 @@ module.exports.downloadBulletinByClass2 = (req, res) => {
                     let totalPoint: number = 0;
                     let totalNote: number
                     let diviser: number = 0;
+                    let badCompetences = [];
                     const student_id = student.id;
                     const stud: {
                         name: string,
@@ -410,6 +427,9 @@ module.exports.downloadBulletinByClass2 = (req, res) => {
                                 subject.note2 = note2;
                                 subject.avera = (note1 + note2) / 2
                                 diviser += subject.over
+                                if ((note1 + note2) < 5) {
+                                    badCompetences.push(subject.name);
+                                }
                             })
                             req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
                                 const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
@@ -441,7 +461,8 @@ module.exports.downloadBulletinByClass2 = (req, res) => {
                                         subjects,
                                         exam: exam[0],
                                         totalStudent: students.length,
-                                        notes: notes
+                                        notes: notes,
+                                        badCompetences
                                     },
                                     path: `${dirPath}/${stud.name}-${exam[0].name}.pdf`
                                 };
@@ -477,6 +498,7 @@ module.exports.downloadAnnualBulletin = (req, res) => {
     let totalPoint3: number = 0;
     let totalNote: number
     let diviser: number = 0;
+    let badCompetences = [];
 
     req.connection.query('SELECT * FROM annual_exams WHERE id = ?', [exam_id], (t, exam) => {
         req.connection.query('SELECT * FROM trims', (e, trims) => {
@@ -553,6 +575,10 @@ module.exports.downloadAnnualBulletin = (req, res) => {
                                 subject.note2 = note2;
                                 subject.note3 = note3;
                                 diviser += subject.over
+                                
+                                if ((note1 + note2 + note3) / 3 < 5) {
+                                    badCompetences.push(subject.name);
+                                }
                             })
                             req.connection.query('SELECT * FROM stats WHERE class_id = ?', [class_id], (errrt, stats) => {
                                 let rang = 0;
@@ -654,7 +680,8 @@ module.exports.downloadAnnualBulletin = (req, res) => {
                                         subjects,
                                         exam: exam[0],
                                         totalStudent: allStudents.length,
-                                        notes: notes
+                                        notes: notes,
+                                        badCompetences
                                     },
                                     path: `docs/${stud.name}-${exam[0].name}.pdf`
                                 };
@@ -698,6 +725,7 @@ module.exports.downloadAnnualBulletinByClass = (req, res) => {
                                 let totalPoint3: number = 0;
                                 let totalNote: number
                                 let diviser: number = 0;
+                                let badCompetences = [];
                                 const student_id = student.id;
                                 const stud: {
                                     name: string,
@@ -767,6 +795,10 @@ module.exports.downloadAnnualBulletinByClass = (req, res) => {
                                             subject.note2 = note2;
                                             subject.note3 = note3;
                                             diviser += subject.over
+                                                            
+                                            if ((note1 + note2 + note3) / 3 < 5) {
+                                                badCompetences.push(subject.name);
+                                            }
                                         })
                                         req.connection.query('SELECT * FROM stats WHERE class_id = ?', [class_id], (errrt, stats) => {
                                             let rang = 0;
@@ -866,7 +898,8 @@ module.exports.downloadAnnualBulletinByClass = (req, res) => {
                                                     subjects,
                                                     exam: exam[0],
                                                     totalStudent: students.length,
-                                                    notes: notes
+                                                    notes: notes,
+                                                    badCompetences
                                                 },
                                                 path: `${dirPath}/${stud.name}-${exam[0].name}.pdf`
                                             };
@@ -898,6 +931,7 @@ module.exports.downloadAnnualBulletin2 = (req, res) => {
     let totalPoint3: number = 0;
     let totalNote: number
     let diviser: number = 0;
+    let badCompetences = [];
 
     req.connection.query('SELECT * FROM annual_exams WHERE id = ?', [exam_id], (t, exam) => {
         req.connection.query('SELECT * FROM trims', (e, trims) => {
@@ -1020,6 +1054,11 @@ module.exports.downloadAnnualBulletin2 = (req, res) => {
                                 subject.note3 = note3 / 2;
 
                                 diviser += subject.over * 2;
+
+                                
+                                if ((note1 + note2 + note3) / 3 < 5) {
+                                    badCompetences.push(subject.name);
+                                }
                             })
                             req.connection.query('SELECT * FROM stats WHERE class_id = ?', [class_id], (errrt, stats) => {
                                 let rang = 0;
@@ -1121,7 +1160,8 @@ module.exports.downloadAnnualBulletin2 = (req, res) => {
                                         subjects,
                                         exam: exam[0],
                                         totalStudent: allStudents.length,
-                                        notes: notes
+                                        notes: notes,
+                                        badCompetences
                                     },
                                     path: `docs/${stud.name}-${exam[0].name}.pdf`
                                 };
@@ -1165,6 +1205,7 @@ module.exports.downloadAnnualBulletinByClass2 = (req, res) => {
                                 let totalPoint3: number = 0;
                                 let totalNote: number
                                 let diviser: number = 0;
+                                let badCompetences = [];
                                 const student_id = student.id;
                                 const stud: {
                                     name: string,
@@ -1282,6 +1323,12 @@ module.exports.downloadAnnualBulletinByClass2 = (req, res) => {
                                             subject.note3 = note3 / 2;
 
                                             diviser += subject.over * 2;
+
+                                            
+                                
+                                            if ((note1 + note2 + note3) / 3 < 5) {
+                                                badCompetences.push(subject.name);
+                                            }
                                         })
                                         req.connection.query('SELECT * FROM stats WHERE class_id = ?', [class_id], (errrt, stats) => {
                                             let rang = 0;
@@ -1381,7 +1428,8 @@ module.exports.downloadAnnualBulletinByClass2 = (req, res) => {
                                                     subjects,
                                                     exam: exam[0],
                                                     totalStudent: students.length,
-                                                    notes: notes
+                                                    notes: notes,
+                                                    badCompetences
                                                 },
                                                 path: `${dirPath}/${stud.name}-${exam[0].name}.pdf`
                                             };
