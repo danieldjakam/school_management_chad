@@ -8,7 +8,7 @@ module.exports.store = async (req, res) => {
             res.status(401).json({success: false, message: "Le total la matiere doit etre compris entre 0 et 20 "})
         }
         else{
-            req.connection.query('INSERT INTO subjects(name, over, section, school_year) VALUES(?, ?, ?, ?)', 
+            req.connection.query(`INSERT INTO subjects(subjects.name, subjects.over, subjects.section, subjects.school_year) VALUES(?, ?, ?, ?)`, 
                                     [name, over, section, req.school_year], (err, resp) => {
                 if(!err) res.status(201).json({success: true})
                 else console.log(err);
