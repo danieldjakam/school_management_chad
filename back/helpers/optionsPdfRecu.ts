@@ -9,8 +9,8 @@ module.exports =  {
     footer: {
         height: "0mm",
         contents: {
-            first: 'GSB La Semence',
-            2: 'GSB La Semence', // Any page number is working. 1-based index
+            first: 'Living World Mission Chad',
+            2: 'Living World Mission Chad', // Any page number is working. 1-based index
             default: '<span style="color: #000;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
             last: 'Last Page'
         }
