@@ -56,8 +56,7 @@ const MatB = ({type}) => {
                 let g = 0;
                 let bc = [];
                 data4.forEach(subject => {
-                    tot += subject.over
-                    // const note = 0;
+                    tot += subject.over;
                     const note = data5.filter(n => n.subject_id === subject.id.toString()).length > 0 
                                     ? 
                                         parseFloat(
@@ -129,14 +128,14 @@ const MatB = ({type}) => {
                 <tr>
                     <td>{downloadTraductions[getLang()].totalPoints}</td>
                     <td>{totalPoints} / {diviser}</td>
-                    <td>Encouragement</td>
-                    <td>oui</td>
+                    <td>Encouragement :</td>
+                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 12 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
                     <td>{downloadTraductions[getLang()].average}</td>
                     <td>{Math.round((totalPoints / diviser) * 20 * 100) / 100} / 20</td>
-                    <td>Encouragement</td>
-                    <td>oui</td>
+                    <td>Félicitations :</td>
+                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 15 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
                     <td colSpan={2}>{downloadTraductions[getLang()].rank}</td>
