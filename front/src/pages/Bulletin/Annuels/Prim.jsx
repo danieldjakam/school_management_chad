@@ -6,7 +6,6 @@ import BulletinEntete from '../../../components/BulletinEntete';
 import { downloadTraductions } from '../../../local/bulletin';
 import { host } from '../../../utils/fetch';
 import { getLang } from '../../../utils/lang';
-import check from '../../../images/check.png'
 
 const PrimAB = ({type}) => {
     const [student, setStudent ] = useState([]);
@@ -20,7 +19,7 @@ const PrimAB = ({type}) => {
     const {exam_id, student_id, class_id} = useParams();
     const [notes, setNotes] = useState([]);
     const [trims, setTrims] = useState([]);
-    const [toAn, setTotalAnnual] = useState([]);
+    const [badCompetences, setBadCompetences] = useState({});
     const [totalPoints1, setTotalPoints1] = useState(0);
     const [rank1, setRank1] = useState(1);
     const [totalPoints2, setTotalPoints2] = useState(0);
@@ -52,6 +51,7 @@ const PrimAB = ({type}) => {
                     'Authorization': sessionStorage.user
                 }})
                 let data5 = await resp5.json();
+                data5 = data5.filter(d => d.student_id === student_id)
                 const r = data5;
                 const resp7 = await fetch(host+'/trim/getAll', {headers: {
                     'Authorization': sessionStorage.user
@@ -62,27 +62,86 @@ const PrimAB = ({type}) => {
                   }})
                 const data6 = await resp6.json();
                 data5 = data5.filter(d => d.student_id === student_id && d.exam_id === exam_id.toString());
-                let na = data5.filter(d => d.student_id === student_id && d.exam_id === exam_id.toString());
                 // console.log(data5);
                 let tot = 0;
                 let g = 0;
-                let k = 0;
-                data4.forEach(sub => {
-                    tot += sub.over
+                let bc = [];
+                data4.forEach(subject => {
+                    tot += 20;
+                    
+                        
+                        const note1d = r.filter(n => n.subject_id === subject.id.toString() 
+                                        && n.exam_id === data7[0].id
+                                        && n.subject_type === 'devoir').length > 0 
+                                            ? 
+                                            r.filter(n => n.subject_id === subject.id.toString() 
+                                                && n.exam_id === data7[0].id
+                                                && n.subject_type === 'devoir')[0].value
+                                            : 0
+
+                        const note1c = r.filter(n => n.subject_id === subject.id.toString() 
+                                        && n.exam_id === data7[0].id
+                                        && n.subject_type === 'compo').length > 0 
+                                            ? 
+                                            r.filter(n => n.subject_id === subject.id.toString() 
+                                                && n.exam_id === data7[0].id
+                                                && n.subject_type === 'compo')[0].value
+                                            : 0
+                        
+                         const note2d = r.filter(n => n.subject_id === subject.id.toString() 
+                                        && n.exam_id === data7[1].id
+                                        && n.subject_type === 'devoir').length > 0 
+                                            ? 
+                                            r.filter(n => n.subject_id === subject.id.toString() 
+                                                && n.exam_id === data7[1].id
+                                                && n.subject_type === 'devoir')[0].value
+                                            : 0
+    
+                            const note2c = r.filter(n => n.subject_id === subject.id.toString() 
+                                            && n.exam_id === data7[1].id
+                                            && n.subject_type === 'compo').length > 0 
+                                                ? 
+                                                r.filter(n => n.subject_id === subject.id.toString() 
+                                                    && n.exam_id === data7[1].id
+                                                    && n.subject_type === 'compo')[0].value
+                                                : 0
+
+                            const note3d = r.filter(n => n.subject_id === subject.id.toString() 
+                                            && n.exam_id === data7[2].id
+                                            && n.subject_type === 'devoir').length > 0 
+                                                ? 
+                                                r.filter(n => n.subject_id === subject.id.toString() 
+                                                    && n.exam_id === data7[2].id
+                                                    && n.subject_type === 'devoir')[0].value
+                                                : 0
+    
+                            const note3c = r.filter(n => n.subject_id === subject.id.toString() 
+                                            && n.exam_id === data7[2].id
+                                            && n.subject_type === 'compo').length > 0 
+                                                ? 
+                                                r.filter(n => n.subject_id === subject.id.toString() 
+                                                    && n.exam_id === data7[2].id
+                                                    && n.subject_type === 'compo')[0].value
+                                                : 0
+
+                            const note1 = (parseInt(note1c) + parseInt(note1d)) / 2;
+                            const note2 = (parseInt(note2c) + parseInt(note2d)) / 2;
+                            const note3 = (parseInt(note3c) + parseInt(note3d)) / 2;
+                    let t2 = (parseInt(note1) + parseInt(note2) + parseInt(note3)) / 3;
+                    if ((t2) < 5) {
+                        bc.push(subject.name)
+                    }
                 })
                 data5.forEach(u => {
                     let b = parseFloat(u.value);
                     g += b;
-                })
-                na.forEach(u => {
-                    let b = parseFloat(u.value);
-                    k += b;
                 })
                 data6.arr.forEach((s, c) => {
                     if (s.student_id === student_id) {
                         setRank(c + 1)
                     }
                 })
+                setBadCompetences(bc);
                 setTotalPoints(g)
                 setDiviser(tot);
                 setStudent(dat);
@@ -92,7 +151,6 @@ const PrimAB = ({type}) => {
                 setNotes(r);
                 setLoading(false);
                 setTrims(data7);
-                setTotalAnnual(k);
             }
         )()
     }, []);
@@ -337,23 +395,35 @@ const PrimAB = ({type}) => {
             <tbody>
                 <tr>
                     <td>{downloadTraductions[getLang()].totalPoints}</td>
-                    <td>{toAn} / {subjects.length * 20}</td>
+                    <td>{totalPoints} / {diviser}</td>
+                    <td>Encouragement :</td>
+                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 12 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
                     <td>{downloadTraductions[getLang()].average}</td>
-                    <td>{Math.round((totalPoints / (subjects.length * 20)) * 20 * 100) / 100} / 20</td>
+                    <td>{Math.round((totalPoints / diviser) * 20 * 100) / 100} / 20</td>
+                    <td>Félicitations :</td>
+                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 15 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
-                    <td>{downloadTraductions[getLang()].rank}</td>
-                    <td> {rank} / {ActualClass.total_students}</td>
+                    <td colSpan={2}>{downloadTraductions[getLang()].rank}</td>
+                    <td colSpan={2}> {rank} / {ActualClass.total_students}</td>
                 </tr>
                 <tr>
+                    <td>Des efforts s'imposent en:</td>
                     <td>Visa du parent</td>
-                    <td>Visa du chef d'etablissement</td>
+                    <td colSpan={2}>Visa du chef d'etablissement</td>
                 </tr>
                 <tr style={{ height: '100px' }}>
+                    <td>
+                        {
+                            badCompetences.length > 0 ? 
+                                    badCompetences.map(bc => <li key={bc}>{bc}</li> )
+                                : <li>RAS</li>
+                        }
+                    </td>
                     <td></td>
-                    <td></td>
+                    <td colSpan={2}></td>
                 </tr>
             </tbody>
         </table>
