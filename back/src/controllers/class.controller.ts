@@ -83,9 +83,9 @@ module.exports.getClassByLevel = (req : any, res : any) => {
 }
 module.exports.getAllClass = (req : any, res : any) => {
     req.connection.query(`SELECT class.name as name, class.id, inscriptions_olds_students, inscriptions_news_students, class.level, sections.name as sName, 
-                            (select count(id) FROM students where students.class_id = class.id) as total_students  
+                            (select count(id) FROM students where students.class_id = class.id and students.school_year = ?) as total_students  
                             FROM class LEFT JOIN sections ON sections.id = class.section WHERE school_id = ?`, 
-                            [req.payload.school_id], (err: any, classes : any) => {
+                            [req.school_year, req.payload.school_id], (err: any, classes : any) => {
         if (err) {
             console.log(err);
         } else {
@@ -139,10 +139,10 @@ module.exports.getOneClass = (req : any, res : any) => {
                             class.second_tranch_news_students, class.second_tranch_olds_students, 
                             class.third_tranch_news_students, class.third_tranch_olds_students,
                             class.level, sections.type, teachers.name as teacher_name, teachers.subname as teacher_subname, 
-                            (select count(id) FROM students where students.class_id = class.id) as total_students 
+                            (select count(id) FROM students where students.class_id = class.id AND students.school_year = ?) as total_students 
                             FROM class JOIN sections ON sections.id = class.section 
                             JOIN teachers ON teachers.class_id = class.id WHERE class.id = ? 
-                            AND class.school_id = ? `, [req.params.id, req.payload.school_id], (err: any, resp : any) => {
+                            AND class.school_id = ? `, [req.school_year, req.params.id, req.payload.school_id], (err: any, resp : any) => {
         if(err) console.log(err);
         res.status(201).json(resp[0]);
         
