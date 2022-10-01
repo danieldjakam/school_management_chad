@@ -121,16 +121,16 @@ module.exports.getAllTeachers = (req, res) => {
                             sections.name as section_name, class.name as className, 
                             teachers.id, teachers.subname FROM teachers 
                             JOIN class ON class.id = teachers.class_id 
-                            JOIN sections ON sections.id = class.section WHERE class.school_id = ? AND teachers.school_year = ?`, 
-                            [req.payload.school_id, req.school_year], (err, resp) => {
+                            JOIN sections ON sections.id = class.section WHERE class.school_id = ?`, 
+                            [req.payload.school_id], (err, resp) => {
         if(err) console.log(err);
         res.status(201).json(resp)
     })
 }
 
 module.exports.getOneTeacher = (req, res) => {
-    req.connection.query('SELECT * FROM teachers WHERE id = ? AND school_id = ? AND school_year = ?', 
-                        [req.params.id, req.payload.school_id, req.school_year] , (err, resp) => {
+    req.connection.query('SELECT * FROM teachers WHERE id = ? AND school_id = ?', 
+                        [req.params.id, req.payload.school_id] , (err, resp) => {
         if(err) console.log(err);
         res.status(201).json(resp[0])
     })
@@ -138,7 +138,7 @@ module.exports.getOneTeacher = (req, res) => {
 
 module.exports.deleteTeacher = (req, res) => {
     const {id} = req.params;
-    req.connection.query('DELETE FROM teachers WHERE id = ? AND school_id = ? AND school_year = ?', [id, req.payload.school_id, req.school_year], (err, resp) => {
+    req.connection.query('DELETE FROM teachers WHERE id = ? AND school_id = ?', [id, req.payload.school_id], (err, resp) => {
         res.status(201).json({success: true})
     })
 }
@@ -151,9 +151,8 @@ module.exports.downloadTeachersPassword = (req, res) => {
         const {year_school} = settings[0];
         req.connection.query(`SELECT teachers.name, subname, matricule, password, 
                             class.name as class FROM teachers 
-                            JOIN class ON teachers.class_id = class.id 
-                            WHERE teachers.school_year = ?`
-                        , [year_school], (errr, teachers) => {
+                            JOIN class ON teachers.class_id = class.id`
+                        , [], (errr, teachers) => {
         console.log(teachers);
         
         const document = {
@@ -176,7 +175,7 @@ module.exports.downloadTeachersPassword = (req, res) => {
 }
 
 module.exports.generateNewPasswords = (req, res) => {
-    req.connection.query('SELECT * FROM teachers WHERE school_id = ? AND school_year = ?', [req.payload.school_id, req.school_year], (err, teachers) => {
+    req.connection.query('SELECT * FROM teachers WHERE school_id = ?', [req.payload.school_id], (err, teachers) => {
         try {
             teachers.forEach(teacher => {
                 const t = []
@@ -185,7 +184,7 @@ module.exports.generateNewPasswords = (req, res) => {
                     t.push(i);
                 }
                 const password = t.join('')
-                req.connection.query('UPDATE teachers SET password = ? WHERE id = ? AND school_year = ?', [password, teacher.id, req.school_year], (err, resp) => {
+                req.connection.query('UPDATE teachers SET password = ? WHERE id = ?', [password, teacher.id], (err, resp) => {
                     if (err) {
                         console.log(err);
                     }
