@@ -2,8 +2,7 @@ import { Matiere } from "../models/Matiere";
 var Json2csvParser = require('json2csv').Parser
 const admZip = require('adm-zip');
 const pdf = require('pdf-creator-node');
-const optionsPdf = require('../../helpers/optionsPdf')
-const optionsPdfRecu = require('../../helpers/optionsPdfRecu')
+const optionsPdf = require('../../helpers/optionsPdf');
 const downloadFs = require('fs');
 
 const months = [
@@ -105,13 +104,15 @@ module.exports.downloadBulletin = (req, res) => {
                                     diviser: diviser,
                                     totalPoints: totalPoint,
                                     rank: rang,
-                                    average: Math.round(((totalPoint / diviser) * 20) * 100) / 100,
+                                    average: Math.round(((totalPoint / diviser) * 10) * 100) / 100,
                                     totalNote: totalNote,
                                     subjects,
                                     badCompetences,
                                     exam: exam[0],
                                     totalStudent: allStudents.length,
-                                    notes: notes
+                                    notes: notes,
+                                    year,
+                                    future_year: parseInt(year) + 1
                                 },
                                 path: `docs/${stud.name}-${exam[0].name}.pdf`
                             };
@@ -210,13 +211,15 @@ module.exports.downloadBulletinByClass = (req, res) => {
                                         diviser: diviser,
                                         totalPoints: totalPoint,
                                         rank: rang,
-                                        average: Math.round(((totalPoint / diviser) * 20) * 100) / 100,
+                                        average: Math.round(((totalPoint / diviser) * 10) * 100) / 100,
                                         totalNote: totalNote,
                                         subjects,
                                         exam: exam[0],
                                         badCompetences,
                                         totalStudent: students.length,
-                                        notes: notes
+                                        notes: notes,
+                                        year,
+                                        future_year: parseInt(year) + 1
                                     },
                                     path: `${dirPath}/${(stud.name + ' ' + stud.subname).replaceAll(' ', '_')}.pdf`
                                 };
@@ -277,9 +280,6 @@ module.exports.downloadBulletin2 = (req, res) => {
                 req.connection.query('SELECT * FROM notes_primary WHERE exam_id = ? AND class_id = ? AND student_id = ?', 
                                     [exam_id, class_id, student_id], (err2, notes) => {
                     if (err2) console.log(err2);
-                    notes.forEach(note => {
-                        totalPoint += parseInt(note.value);
-                    });
                     req.connection.query(`SELECT subjects.name, subjects.id, subjects.over 
                                             FROM subjects JOIN sections
                                             ON sections.id = subjects.section 
@@ -301,6 +301,7 @@ module.exports.downloadBulletin2 = (req, res) => {
                             subject.note1 = note1
                             subject.note2 = note2;
                             subject.avera = (note1 + note2) / 2
+                            totalPoint   += (note1 + note2) / 2
                             diviser += subject.over
                             
                             if ((note1 + note2) < 5) {
@@ -310,12 +311,6 @@ module.exports.downloadBulletin2 = (req, res) => {
                         req.connection.query('SELECT * FROM stats WHERE class_id = ? AND exam_id = ? ', [class_id, exam_id], (errrt, stats) => {
                             const rangedArray = stats.sort((a, b) => b.totalPoints - a.totalPoints);
                             const g = stats.sort((a, b) => b.totalPoints - a.totalPoints);
-                            let lastPoints: number = 0;
-                            g.forEach((ey: {
-                                totalPoints: number
-                            }) => {
-                                lastPoints = ey.totalPoints;
-                            })
                             let rang = 0;
                             rangedArray.forEach((s: {
                                 student_id: string
@@ -338,7 +333,9 @@ module.exports.downloadBulletin2 = (req, res) => {
                                     exam: exam[0],
                                     totalStudent: allStudents.length,
                                     notes: notes,
-                                    badCompetences
+                                    badCompetences,
+                                    year,
+                                    future_year: parseInt(year) + 1
                                 },
                                 path: `docs/${stud.name}-${exam[0].name}.pdf`
                             };
@@ -405,9 +402,6 @@ module.exports.downloadBulletinByClass2 = (req, res) => {
                     req.connection.query('SELECT * FROM notes_primary WHERE exam_id = ? AND class_id = ? AND student_id = ?', 
                                         [exam_id, class_id, student_id], (err2, notes) => {
                         if (err2) console.log(err2);
-                        notes.forEach(note => {
-                            totalPoint += parseInt(note.value);
-                        });
                         req.connection.query(`SELECT subjects.name, subjects.id, subjects.over 
                                                 FROM subjects JOIN sections
                                                 ON sections.id = subjects.section 
@@ -429,6 +423,7 @@ module.exports.downloadBulletinByClass2 = (req, res) => {
                                 subject.note1 = note1
                                 subject.note2 = note2;
                                 subject.avera = (note1 + note2) / 2
+                                totalPoint   += (note1 + note2) / 2
                                 diviser += subject.over
                                 if ((note1 + note2) < 5) {
                                     badCompetences.push(subject.name);
@@ -465,7 +460,9 @@ module.exports.downloadBulletinByClass2 = (req, res) => {
                                         exam: exam[0],
                                         totalStudent: students.length,
                                         notes: notes,
-                                        badCompetences
+                                        badCompetences,
+                                        year,
+                                        future_year: parseInt(year) + 1
                                     },
                                     path: `${dirPath}/${stud.name}-${exam[0].name}.pdf`
                                 };
@@ -679,16 +676,18 @@ module.exports.downloadAnnualBulletin = (req, res) => {
                                         rank2,
                                         rank3,
                                         trims,
-                                        average: Math.round((totalPoint / diviser) * 20 * 100) / 100,
-                                        average1: Math.round((totalPoint1 / diviser) * 20 * 100) / 100,
-                                        average2: Math.round((totalPoint2 / diviser) * 20 * 100) / 100,
-                                        average3: Math.round((totalPoint3 / diviser) * 20 * 100) / 100,
+                                        average: Math.round((totalPoint / diviser) * 10 * 100) / 100,
+                                        average1: Math.round((totalPoint1 / diviser) * 10 * 100) / 100,
+                                        average2: Math.round((totalPoint2 / diviser) * 10 * 100) / 100,
+                                        average3: Math.round((totalPoint3 / diviser) * 10 * 100) / 100,
                                         totalNote: totalNote,
                                         subjects,
                                         exam: exam[0],
                                         totalStudent: allStudents.length,
                                         notes: notes,
-                                        badCompetences
+                                        badCompetences,
+                                        year,
+                                        future_year: parseInt(year) + 1
                                     },
                                     path: `docs/${stud.name}-${exam[0].name}.pdf`
                                 };
@@ -897,16 +896,18 @@ module.exports.downloadAnnualBulletinByClass = (req, res) => {
                                                     rank2,
                                                     rank3,
                                                     trims,
-                                                    average: Math.round((totalPoint / diviser) * 20 * 100) / 100,
-                                                    average1: Math.round((totalPoint1 / diviser) * 20 * 100) / 100,
-                                                    average2: Math.round((totalPoint2 / diviser) * 20 * 100) / 100,
-                                                    average3: Math.round((totalPoint3 / diviser) * 20 * 100) / 100,
+                                                    average: Math.round((totalPoint / diviser) * 10 * 100) / 100,
+                                                    average1: Math.round((totalPoint1 / diviser) * 10 * 100) / 100,
+                                                    average2: Math.round((totalPoint2 / diviser) * 10 * 100) / 100,
+                                                    average3: Math.round((totalPoint3 / diviser) * 10 * 100) / 100,
                                                     totalNote: totalNote,
                                                     subjects,
                                                     exam: exam[0],
                                                     totalStudent: students.length,
                                                     notes: notes,
-                                                    badCompetences
+                                                    badCompetences,
+                                                    year,
+                                                    future_year: parseInt(year) + 1
                                                 },
                                                 path: `${dirPath}/${stud.name}-${exam[0].name}.pdf`
                                             };
@@ -993,32 +994,32 @@ module.exports.downloadAnnualBulletin2 = (req, res) => {
                                 
                                 
                         
-                            const note1d = notes.filter(n => n.subject_id === subject.id.toString() 
-                                            && n.exam_id === trims[0].id
-                                            && n.subject_type === 'devoir').length > 0 
-                                                ? 
-                                                notes.filter(n => n.subject_id === subject.id.toString() 
-                                                    && n.exam_id === trims[0].id
-                                                    && n.subject_type === 'devoir')[0].value
-                                                : 0
+                                const note1d = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                && n.exam_id === trims[0].id
+                                                && n.subject_type === 'devoir').length > 0 
+                                                    ? 
+                                                    notes.filter(n => n.subject_id === subject.id.toString() 
+                                                        && n.exam_id === trims[0].id
+                                                        && n.subject_type === 'devoir')[0].value
+                                                    : 0
 
-                            const note1c = notes.filter(n => n.subject_id === subject.id.toString() 
-                                            && n.exam_id === trims[0].id
-                                            && n.subject_type === 'compo').length > 0 
-                                                ? 
-                                                notes.filter(n => n.subject_id === subject.id.toString() 
-                                                    && n.exam_id === trims[0].id
-                                                    && n.subject_type === 'compo')[0].value
-                                                : 0
-                            
-                            const note2d = notes.filter(n => n.subject_id === subject.id.toString() 
-                                            && n.exam_id === trims[1].id
-                                            && n.subject_type === 'devoir').length > 0 
-                                                ? 
-                                                notes.filter(n => n.subject_id === subject.id.toString() 
-                                                    && n.exam_id === trims[1].id
-                                                    && n.subject_type === 'devoir')[0].value
-                                                : 0
+                                const note1c = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                && n.exam_id === trims[0].id
+                                                && n.subject_type === 'compo').length > 0 
+                                                    ? 
+                                                    notes.filter(n => n.subject_id === subject.id.toString() 
+                                                        && n.exam_id === trims[0].id
+                                                        && n.subject_type === 'compo')[0].value
+                                                    : 0
+                                
+                                const note2d = notes.filter(n => n.subject_id === subject.id.toString() 
+                                                && n.exam_id === trims[1].id
+                                                && n.subject_type === 'devoir').length > 0 
+                                                    ? 
+                                                    notes.filter(n => n.subject_id === subject.id.toString() 
+                                                        && n.exam_id === trims[1].id
+                                                        && n.subject_type === 'devoir')[0].value
+                                                    : 0
         
                                 const note2c = notes.filter(n => n.subject_id === subject.id.toString() 
                                                 && n.exam_id === trims[1].id
@@ -1064,7 +1065,7 @@ module.exports.downloadAnnualBulletin2 = (req, res) => {
                                 subject.note2 = note2 / 2;
                                 subject.note3 = note3 / 2;
 
-                                diviser += subject.over * 2;
+                                diviser += subject.over;
 
                                 
                                 if ((note1 + note2 + note3) / 3 < 5) {
@@ -1154,25 +1155,27 @@ module.exports.downloadAnnualBulletin2 = (req, res) => {
                                         student: stud,
                                         info: info,
                                         diviser: diviser,
-                                        totalPoints: totalPoint,
-                                        totalPoints1: totalPoint1,
-                                        totalPoints2: totalPoint2,
-                                        totalPoints3: totalPoint3,
+                                        totalPoints:  totalPoint / 2,
+                                        totalPoints1: totalPoint1 /2,
+                                        totalPoints2: totalPoint2 /2,
+                                        totalPoints3: totalPoint3 /2,
                                         rank: rang,
                                         rank1,
                                         rank2,
                                         rank3,
                                         trims,
-                                        average: Math.round((totalPoint / diviser) * 20 * 100) / 100,
-                                        average1: Math.round((totalPoint1 / diviser) * 20 * 100) / 100,
-                                        average2: Math.round((totalPoint2 / diviser) * 20 * 100) / 100,
-                                        average3: Math.round((totalPoint3 / diviser) * 20 * 100) / 100,
+                                        average: Math.round(((totalPoint   / 2)/ diviser) * 10 * 100) / 100,
+                                        average1: Math.round(((totalPoint1 / 2) / diviser) * 10 * 100) / 100,
+                                        average2: Math.round(((totalPoint2 / 2 ) / diviser) * 10 * 100) / 100,
+                                        average3: Math.round(((totalPoint3 / 2 )/ diviser) * 10 * 100) / 100,
                                         totalNote: totalNote,
                                         subjects,
                                         exam: exam[0],
                                         totalStudent: allStudents.length,
                                         notes: notes,
-                                        badCompetences
+                                        badCompetences,
+                                        year,
+                                        future_year: parseInt(year) + 1
                                     },
                                     path: `docs/${stud.name}-${exam[0].name}.pdf`
                                 };
@@ -1422,25 +1425,27 @@ module.exports.downloadAnnualBulletinByClass2 = (req, res) => {
                                                     student: stud,
                                                     info: info,
                                                     diviser: diviser,
-                                                    totalPoints: totalPoint,
-                                                    totalPoints1: totalPoint1,
-                                                    totalPoints2: totalPoint2,
-                                                    totalPoints3: totalPoint3,
+                                                    totalPoints:  totalPoint / 2,
+                                                    totalPoints1: totalPoint1 /2,
+                                                    totalPoints2: totalPoint2 /2,
+                                                    totalPoints3: totalPoint3 /2,
                                                     rank: rang,
                                                     rank1,
                                                     rank2,
                                                     rank3,
                                                     trims,
-                                                    average: Math.round((totalPoint / diviser) * 20 * 100) / 100,
-                                                    average1: Math.round((totalPoint1 / diviser) * 20 * 100) / 100,
-                                                    average2: Math.round((totalPoint2 / diviser) * 20 * 100) / 100,
-                                                    average3: Math.round((totalPoint3 / diviser) * 20 * 100) / 100,
+                                                    average: Math.round(((totalPoint   / 2)/ diviser) * 10 * 100) / 100,
+                                                    average1: Math.round(((totalPoint1 / 2) / diviser) * 10 * 100) / 100,
+                                                    average2: Math.round(((totalPoint2 / 2 ) / diviser) * 10 * 100) / 100,
+                                                    average3: Math.round(((totalPoint3 / 2 )/ diviser) * 10 * 100) / 100,
                                                     totalNote: totalNote,
                                                     subjects,
                                                     exam: exam[0],
                                                     totalStudent: students.length,
                                                     notes: notes,
-                                                    badCompetences
+                                                    badCompetences,
+                                                    year,
+                                                    future_year: parseInt(year) + 1
                                                 },
                                                 path: `${dirPath}/${stud.name}-${exam[0].name}.pdf`
                                             };

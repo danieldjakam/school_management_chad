@@ -12,12 +12,12 @@ const PrimB = ({type}) => {
     const [subjects, setSubjects ] = useState([]);
     const [ActualClass, setActualClass ] = useState({});
     const [actualExam, setActualExam ] = useState({});
-    const [diviser, setDiviser] = useState(0);
     const [totalPoints, setTotalPoints] = useState(0);
     const [rank, setRank] = useState(1);
     const [loading, setLoading ] = useState(false);
     const {exam_id, student_id, class_id} = useParams();
     const [notes, setNotes] = useState({});
+    const [average, setAverage] = useState(0);
     const [badCompetences, setBadCompetences] = useState({});
 
     useEffect(() => {
@@ -55,7 +55,7 @@ const PrimB = ({type}) => {
                 let g = 0;
                 let bc = [];
                 data4.forEach(subject => {
-                    tot += 20;
+                    tot += 10;
                     const note1 = data5.filter(n => n.subject_id === subject.id.toString() 
                                     && n.subject_type === 'devoir').length > 0 
                                         ? 
@@ -69,13 +69,10 @@ const PrimB = ({type}) => {
                                 && n.subject_type === 'compo')[0].value) 
                             : 0
                     let t2 = note1 + note2;
+                    g += t2 / 2;
                     if ((t2 / 2) < 5) {
                         bc.push(subject.name)
                     }
-                })
-                data5.forEach(u => {
-                    let b = parseFloat(u.value);
-                    g += b;
                 })
                 data6.arr.forEach((s, c) => {
                     if (s.student_id === student_id) {
@@ -83,9 +80,9 @@ const PrimB = ({type}) => {
                     }
                 })
 
+                setAverage((Math.round(((g / tot) * 20) /2 * 100) / 100));
                 setBadCompetences(bc);
-                setTotalPoints(g)
-                setDiviser(tot);
+                setTotalPoints(g);
                 setStudent(dat);
                 setActualExam(data);
                 setActualClass(data2);
@@ -161,15 +158,15 @@ const PrimB = ({type}) => {
             <tbody>
                 <tr>
                     <td>{downloadTraductions[getLang()].totalPoints}</td>
-                    <td>{totalPoints} / {diviser}</td>
+                    <td>{totalPoints} / {subjects.length * 10}</td>
                     <td>Encouragement :</td>
-                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 12 ? 'oui' : 'non'}</td>
+                    <td>{average > 6 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
                     <td>{downloadTraductions[getLang()].average}</td>
-                    <td>{Math.round((totalPoints / diviser) * 20 * 100) / 100} / 20</td>
-                    <td>Félicitations :</td>
-                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 15 ? 'oui' : 'non'}</td>
+                    <td>{average} / 10</td> 
+                    <td>Tableau d'honneur :</td>
+                    <td>{average > 7.5 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
                     <td colSpan={2}>{downloadTraductions[getLang()].rank}</td>

@@ -76,7 +76,7 @@
         </div>
 
         <h2 style="text-align: center">
-            {{exam.name}} 2021/2022
+            {{exam.name}} {{year}}/{{future_year}}
         </h2>
             
         <table class='table1'>
@@ -145,19 +145,19 @@
             <table class="table1">
                 <tbody>
                     <tr>
-                        <td class="com">Total des points Annuel</td>
+                        <td class="com">Total des points</td>
                         <td class="center">{{totalPoints}} / {{ diviser }}</td>
                         <td>Encouragement : </td>
-                        <td> {{#ifCond average '>' 12 }} oui {{else}} non {{/ifCond}}</td>
+                        <td> {{#ifCond average '>' 6 }} oui {{else}} non {{/ifCond}}</td>
                     </tr>
                     <tr>
-                        <td class='com'>Moyenne annuelle</td>
-                        <td class="center">{{average}} / 20</td>
-                        <td>Félicitations :</td>
-                        <td> {{#ifCond average '>' 15}} oui {{else}} non {{/ifCond}}</td>
+                        <td class='com'>Moyenne</td>
+                        <td class="center">{{average}} / 10</td>
+                        <td>Tableau d'honneur :</td>
+                        <td> {{#ifCond average '>' 7.5}} oui {{else}} non {{/ifCond}}</td>
                     </tr>
                     <tr>
-                        <td class="com" colspan="2">Rang annuel</td>
+                        <td class="com" colspan="2">Rang</td>
                         <td class="center" colspan="2">{{rank}} / {{totalStudent}}</td>
                     </tr>
                     <tr>

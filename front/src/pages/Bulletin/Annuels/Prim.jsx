@@ -12,7 +12,6 @@ const PrimAB = ({type}) => {
     const [subjects, setSubjects ] = useState([]);
     const [ActualClass, setActualClass ] = useState({});
     const [actualExam, setActualExam ] = useState({});
-    const [diviser, setDiviser] = useState(0);
     const [totalPoints, setTotalPoints] = useState(0);
     const [rank, setRank] = useState(1);
     const [loading, setLoading ] = useState(false);
@@ -26,6 +25,7 @@ const PrimAB = ({type}) => {
     const [rank2, setRank2] = useState(1);
     const [totalPoints3, setTotalPoints3] = useState(0);
     const [rank3, setRank3] = useState(1);
+    const [average, setAverage] = useState(0);
 
     useEffect(() => {
         (
@@ -67,83 +67,81 @@ const PrimAB = ({type}) => {
                 let g = 0;
                 let bc = [];
                 data4.forEach(subject => {
-                    tot += 20;
+                    tot += 10;
                     
                         
-                        const note1d = r.filter(n => n.subject_id === subject.id.toString() 
-                                        && n.exam_id === data7[0].id
-                                        && n.subject_type === 'devoir').length > 0 
-                                            ? 
-                                            r.filter(n => n.subject_id === subject.id.toString() 
-                                                && n.exam_id === data7[0].id
-                                                && n.subject_type === 'devoir')[0].value
-                                            : 0
+                    const note1d = r.filter(n => n.subject_id === subject.id.toString() 
+                                    && n.exam_id === data7[0].id
+                                    && n.subject_type === 'devoir').length > 0 
+                                        ? 
+                                        r.filter(n => n.subject_id === subject.id.toString() 
+                                            && n.exam_id === data7[0].id
+                                            && n.subject_type === 'devoir')[0].value
+                                        : 0
 
-                        const note1c = r.filter(n => n.subject_id === subject.id.toString() 
-                                        && n.exam_id === data7[0].id
-                                        && n.subject_type === 'compo').length > 0 
-                                            ? 
-                                            r.filter(n => n.subject_id === subject.id.toString() 
-                                                && n.exam_id === data7[0].id
-                                                && n.subject_type === 'compo')[0].value
-                                            : 0
-                        
-                         const note2d = r.filter(n => n.subject_id === subject.id.toString() 
+                    const note1c = r.filter(n => n.subject_id === subject.id.toString() 
+                                    && n.exam_id === data7[0].id
+                                    && n.subject_type === 'compo').length > 0 
+                                        ? 
+                                        r.filter(n => n.subject_id === subject.id.toString() 
+                                            && n.exam_id === data7[0].id
+                                            && n.subject_type === 'compo')[0].value
+                                        : 0
+                    
+                    const note2d = r.filter(n => n.subject_id === subject.id.toString() 
+                                && n.exam_id === data7[1].id
+                                && n.subject_type === 'devoir').length > 0 
+                                    ? 
+                                    r.filter(n => n.subject_id === subject.id.toString() 
                                         && n.exam_id === data7[1].id
-                                        && n.subject_type === 'devoir').length > 0 
-                                            ? 
-                                            r.filter(n => n.subject_id === subject.id.toString() 
-                                                && n.exam_id === data7[1].id
-                                                && n.subject_type === 'devoir')[0].value
-                                            : 0
-    
-                            const note2c = r.filter(n => n.subject_id === subject.id.toString() 
+                                        && n.subject_type === 'devoir')[0].value
+                                    : 0
+
+                    const note2c = r.filter(n => n.subject_id === subject.id.toString() 
+                                    && n.exam_id === data7[1].id
+                                    && n.subject_type === 'compo').length > 0 
+                                        ? 
+                                        r.filter(n => n.subject_id === subject.id.toString() 
                                             && n.exam_id === data7[1].id
-                                            && n.subject_type === 'compo').length > 0 
-                                                ? 
-                                                r.filter(n => n.subject_id === subject.id.toString() 
-                                                    && n.exam_id === data7[1].id
-                                                    && n.subject_type === 'compo')[0].value
-                                                : 0
+                                            && n.subject_type === 'compo')[0].value
+                                        : 0
 
-                            const note3d = r.filter(n => n.subject_id === subject.id.toString() 
+                    const note3d = r.filter(n => n.subject_id === subject.id.toString() 
+                                    && n.exam_id === data7[2].id
+                                    && n.subject_type === 'devoir').length > 0 
+                                        ? 
+                                        r.filter(n => n.subject_id === subject.id.toString() 
                                             && n.exam_id === data7[2].id
-                                            && n.subject_type === 'devoir').length > 0 
-                                                ? 
-                                                r.filter(n => n.subject_id === subject.id.toString() 
-                                                    && n.exam_id === data7[2].id
-                                                    && n.subject_type === 'devoir')[0].value
-                                                : 0
-    
-                            const note3c = r.filter(n => n.subject_id === subject.id.toString() 
-                                            && n.exam_id === data7[2].id
-                                            && n.subject_type === 'compo').length > 0 
-                                                ? 
-                                                r.filter(n => n.subject_id === subject.id.toString() 
-                                                    && n.exam_id === data7[2].id
-                                                    && n.subject_type === 'compo')[0].value
-                                                : 0
+                                            && n.subject_type === 'devoir')[0].value
+                                        : 0
 
-                            const note1 = (parseInt(note1c) + parseInt(note1d)) / 2;
-                            const note2 = (parseInt(note2c) + parseInt(note2d)) / 2;
-                            const note3 = (parseInt(note3c) + parseInt(note3d)) / 2;
+                    const note3c = r.filter(n => n.subject_id === subject.id.toString() 
+                                    && n.exam_id === data7[2].id
+                                    && n.subject_type === 'compo').length > 0 
+                                        ? 
+                                        r.filter(n => n.subject_id === subject.id.toString() 
+                                            && n.exam_id === data7[2].id
+                                            && n.subject_type === 'compo')[0].value
+                                        : 0
+
+                    const note1 = (parseInt(note1c) + parseInt(note1d)) / 2;
+                    const note2 = (parseInt(note2c) + parseInt(note2d)) / 2;
+                    const note3 = (parseInt(note3c) + parseInt(note3d)) / 2;
                     let t2 = (parseInt(note1) + parseInt(note2) + parseInt(note3)) / 3;
+                    g += Math.round(t2 * 100) / 100;    
                     if ((t2) < 5) {
                         bc.push(subject.name)
                     }
-                })
-                data5.forEach(u => {
-                    let b = parseFloat(u.value);
-                    g += b;
-                })
+                });
                 data6.arr.forEach((s, c) => {
                     if (s.student_id === student_id) {
                         setRank(c + 1)
                     }
                 })
+
+                setAverage((Math.round(((g / tot) * 20) /2 * 100) / 100));
                 setBadCompetences(bc);
-                setTotalPoints(g)
-                setDiviser(tot);
+                setTotalPoints(g);
                 setStudent(dat);
                 setActualExam(data);
                 setActualClass(data2);
@@ -184,7 +182,7 @@ const PrimAB = ({type}) => {
                         setRank1(c + 1)
                     }
                 })
-                setTotalPoints1(g1);
+                setTotalPoints1(g1 / 2);
 
 
 
@@ -208,7 +206,7 @@ const PrimAB = ({type}) => {
                         setRank2(c + 1)
                     }
                 })
-                setTotalPoints2(g2);
+                setTotalPoints2(g2 / 2);
 
 
                 // Third trimestre
@@ -233,13 +231,15 @@ const PrimAB = ({type}) => {
                         setRank3(c + 1)
                     }
                 })
-                setTotalPoints3(g3);
+                setTotalPoints3(g3 / 2);
 
                 setLoading(false);
             }
         )()
     }, []);
-
+    const makeAverage = (totalp) => {
+        return (Math.round(((totalp / (subjects.length * 10)) * 20) /2 * 100) / 100)
+    }
     return <div className="container">
     <nav className="navbar navbar-expand-lg" style={{padding: '10px 10px'}}>
         <a target={'_blank'} href={`${host}/download/pdf/bul-an2/${ActualClass.year}/${class_id}/${student_id}/${exam_id}`} className="btn btn-success">Télécharger le bulletin</a>
@@ -351,13 +351,13 @@ const PrimAB = ({type}) => {
                         Total des points:
                     </td>
                     <td colSpan={3}>
-                        {totalPoints1} / {subjects.length * 20}
+                        {totalPoints1} / {subjects.length * 10}
                     </td>
                     <td colSpan={3}>
-                        {totalPoints2} / {subjects.length * 20}
+                        {totalPoints2} / {subjects.length * 10}
                     </td>
                     <td colSpan={3}>
-                        {totalPoints3} / {subjects.length * 20}
+                        {totalPoints3} / {subjects.length * 10}
                     </td>
                 </tr>
                 <tr>
@@ -365,13 +365,13 @@ const PrimAB = ({type}) => {
                         Moyenne:
                     </td>
                     <td colSpan={3}>
-                        {Math.round((totalPoints1 / (subjects.length * 20)) * 20 * 100) / 100} / 20
+                        {makeAverage(totalPoints1)} / 10
                     </td>
                     <td colSpan={3}>
-                        {Math.round((totalPoints2 / (subjects.length * 20)) * 20 * 100) / 100} / 20
+                        {makeAverage(totalPoints2)} / 10
                     </td>
                     <td colSpan={3}>
-                        {Math.round((totalPoints3 / (subjects.length * 20)) * 20 * 100) / 100} / 20
+                        {makeAverage(totalPoints3)} / 10
                     </td>
                 </tr>
                 <tr>
@@ -395,15 +395,15 @@ const PrimAB = ({type}) => {
             <tbody>
                 <tr>
                     <td>{downloadTraductions[getLang()].totalPoints}</td>
-                    <td>{totalPoints} / {diviser}</td>
+                    <td>{totalPoints} / {subjects.length * 10}</td>
                     <td>Encouragement :</td>
-                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 12 ? 'oui' : 'non'}</td>
+                    <td>{average > 6 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
                     <td>{downloadTraductions[getLang()].average}</td>
-                    <td>{Math.round((totalPoints / diviser) * 20 * 100) / 100} / 20</td>
-                    <td>Félicitations :</td>
-                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 15 ? 'oui' : 'non'}</td>
+                    <td>{average} / 10</td> 
+                    <td>Tableau d'honneur :</td>
+                    <td>{average > 7.5 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
                     <td colSpan={2}>{downloadTraductions[getLang()].rank}</td>

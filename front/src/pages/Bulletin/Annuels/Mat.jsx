@@ -24,6 +24,7 @@ const MatB = ({type}) => {
     const [totalPoints1, setTotalPoints1] = useState(0);
     const [rank1, setRank1] = useState(1);
     const [totalPoints2, setTotalPoints2] = useState(0);
+    const [average, setAverage] = useState(0);
     const [rank2, setRank2] = useState(1);
     const [totalPoints3, setTotalPoints3] = useState(0);
     const [rank3, setRank3] = useState(1);
@@ -103,7 +104,10 @@ const MatB = ({type}) => {
                     if (s.student_id === student_id) {
                         setRank(c + 1)
                     }
-                })
+                });
+
+                
+                setAverage((Math.round(((g / tot) * 20) /2 * 100) / 100));
                 setBadCompetences(bc);
                 setTotalPoints(g)
                 setDiviser(tot);
@@ -204,6 +208,9 @@ const MatB = ({type}) => {
         )()
     }, []);
 
+    const makeAverage = (totalp) => {
+        return (Math.round(((totalp / (subjects.length * 10)) * 20) /2 * 100) / 100)
+    }
     return <div className="container">
     <nav className="navbar navbar-expand-lg" style={{padding: '10px 10px'}}>
         <a target={'_blank'} href={`${host}/download/pdf/bul-an/${ActualClass.year}/${class_id}/${student_id}/${exam_id}`} className="btn btn-success">Télécharger le bulletin</a>
@@ -294,13 +301,13 @@ const MatB = ({type}) => {
                         Moyenne:
                     </td>
                     <td>
-                        {Math.round((totalPoints1 / diviser) * 20 * 100) / 100} / 20
+                        {makeAverage(totalPoints1)} / 10
                     </td>
                     <td>
-                        {Math.round((totalPoints2 / diviser) * 20 * 100) / 100} / 20
+                        {makeAverage(totalPoints2)} / 10
                     </td>
                     <td>
-                        {Math.round((totalPoints3 / diviser) * 20 * 100) / 100} / 20
+                        {makeAverage(totalPoints3)} / 10
                     </td>
                 </tr>
                 <tr>
@@ -324,15 +331,15 @@ const MatB = ({type}) => {
             <tbody>
                 <tr>
                     <td>{downloadTraductions[getLang()].totalPoints}</td>
-                    <td>{totalPoints} / {diviser}</td>
+                    <td>{totalPoints} / {subjects.length * 10}</td>
                     <td>Encouragement :</td>
-                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 12 ? 'oui' : 'non'}</td>
+                    <td>{average > 6 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
                     <td>{downloadTraductions[getLang()].average}</td>
-                    <td>{Math.round((totalPoints / diviser) * 20 * 100) / 100} / 20</td>
-                    <td>Félicitations :</td>
-                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 15 ? 'oui' : 'non'}</td>
+                    <td>{average} / 10</td> 
+                    <td>Tableau d'honneur :</td>
+                    <td>{average > 7.5 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
                     <td colSpan={2}>{downloadTraductions[getLang()].rank}</td>

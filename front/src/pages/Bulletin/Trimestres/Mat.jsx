@@ -13,10 +13,10 @@ const MatB = ({type}) => {
     const [subjects, setSubjects ] = useState([]);
     const [ActualClass, setActualClass ] = useState({});
     const [actualExam, setActualExam ] = useState({});
-    const [diviser, setDiviser] = useState(0);
     const [totalPoints, setTotalPoints] = useState(0);
     const [rank, setRank] = useState(1);
     const [loading, setLoading ] = useState(false);
+    const [average, setAverage] = useState(0);
     const {exam_id, student_id, class_id} = useParams();
     const [notes, setNotes] = useState({});
     const [badCompetences, setBadCompetences] = useState({});
@@ -56,7 +56,7 @@ const MatB = ({type}) => {
                 let g = 0;
                 let bc = [];
                 data4.forEach(subject => {
-                    tot += subject.over;
+                    tot += 10;
                     const note = data5.filter(n => n.subject_id === subject.id.toString()).length > 0 
                                     ? 
                                         parseFloat(
@@ -77,9 +77,9 @@ const MatB = ({type}) => {
                     }
                 })
 
+                setAverage((Math.round(((g / tot) * 20) /2 * 100) / 100));
                 setBadCompetences(bc);
-                setTotalPoints(g)
-                setDiviser(tot);
+                setTotalPoints(g);
                 setStudent(dat);
                 setActualExam(data);
                 setActualClass(data2);
@@ -127,15 +127,15 @@ const MatB = ({type}) => {
             <tbody>
                 <tr>
                     <td>{downloadTraductions[getLang()].totalPoints}</td>
-                    <td>{totalPoints} / {diviser}</td>
+                    <td>{totalPoints} / {subjects.length * 10}</td>
                     <td>Encouragement :</td>
-                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 12 ? 'oui' : 'non'}</td>
+                    <td>{average > 6 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
                     <td>{downloadTraductions[getLang()].average}</td>
-                    <td>{Math.round((totalPoints / diviser) * 20 * 100) / 100} / 20</td>
-                    <td>Félicitations :</td>
-                    <td>{(Math.round((totalPoints / diviser) * 20 * 100) / 100) > 15 ? 'oui' : 'non'}</td>
+                    <td>{average} / 10</td> 
+                    <td>Tableau d'honneur :</td>
+                    <td>{average > 7.5 ? 'oui' : 'non'}</td>
                 </tr>
                 <tr>
                     <td colSpan={2}>{downloadTraductions[getLang()].rank}</td>
