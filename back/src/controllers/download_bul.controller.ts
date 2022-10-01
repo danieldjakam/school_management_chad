@@ -486,9 +486,6 @@ module.exports.downloadBulletinByClass2 = (req, res) => {
 
 
 
-
-
-
 module.exports.downloadAnnualBulletin = (req, res) => {
     const { exam_id, student_id, class_id, year } = req.params;
     const html = downloadFs.readFileSync('src/templates/BulletinAnnual.html', 'utf-8');
