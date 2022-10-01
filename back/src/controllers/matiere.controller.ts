@@ -23,7 +23,7 @@ module.exports.all = (req, res) => {
     req.connection.query(`SELECT subjects.name, subjects.id, subjects.over, 
                             sections.name as section_name 
                             FROM subjects 
-                            JOIN sections ON sections.id = subjects.section WHERE subjects.school_year = ?`, [req.school_year], (err, resp) => {
+                            JOIN sections ON sections.id = subjects.section`, [], (err, resp) => {
         if(err) console.log(err)
         else res.status(201).json(resp);
     })
@@ -33,7 +33,7 @@ module.exports.all2 = (req, res) => {
     const {type} = req.params;
     req.connection.query(`SELECT subjects.name, subjects.id, subjects.over 
                         FROM subjects JOIN sections ON sections.id = subjects.section 
-                        WHERE sections.type = ? AND subjects.school_year = ?`, [type, req.school_year], (err, resp) => {
+                        WHERE sections.type = ?`, [type], (err, resp) => {
         if(err) console.log(err)
         else res.status(201).json(resp);
         
@@ -41,7 +41,7 @@ module.exports.all2 = (req, res) => {
 }
 
 module.exports.one = (req, res) => {
-    req.connection.query('SELECT * FROM subjects WHERE id = ? AND school_year = ?', [req.params.id, req.school_year], (err, resp) => {
+    req.connection.query('SELECT * FROM subjects WHERE id = ?', [req.params.id], (err, resp) => {
         if(err) console.log(err);
         else res.status(201).json(resp[0]);
     })
@@ -70,7 +70,7 @@ module.exports.update = (req, res) => {
 
 module.exports.delete = (req, res) =>{
     const {id} = req.params;
-    req.connection.query('DELETE FROM subjects WHERE id = ? AND school_year = ?', [id, req.school_year], (err, resp) => {
+    req.connection.query('DELETE FROM subjects WHERE id = ?', [id], (err, resp) => {
         res.status(201).json({success: true})
     })
 }
