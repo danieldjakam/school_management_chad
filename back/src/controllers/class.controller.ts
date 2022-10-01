@@ -133,7 +133,7 @@ module.exports.getSpecialClass = (req : any, res : any) => {
     })
 }
 module.exports.getOneClass = (req : any, res : any) => {
-    req.connection.query(`SELECT class.name, class.section, class.id, 
+    req.connection.query(`SELECT class.name, class.section, class.id,
                             class.inscriptions_news_students, class.inscriptions_olds_students, 
                             class.first_tranch_news_students, class.first_tranch_olds_students, 
                             class.second_tranch_news_students, class.second_tranch_olds_students, 
@@ -144,7 +144,9 @@ module.exports.getOneClass = (req : any, res : any) => {
                             JOIN teachers ON teachers.class_id = class.id WHERE class.id = ? 
                             AND class.school_id = ? `, [req.school_year, req.params.id, req.payload.school_id], (err: any, resp : any) => {
         if(err) console.log(err);
-        res.status(201).json(resp[0]);
+        let classe = resp[0];
+        classe.year = req.school_year;
+        res.status(201).json(classe);
         
     })
 }

@@ -98,7 +98,7 @@ const PrimB = ({type}) => {
 
     return <div className="container">
     <nav className="navbar navbar-expand-lg" style={{padding: '10px 10px'}}>
-        <a target={'_blank'} href={`${host}/download/pdf/bul2/${class_id}/${student_id}/${exam_id}`} className="btn btn-success">Télécharger le bulletin</a>
+        <a target={'_blank'} href={`${host}/download/pdf/bul2/${ActualClass.year}/${class_id}/${student_id}/${exam_id}`} className="btn btn-success">Télécharger le bulletin</a>
     </nav>  
         <BulletinEntete currentClass={ActualClass} actualExam={actualExam} student={student} />
         

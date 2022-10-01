@@ -23,7 +23,7 @@ const months = [
 ]
 
 module.exports.downloadBulletin = (req, res) => {
-    const { exam_id, student_id, class_id } = req.params;
+    const { exam_id, student_id, class_id, year } = req.params;
     const html = downloadFs.readFileSync('src/templates/Bulletin.html', 'utf-8');
     let totalPoint: number = 0;
     let totalNote: number;
@@ -31,8 +31,12 @@ module.exports.downloadBulletin = (req, res) => {
     let badCompetences = [];
 
     req.connection.query('SELECT * FROM trims WHERE id = ?', [exam_id], (t, exam) => {
-        req.connection.query('SELECT * FROM students WHERE class_id = ?', [class_id], (errr, allStudents: []) => {
-            req.connection.query("SELECT students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, students.birthday, students.sex, class.name as cName  FROM students LEFT JOIN class ON class.id = students.class_id LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.id = ?", [student_id], function (err, student, fields) {
+        req.connection.query('SELECT * FROM students WHERE class_id = ? AND students.school_year = ?', [class_id, year], (errr, allStudents: []) => {
+            req.connection.query(`SELECT students.name, teachers.name as tName, teachers.subname as tSubname, 
+                                    students.subname, students.birthday, students.sex, class.name as cName  
+                                    FROM students LEFT JOIN class ON class.id = students.class_id 
+                                    LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.id = ? AND students.school_year = ?`, [student_id, year], 
+                                    function (err, student, fields) {
                 if (err) console.log(err);
                 const stud: {
                     name: string,
@@ -128,14 +132,14 @@ module.exports.downloadBulletin = (req, res) => {
 }
 module.exports.downloadBulletinByClass = (req, res) => {
     const zip = new admZip();
-    const { exam_id, class_id } = req.params;
+    const { exam_id, class_id, year } = req.params;
     const html = downloadFs.readFileSync('src/templates/Bulletin.html', 'utf-8');
     req.connection.query('SELECT * FROM trims WHERE id = ?', [exam_id], (t, exam) => {
         req.connection.query(`SELECT students.id, students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, 
                                 students.birthday, students.sex, class.name as cName  FROM students 
                                 LEFT JOIN class ON class.id = students.class_id 
-                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ?`, 
-            [class_id], function (err, students, fields) {
+                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ? AND students.school_year = ?`, 
+            [class_id, year], function (err, students) {
             if (err) console.log(err);
             else{
                 const dirPath = `docs/${students[0].cName}-${exam[0].name}`;
@@ -234,7 +238,7 @@ module.exports.downloadBulletinByClass = (req, res) => {
     })
 }
 module.exports.downloadBulletin2 = (req, res) => {
-    const { exam_id, student_id, class_id } = req.params;
+    const { exam_id, student_id, class_id, year } = req.params;
     const html = downloadFs.readFileSync('src/templates/Bulletin2.html', 'utf-8');
     let totalPoint: number = 0;
     let totalNote: number;
@@ -242,7 +246,7 @@ module.exports.downloadBulletin2 = (req, res) => {
     let diviser: number = 0;
 
     req.connection.query('SELECT * FROM trims WHERE id = ?', [exam_id], (e, exam) => {
-        req.connection.query('SELECT * FROM students WHERE class_id = ?', [class_id], (errr, allStudents: []) => {
+        req.connection.query('SELECT * FROM students WHERE class_id = ? AND  students.school_year = ?', [class_id, year], (errr, allStudents: []) => {
             req.connection.query(`SELECT students.name, teachers.name as tName, teachers.subname as tSubname, 
                                 students.subname, students.birthday, students.sex, class.name as cName  FROM students 
                                 LEFT JOIN class ON class.id = students.class_id 
@@ -356,16 +360,15 @@ module.exports.downloadBulletin2 = (req, res) => {
 }
 
 module.exports.downloadBulletinByClass2 = (req, res) => {
-    const zip = new admZip();
-    const { exam_id, class_id } = req.params;
+    const { exam_id, class_id, year } = req.params;
     const html = downloadFs.readFileSync('src/templates/Bulletin2.html', 'utf-8');
 
     req.connection.query('SELECT * FROM trims WHERE id = ?', [exam_id], (t, exam) => {
         req.connection.query(`SELECT students.id, students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, 
                                 students.birthday, students.sex, class.name as cName  FROM students 
                                 LEFT JOIN class ON class.id = students.class_id 
-                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ?`, 
-            [class_id], function (err, students, fields) {
+                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ? AND students.school_year = ?`, 
+            [class_id, year], function (err, students, fields) {
             if (err) console.log(err);
             else{
                 const dirPath = `docs/${students[0].cName}-${exam[0].name}`;
@@ -490,7 +493,7 @@ module.exports.downloadBulletinByClass2 = (req, res) => {
 
 
 module.exports.downloadAnnualBulletin = (req, res) => {
-    const { exam_id, student_id, class_id } = req.params;
+    const { exam_id, student_id, class_id, year } = req.params;
     const html = downloadFs.readFileSync('src/templates/BulletinAnnual.html', 'utf-8');
     let totalPoint: number = 0;
     let totalPoint1: number = 0;
@@ -502,8 +505,12 @@ module.exports.downloadAnnualBulletin = (req, res) => {
 
     req.connection.query('SELECT * FROM annual_exams WHERE id = ?', [exam_id], (t, exam) => {
         req.connection.query('SELECT * FROM trims', (e, trims) => {
-            req.connection.query('SELECT * FROM students WHERE class_id = ?', [class_id], (errr, allStudents: []) => {
-                req.connection.query("SELECT students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, students.birthday, students.sex, class.name as cName  FROM students LEFT JOIN class ON class.id = students.class_id LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.id = ?", [student_id], function (err, student, fields) {
+            req.connection.query('SELECT * FROM students WHERE class_id = ? AND students.school_year = ?', [class_id, year], (errr, allStudents: []) => {
+                req.connection.query(`SELECT students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, 
+                                        students.birthday, students.sex, class.name as cName  FROM students 
+                                        LEFT JOIN class ON class.id = students.class_id 
+                                        LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.id = ? AND students.school_year = ?`, 
+                                        [student_id, year], function (err, student, fields) {
                     if (err) console.log(err);
                     const stud: {
                         name: string,
@@ -703,16 +710,16 @@ module.exports.downloadAnnualBulletin = (req, res) => {
 }
 
 module.exports.downloadAnnualBulletinByClass = (req, res) => {
-    const zip = new admZip();
-    const { exam_id, class_id } = req.params;
+    // const zip = new admZip();
+    const { exam_id, class_id, year } = req.params;
     const html = downloadFs.readFileSync('src/templates/BulletinAnnual.html', 'utf-8');
     req.connection.query('SELECT * FROM annual_exams WHERE id = ?', [exam_id], (t, exam) => {
         req.connection.query(`SELECT students.id, students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, 
                                 students.birthday, students.sex, class.name as cName  FROM students 
                                 LEFT JOIN class ON class.id = students.class_id 
-                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ?`, 
+                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ? AND students.school_year = ?`, 
         
-            [class_id], function (err, students) {
+            [class_id, year], function (err, students) {
                 if (err) console.log(err);
                 else{
                     req.connection.query('SELECT * FROM trims', (e, trims) => {
@@ -922,7 +929,7 @@ module.exports.downloadAnnualBulletinByClass = (req, res) => {
     })
 }
 module.exports.downloadAnnualBulletin2 = (req, res) => {
-    const { exam_id, student_id, class_id } = req.params;
+    const { exam_id, student_id, class_id, year } = req.params;
     const html = downloadFs.readFileSync('src/templates/BulletinAnnual2.html', 'utf-8');
 
     let totalPoint: number = 0;
@@ -936,7 +943,11 @@ module.exports.downloadAnnualBulletin2 = (req, res) => {
     req.connection.query('SELECT * FROM annual_exams WHERE id = ?', [exam_id], (t, exam) => {
         req.connection.query('SELECT * FROM trims', (e, trims) => {
             req.connection.query('SELECT * FROM students WHERE class_id = ?', [class_id], (errr, allStudents: []) => {
-                req.connection.query("SELECT students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, students.birthday, students.sex, class.name as cName  FROM students LEFT JOIN class ON class.id = students.class_id LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.id = ?", [student_id], function (err, student, fields) {
+                req.connection.query(`SELECT students.name, teachers.name as tName, teachers.subname as tSubname, students.subname,
+                                        students.birthday, students.sex, class.name as cName  FROM students 
+                                        LEFT JOIN class ON class.id = students.class_id 
+                                        LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.id = ? AND students.school_year = ?`, 
+                                        [student_id, year], function (err, student, fields) {
                     if (err) console.log(err);
                     const stud: {
                         name: string,
@@ -1184,15 +1195,15 @@ module.exports.downloadAnnualBulletin2 = (req, res) => {
 
 module.exports.downloadAnnualBulletinByClass2 = (req, res) => {
     const zip = new admZip();
-    const { exam_id, class_id } = req.params;
+    const { exam_id, class_id, year } = req.params;
     const html = downloadFs.readFileSync('src/templates/BulletinAnnual2.html', 'utf-8');
     req.connection.query('SELECT * FROM annual_exams WHERE id = ?', [exam_id], (t, exam) => {
         req.connection.query(`SELECT students.id, students.name, teachers.name as tName, teachers.subname as tSubname, students.subname, 
                                 students.birthday, students.sex, class.name as cName  FROM students 
                                 LEFT JOIN class ON class.id = students.class_id 
-                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ?`, 
+                                LEFT JOIN teachers ON teachers.class_id = class.id WHERE students.class_id = ? AND students.school_year = `, 
         
-            [class_id], function (err, students) {
+            [class_id, year], function (err, students) {
                 if (err) console.log(err);
                 else{
                     req.connection.query('SELECT * FROM trims', (e, trims) => {

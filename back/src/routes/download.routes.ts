@@ -12,20 +12,20 @@ routerForDownload.get('/pdf/students/:id', authGlobalForDownload, downloadContro
 
 //Make bulletins
 
-routerForDownload.get('/pdf/bul/:class_id/:exam_id', authGlobalForDownload, downloadBulController.downloadBulletinByClass)
-routerForDownload.get('/pdf/bul/:class_id/:student_id/:exam_id', authGlobalForDownload, downloadBulController.downloadBulletin)
+routerForDownload.get('/pdf/bul/:year/:class_id/:exam_id', authGlobalForDownload, downloadBulController.downloadBulletinByClass)
+routerForDownload.get('/pdf/bul/:year/:class_id/:student_id/:exam_id', authGlobalForDownload, downloadBulController.downloadBulletin)
 
-routerForDownload.get('/pdf/bul2/:class_id/:exam_id', authGlobalForDownload, downloadBulController.downloadBulletinByClass2)
-routerForDownload.get('/pdf/bul2/:class_id/:student_id/:exam_id', authGlobalForDownload, downloadBulController.downloadBulletin2)
+routerForDownload.get('/pdf/bul2/:year/:class_id/:exam_id', authGlobalForDownload, downloadBulController.downloadBulletinByClass2)
+routerForDownload.get('/pdf/bul2/:year/:class_id/:student_id/:exam_id', authGlobalForDownload, downloadBulController.downloadBulletin2)
 
 //Make bulletins Annual
 
-routerForDownload.get('/pdf/bul-an/:class_id/:exam_id', authGlobalForDownload, downloadBulController.downloadAnnualBulletinByClass)
-routerForDownload.get('/pdf/bul-an/:class_id/:student_id/:exam_id', authGlobalForDownload, downloadBulController.downloadAnnualBulletin)
+routerForDownload.get('/pdf/bul-an/:year/:class_id/:exam_id', authGlobalForDownload, downloadBulController.downloadAnnualBulletinByClass)
+routerForDownload.get('/pdf/bul-an/:year/:class_id/:student_id/:exam_id', authGlobalForDownload, downloadBulController.downloadAnnualBulletin)
 
 
-routerForDownload.get('/pdf/bul-an2/:class_id/:exam_id', authGlobalForDownload, downloadBulController.downloadAnnualBulletinByClass2)
-routerForDownload.get('/pdf/bul-an2/:class_id/:student_id/:exam_id', authGlobalForDownload, downloadBulController.downloadAnnualBulletin2)
+routerForDownload.get('/pdf/bul-an2/:year/:class_id/:exam_id', authGlobalForDownload, downloadBulController.downloadAnnualBulletinByClass2)
+routerForDownload.get('/pdf/bul-an2/:year/:class_id/:student_id/:exam_id', authGlobalForDownload, downloadBulController.downloadAnnualBulletin2)
 
 routerForDownload.get('/recu/:student_id/:amount/:payload', authGlobalForDownload, downloadController.downloadRecu);
 routerForDownload.get('/recu2/:student_id/:amount/:payload', authGlobalForDownload, downloadController.downloadRecu2);
