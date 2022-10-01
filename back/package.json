@@ -17,7 +17,7 @@
     "nodemailer": "^6.7.5",
     "nodemon": "^2.0.20",
     "pdf-creator-node": "^2.3.4",
-    "ts-node": "^10.8.1",
+    "ts-node": "^10.9.1",
     "validator": "^13.7.0"
   },
   "name": "back",
