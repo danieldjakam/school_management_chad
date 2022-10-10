@@ -10,6 +10,12 @@
         <li>
             We can fill note of students and make bulletin
         </li>
+        <li>
+            We registe students
+        </li>
+        <li>
+            And many more...
+        </li>
     </ul>
 </p>
 
