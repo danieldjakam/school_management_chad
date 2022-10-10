@@ -5,10 +5,22 @@
     <h4>He has many functions:</h4>
     <ul>
         <li>
-            We can register students, teachers .
+            We can register students, teachers, classes, sections,...
         </li>
         <li>
             We can fill note of students and make bulletin
         </li>
     </ul>
+</p>
+
+<h2>Author: danieldjakam</h2>
+<h3>How to contact me ?</h3>
+<p>
+    Git: <a target='_blank' href="https://github.com/danieldjakam">danieldjakam</a>
+</p>
+<p>
+    Email: <a target='_blank' href="mailto:danidjakam@gmail.com">danidjakam@gmail.com</a>
+</p>
+<p>
+    Instagram: <a target='_blank' href="https://www.instagram.com/daniel_djakam/">@daniel_djakam</a>
 </p>
