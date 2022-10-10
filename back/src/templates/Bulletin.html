@@ -9,12 +9,13 @@
             .table1, .table2{
                 border-collapse: collapse;
                 width: 100%;
-                margin-top: 30px;
-                margin-bottom: 30px;
+                margin-top: 15px;
+                margin-bottom: 15px;
                 font-size: 15px;
             }
             .com{
                 font-weight: bold;
+                padding: 0 40px;
             }
             .table1 td, .table1 th{
                 /* text-align: center; */
@@ -80,19 +81,19 @@
         <table class='table1'>
             <thead>
                 <tr>
-                    <th>NOMS ET PRENOMS</th>
+                    <th style="width: 250px;">NOMS ET PRENOMS</th>.
                     <th colspan=3>{{ student.name }} {{student.subname}} </th>
                 </tr>
                 <tr>
-                    <th>DATE DE NAISSANCE</th>
+                    <th style="width: 200px;">DATE DE NAISSANCE</th>
                     <th class='th'> {{student.birthday}} </th>
-                    <th>SEXE</th>
+                    <th style="width: 200px;">SEXE</th>
                     <th> {{student.sex}} </th>
                 </tr>
                 <tr>
-                    <th>CLASSE</th>
+                    <th style="width: 200px;">CLASSE</th>
                     <th class='th'> {{student.cName}} </th>
-                    <th>ENSEIGNANT</th>
+                    <th style="width: 200px;">ENSEIGNANT</th>
                     <th class='th'> {{info.teacherName}} {{info.teacherSubname}} </th>
                 </tr>
             </thead>
