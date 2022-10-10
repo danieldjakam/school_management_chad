@@ -11,7 +11,7 @@
             We can fill note of students and make bulletin
         </li>
         <li>
-            We registe students
+            We pay the inscriptions fees of students
         </li>
         <li>
             And many more...
