@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { sequenceTraductions } from '../../../local/sequence';
 import { host } from '../../../utils/fetch';
-import { handleChangeCsvFile } from '../../../utils/functions';
 
 const PrimA = ({type}) => {
     const [students, setStudents ] = useState([]);
@@ -132,7 +131,6 @@ const PrimA = ({type}) => {
             {
                 notes.length > 0 ? students.length > 0 ? students.map((student, index) => {
                     const notesForStudent = loading ? {} : notes.filter(n => n.student_id === student.id.toString());
-                    let to = 0;
                     return <tr key={index}>
                         <td>
                             {index + 1}
@@ -155,7 +153,6 @@ const PrimA = ({type}) => {
                                             parseFloat(notesForStudent.filter(n => n.subject_id === subject.id.toString() 
                                             && n.subject_type === 'compo')[0].value) 
                                         : 0
-                                to += (note1 + note2);
                                 let t2 = note1 + note2;
                                 return <>
                                     <td key={id}>
@@ -201,7 +198,7 @@ const PrimA = ({type}) => {
         </tbody>
     </table>
     {
-        loading ? 'studentsPoints' : ''
+        loading ? totalPoints : ''
     }
     </div>
 }

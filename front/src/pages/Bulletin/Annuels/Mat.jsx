@@ -364,7 +364,7 @@ const MatB = ({type}) => {
             </tbody>
         </table>
     {
-        loading ? 'studentsPoints' : ''
+        loading ? diviser : ''
     }
     </div>
 }

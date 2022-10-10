@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { sequenceTraductions } from '../../../local/sequence';
 import { host } from '../../../utils/fetch';
-import { handleChangeCsvFile } from '../../../utils/functions';
 
 const Mat = ({type}) => {
     const [students, setStudents ] = useState([]);

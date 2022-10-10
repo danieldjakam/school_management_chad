@@ -8,7 +8,7 @@ function EditAmount({setAmount, setTotalAmount, setIsAmount}) {
     const addAmount = (d) => {
         setEdition(v => v + d);
     }
-    const [hasr, setHasr] = useState(false);
+    const [hasr] = useState(false);
     const handleCancel = () => {
       setIsAmount(v => !v)
     }

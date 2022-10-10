@@ -71,14 +71,7 @@ const Promotion = () => {
         }else{
             arr[classId].push(studentId);
         }
-        // console.log(arr);
         setClassesIds(arr);
-        // console.log(classeIds);
-    }
-
-    const check = (stId, clId) => {
-        const val = classeIds[clId].includes(stId);
-        return val;
     }
 
 
