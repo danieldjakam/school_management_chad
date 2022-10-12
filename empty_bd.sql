@@ -14,7 +14,7 @@
 
 
 -- Listage de la structure de la base pour empty_db
-CREATE DATABASE IF NOT EXISTS `empty_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE IF NOT EXISTS `empty_db` /*!40100 DEFAULT CHARACTER SET latin1 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `empty_db`;
 
 -- Listage de la structure de la table empty_db. annual_exams
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `annual_exams` (
   `name` varchar(255) NOT NULL,
   `school_year` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Listage des données de la table empty_db.annual_exams : ~0 rows (environ)
 /*!40000 ALTER TABLE `annual_exams` DISABLE KEYS */;
@@ -46,9 +46,9 @@ CREATE TABLE IF NOT EXISTS `class` (
   `first_tranch_olds_students` int DEFAULT '0',
   `second_tranch_news_students` int DEFAULT '0',
   `second_tranch_olds_students` int DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Listage des données de la table empty_db.class : ~3 rows (environ)
+-- Listage des données de la table empty_db.class : ~0 rows (environ)
 /*!40000 ALTER TABLE `class` DISABLE KEYS */;
 /*!40000 ALTER TABLE `class` ENABLE KEYS */;
 
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `notes` (
   `school_year` varchar(255) NOT NULL DEFAULT '2022',
   `subject_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Listage des données de la table empty_db.notes : ~0 rows (environ)
 /*!40000 ALTER TABLE `notes` DISABLE KEYS */;
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `notes_primary` (
   `subject_id` varchar(255) DEFAULT NULL,
   `subject_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=159 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 -- Listage des données de la table empty_db.notes_primary : ~0 rows (environ)
 /*!40000 ALTER TABLE `notes_primary` DISABLE KEYS */;
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `payments` (
   `student_id` varchar(255) DEFAULT NULL,
   `operator_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Listage des données de la table empty_db.payments : ~0 rows (environ)
 /*!40000 ALTER TABLE `payments` DISABLE KEYS */;
@@ -106,9 +106,9 @@ CREATE TABLE IF NOT EXISTS `schools` (
   `name` varchar(255) NOT NULL,
   `secret_code` varchar(255) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Listage des données de la table empty_db.schools : ~0 rows (environ)
+-- Listage des données de la table empty_db.schools : ~1 rows (environ)
 /*!40000 ALTER TABLE `schools` DISABLE KEYS */;
 INSERT INTO `schools` (`id`, `name`, `secret_code`, `created_at`) VALUES
 	('eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU', 'La semence', '$2b$10$/lG72..EAFI.aPBzKYYfa.9CM2cSRbtibsshpaoqRn4x36GEY80Oy', '2022-06-26 12:27:44');
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `sections` (
   `type` int NOT NULL,
   `school_year` varchar(255) DEFAULT '2022',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Listage des données de la table empty_db.sections : ~0 rows (environ)
 /*!40000 ALTER TABLE `sections` DISABLE KEYS */;
@@ -134,12 +134,12 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `year_school` year NOT NULL,
   `school_id` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Listage des données de la table empty_db.settings : ~0 rows (environ)
+-- Listage des données de la table empty_db.settings : ~1 rows (environ)
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
 INSERT INTO `settings` (`id`, `is_editable`, `year_school`, `school_id`) VALUES
-	(6, 'yes', '2022', 'eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU');
+	(1, 'yes', '2022', 'eyJhbGciOiJIUzI1NiJ9.TGEgc2VtZW5jZQ.fRwDFJ3L2PVmkUqN4jd2fVM6kbTM_43Bb1LSFMLOOGU');
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 
 -- Listage de la structure de la table empty_db. stats
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `stats` (
   `school_year` varchar(255) NOT NULL DEFAULT '2022',
   `totalPoints` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Listage des données de la table empty_db.stats : ~0 rows (environ)
 /*!40000 ALTER TABLE `stats` DISABLE KEYS */;
@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `students` (
   `first_tranch` int DEFAULT '0',
   `second_tranch` int DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Listage des données de la table empty_db.students : ~0 rows (environ)
 /*!40000 ALTER TABLE `students` DISABLE KEYS */;
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `subjects` (
   `section` varchar(255) DEFAULT NULL,
   `over` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Listage des données de la table empty_db.subjects : ~0 rows (environ)
 /*!40000 ALTER TABLE `subjects` DISABLE KEYS */;
@@ -211,9 +211,9 @@ CREATE TABLE IF NOT EXISTS `teachers` (
   `phone_number` varchar(255) DEFAULT NULL,
   `school_id` varchar(255) NOT NULL,
   `school_year` varchar(255) DEFAULT '2022'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Listage des données de la table empty_db.teachers : ~3 rows (environ)
+-- Listage des données de la table empty_db.teachers : ~0 rows (environ)
 /*!40000 ALTER TABLE `teachers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `teachers` ENABLE KEYS */;
 
@@ -222,9 +222,9 @@ CREATE TABLE IF NOT EXISTS `trims` (
   `id` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `school_year` int DEFAULT '2022'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Listage des données de la table empty_db.trims : ~3 rows (environ)
+-- Listage des données de la table empty_db.trims : ~0 rows (environ)
 /*!40000 ALTER TABLE `trims` DISABLE KEYS */;
 /*!40000 ALTER TABLE `trims` ENABLE KEYS */;
 
@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(255) DEFAULT NULL,
   `school_id` varchar(255) NOT NULL,
   `role` varchar(255) DEFAULT 'ad'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Listage des données de la table empty_db.users : ~2 rows (environ)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
