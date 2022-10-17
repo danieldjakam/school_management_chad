@@ -133,7 +133,8 @@ module.exports.downloadRecu = (req: any, res: any) => {
                                 inscription,
                                 school_year: new Date().getFullYear(),
                                 next_school_year: new Date().getFullYear() + 1,
-                                date : new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear() + ' à ' + new Date().getHours()  + ':' + new Date().getMinutes() ,
+                                date : new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear() 
+                                            + ' à ' + new Date().getHours()  + ':' + new Date().getMinutes() ,
                                 username,
                                 first_tranch,
                                 second_tranch,
@@ -322,10 +323,9 @@ module.exports.downloadInsolvablesList = (req, res) => {
                         const inscription = student.status === 'old' ? student.inscriptions_olds_students : student.inscriptions_news_students
                         const first_tranch = student.status === 'old' ? student.first_tranch_olds_students : student.first_tranch_news_students
                         const second_tranch = student.status === 'old' ? student.second_tranch_olds_students : student.second_tranch_news_students;
-                        const third_tranch = student.status === 'old' ? student.third_tranch_olds_students : student.third_tranch_news_students;
 
-                        const restToPay = (inscription + first_tranch + second_tranch + third_tranch) - (student.inscription + student.first_tranch + student.second_tranch + student.third_tranch);
-                        const totalPayed = (student.inscription + student.first_tranch + student.second_tranch + student.third_tranch);
+                        const restToPay = (inscription + first_tranch + second_tranch) - (student.inscription + student.first_tranch + student.second_tranch);
+                        const totalPayed = (student.inscription + student.first_tranch + student.second_tranch);
 
                         if (student.inscription == 0) {
                             global.nothing.ins += 1
@@ -357,16 +357,6 @@ module.exports.downloadInsolvablesList = (req, res) => {
                             global.payed.str += 1
                         }
 
-                        if (student.third_tranch == 0) {
-                            global.nothing.ttr += 1
-                        }
-                        else if (student.third_tranch < third_tranch ) {
-                            global.avanced.ttr += 1
-                        }
-                        else {
-                            global.payed.ttr += 1
-                        }
-
                         if (totalPayed == 0) {
                             global.nothing.general += 1
                         }
@@ -379,9 +369,8 @@ module.exports.downloadInsolvablesList = (req, res) => {
                         global.total.inscription += student.inscription;
                         global.total.first_tranch += student.first_tranch;
                         global.total.second_tranch += student.second_tranch;
-                        global.total.third_tranch += student.third_tranch;
                     });
-                    global.total.general = global.total.inscription + global.total.first_tranch + global.total.second_tranch + global.total.third_tranch;
+                    global.total.general = global.total.inscription + global.total.first_tranch + global.total.second_tranch;
                     let name = '';
                     let info: {
                         className: string,
@@ -402,20 +391,17 @@ module.exports.downloadInsolvablesList = (req, res) => {
                         const inscription = student.status === 'old' ? classe.inscriptions_olds_students : classe.inscriptions_news_students
                         const first_tranch = student.status === 'old' ? classe.first_tranch_olds_students : classe.first_tranch_news_students
                         const second_tranch = student.status === 'old' ? classe.second_tranch_olds_students : classe.second_tranch_news_students;
-                        const third_tranch = student.status === 'old' ? classe.third_tranch_olds_students : classe.third_tranch_news_students;
         
                         const inscription_rest = inscription - student.inscription;
                         const first_tranch_rest = first_tranch - student.first_tranch;
                         const second_tranch_rest = second_tranch - student.second_tranch;
-                        const third_tranch_rest = third_tranch - student.third_tranch;
         
-                        const restToPay = (inscription + first_tranch + second_tranch + third_tranch) - (student.inscription + student.first_tranch + student.second_tranch + student.third_tranch);
-                        const totalToPay = inscription + first_tranch + second_tranch + third_tranch;
-                        const totalPayed = (student.inscription + student.first_tranch + student.second_tranch + student.third_tranch);
+                        const restToPay = (inscription + first_tranch + second_tranch ) - (student.inscription + student.first_tranch + student.second_tranch);
+                        const totalToPay = inscription + first_tranch + second_tranch ;
+                        const totalPayed = (student.inscription + student.first_tranch + student.second_tranch );
                         total.inscription += student.inscription;
                         total.first_tranch += student.first_tranch;
                         total.second_tranch += student.second_tranch;
-                        total.third_tranch += student.third_tranch;
                         total.general += totalPayed
 
                         
@@ -449,15 +435,6 @@ module.exports.downloadInsolvablesList = (req, res) => {
                             global_by_class.payed.str += 1
                         }
 
-                        if (student.third_tranch == 0) {
-                            global_by_class.nothing.ttr += 1
-                        }
-                        else if (student.third_tranch < third_tranch ) {
-                            global_by_class.avanced.ttr += 1
-                        }
-                        else {
-                            global_by_class.payed.ttr += 1
-                        }
 
                         if (totalPayed == 0) {
                             global_by_class.nothing.general += 1
@@ -496,27 +473,16 @@ module.exports.downloadInsolvablesList = (req, res) => {
                                 name = 'la deuxième tranche';
                                 break;
         
-                            case '4':
-                                if (third_tranch_rest >= 0) {
-                                    student.rest = third_tranch_rest;
-                                    students2.add(student);
-                                }
-                                name = 'la troisième tranche';
-                                fileName = `Troisieme tranche en ${info.className}.pdf`;
-                                break;
-                                
                             case '6':
                                 fileToRead = 'insolvablesTotal';
                                 student.inscription_rest = inscription_rest;
                                 student.first_tranch_rest = first_tranch_rest;
                                 student.second_tranch_rest = second_tranch_rest;
-                                student.third_tranch_rest = third_tranch_rest;
                                 student.restToPay = restToPay;
                                 
                                 student.inscription_scolarity = inscription;
                                 student.first_tranch_scolarity = first_tranch;
                                 student.second_tranch_scolarity = second_tranch;
-                                student.third_tranch_scolarity = third_tranch;
                                 student.totalToPay = totalToPay;
         
                                 students2 = students;
@@ -530,7 +496,6 @@ module.exports.downloadInsolvablesList = (req, res) => {
                                 student.inscription_scolarity = inscription;
                                 student.first_tranch_scolarity = first_tranch;
                                 student.second_tranch_scolarity = second_tranch;
-                                student.third_tranch_scolarity = third_tranch;
                                 student.totalToPay = totalToPay;
         
                                 students2 = students;
