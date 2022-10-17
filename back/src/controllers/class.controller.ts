@@ -3,8 +3,7 @@ module.exports.addClass = (req : any, res : any) => {
         name, section, level, 
         inscriptions_olds_students, inscriptions_news_students, 
         first_tranch_news_students, first_tranch_olds_students, 
-        second_tranch_news_students, second_tranch_olds_students,
-        third_tranch_news_students, third_tranch_olds_students
+        second_tranch_news_students, second_tranch_olds_students
     } = req.body;
     level = parseInt(level)
     if (name && name !== '' && section && section !== '' && level) {
@@ -15,16 +14,14 @@ module.exports.addClass = (req : any, res : any) => {
             req.connection.query(`INSERT INTO class(id, name, level, section, 
                                     inscriptions_olds_students, inscriptions_news_students, 
                                     first_tranch_news_students, first_tranch_olds_students, 
-                                    second_tranch_news_students, second_tranch_olds_students, 
-                                    third_tranch_news_students, third_tranch_olds_students, 
+                                    second_tranch_news_students, second_tranch_olds_students,
                                     school_id, school_year) 
-                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
                                     [req.jwt.sign(name, req.env.SECRET), 
                                         name, level, section,
                                         inscriptions_olds_students, inscriptions_news_students, 
                                         first_tranch_news_students, first_tranch_olds_students, 
-                                        second_tranch_news_students, second_tranch_olds_students, 
-                                        third_tranch_news_students, third_tranch_olds_students, 
+                                        second_tranch_news_students, second_tranch_olds_students,
                                         req.payload.school_id, req.school_year], (err: any, resp : any) => {
                 if(err) console.log(err);
                 else res.status(201).json({success: true})
@@ -40,8 +37,7 @@ module.exports.updateClass = (req : any, res : any) => {
         name, section, level, 
         inscriptions_olds_students, inscriptions_news_students, 
         first_tranch_news_students, first_tranch_olds_students, 
-        second_tranch_news_students, second_tranch_olds_students,
-        third_tranch_news_students, third_tranch_olds_students,
+        second_tranch_news_students, second_tranch_olds_students
     } = req.body;
     level = parseInt(level);    
     const {id} = req.params;
@@ -53,14 +49,12 @@ module.exports.updateClass = (req : any, res : any) => {
             req.connection.query(`UPDATE class SET name = ? , section = ?, level = ?, 
                                     inscriptions_olds_students = ?, inscriptions_news_students = ?, 
                                     first_tranch_news_students = ?, first_tranch_olds_students = ?, 
-                                    second_tranch_news_students = ?, second_tranch_olds_students = ?, 
-                                    third_tranch_news_students = ?, third_tranch_olds_students = ?
+                                    second_tranch_news_students = ?, second_tranch_olds_students = ?
                                     WHERE id = ?`, 
                                     [ name, section, level, 
                                         inscriptions_olds_students, inscriptions_news_students, 
                                         first_tranch_news_students, first_tranch_olds_students, 
-                                        second_tranch_news_students, second_tranch_olds_students, 
-                                        third_tranch_news_students, third_tranch_olds_students,
+                                        second_tranch_news_students, second_tranch_olds_students,
                                         id], (err: any, resp : any) => {
                 if(err) console.log(err);
 
@@ -82,7 +76,8 @@ module.exports.getClassByLevel = (req : any, res : any) => {
     })
 }
 module.exports.getAllClass = (req : any, res : any) => {
-    req.connection.query(`SELECT class.name as name, class.id, inscriptions_olds_students, inscriptions_news_students, class.level, sections.name as sName, 
+    req.connection.query(`SELECT class.name as name, class.id, inscriptions_olds_students, inscriptions_news_students, class.level, 
+                            sections.name as sName, 
                             (select count(id) FROM students where students.class_id = class.id and students.school_year = ?) as total_students  
                             FROM class LEFT JOIN sections ON sections.id = class.section WHERE school_id = ?`, 
                             [req.school_year, req.payload.school_id], (err: any, classes : any) => {
@@ -137,7 +132,6 @@ module.exports.getOneClass = (req : any, res : any) => {
                             class.inscriptions_news_students, class.inscriptions_olds_students, 
                             class.first_tranch_news_students, class.first_tranch_olds_students, 
                             class.second_tranch_news_students, class.second_tranch_olds_students, 
-                            class.third_tranch_news_students, class.third_tranch_olds_students,
                             class.level, sections.type, teachers.name as teacher_name, teachers.subname as teacher_subname, 
                             (select count(id) FROM students where students.class_id = class.id AND students.school_year = ?) as total_students 
                             FROM class JOIN sections ON sections.id = class.section 

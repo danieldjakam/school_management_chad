@@ -52,7 +52,7 @@ module.exports.addStudent = (req, res) => {
 module.exports.updateStudent = (req, res) => {
     const {id} = req.params;
     const {name, subname ,fatherName, phone_number, profession, email, sex, 
-        birthday_place, status, inscription, first_tranch, second_tranch, third_tranch
+        birthday_place, status, inscription, first_tranch, second_tranch
     } = req.body;
     if (name) {
         if (name.length < 3) {
@@ -74,10 +74,10 @@ module.exports.updateStudent = (req, res) => {
             req.connection.query(`UPDATE students SET name = ?, subname = ?, sex = ?, email = ?, 
                                     phone_number = ?, fatherName = ?, profession = ?, birthday_place = ?, 
                                     status = ?, inscription = ?, first_tranch = ?, second_tranch = ?, 
-                                    third_tranch = ? WHERE id = ? AND school_id = ?`, 
+                                    WHERE id = ? AND school_id = ?`, 
                                     [name, subname, sex, email, phone_number.toString(), 
                                         fatherName, profession, birthday_place, status, inscription, 
-                                        first_tranch, second_tranch, third_tranch,
+                                        first_tranch, second_tranch,
                                         id, req.payload.school_id], (err, resp) => {
                 if(err) console.log(err);
                 else res.status(201).json({success: true})
@@ -105,7 +105,6 @@ module.exports.getAllStudent = (req, res) => {
                                 c.inscriptions_news_students, c.inscriptions_olds_students,
                                 c.first_tranch_news_students, c.first_tranch_olds_students,
                                 c.second_tranch_news_students, c.second_tranch_olds_students,
-                                c.third_tranch_news_students, c.third_tranch_olds_students,
                                 s.fatherName, s.email, s.phone_number,
                                 s.id, s.status, s.phone_number,
                                 s.profession, s.inscription, s.first_tranch,

@@ -112,14 +112,12 @@ module.exports.downloadRecu = (req: any, res: any) => {
                     const inscription = student.status === 'old' ? classe.inscriptions_olds_students : classe.inscriptions_news_students
                     const first_tranch = student.status === 'old' ? classe.first_tranch_olds_students : classe.first_tranch_news_students
                     const second_tranch = student.status === 'old' ? classe.second_tranch_olds_students : classe.second_tranch_news_students;
-                    const third_tranch = student.status === 'old' ? classe.third_tranch_olds_students : classe.third_tranch_news_students;
-                    const total = inscription + first_tranch + second_tranch + third_tranch ;
+                    const total = inscription + first_tranch + second_tranch;
                     const totalPayed = student.inscription + student.first_tranch + student.second_tranch + student.third_tranch;
 
                     const inscription_rest = inscription - student.inscription;
                     const first_tranch_rest = first_tranch - student.first_tranch;
                     const second_tranch_rest = second_tranch - student.second_tranch;
-                    const third_tranch_rest = third_tranch - student.third_tranch;
 
                     req.connection.query('SELECT * FROM users WHERE id = ?', [trust_payload.id], (eee, users) => {
                         const user = users[0];
@@ -139,12 +137,10 @@ module.exports.downloadRecu = (req: any, res: any) => {
                                 username,
                                 first_tranch,
                                 second_tranch,
-                                third_tranch,
                                 inscription_rest,
                                 first_tranch_rest,
                                 second_tranch_rest,
-                                third_tranch_rest,
-                                totalFees: first_tranch + second_tranch + third_tranch,
+                                totalFees: first_tranch + second_tranch,
                                 total,
                                 totalPayed,
                                 difference: total - totalPayed
@@ -196,14 +192,12 @@ module.exports.downloadRecu2 = (req: any, res: any) => {
                     const inscription = student.status === 'old' ? classe.inscriptions_olds_students : classe.inscriptions_news_students
                     const first_tranch = student.status === 'old' ? classe.first_tranch_olds_students : classe.first_tranch_news_students
                     const second_tranch = student.status === 'old' ? classe.second_tranch_olds_students : classe.second_tranch_news_students;
-                    const third_tranch = student.status === 'old' ? classe.third_tranch_olds_students : classe.third_tranch_news_students;
-                    const total = inscription + first_tranch + second_tranch + third_tranch;
+                    const total = inscription + first_tranch + second_tranch;
                     const totalPayed = student.inscription + student.first_tranch + student.second_tranch + student.third_tranch;
 
                     const inscription_rest = inscription - student.inscription;
                     const first_tranch_rest = first_tranch - student.first_tranch;
                     const second_tranch_rest = second_tranch - student.second_tranch;
-                    const third_tranch_rest = third_tranch - student.third_tranch;
 
                     req.connection.query('SELECT * FROM users WHERE id = ?', [trust_payload.id], (eee, users) => {
                         const user = users[0];
@@ -223,12 +217,10 @@ module.exports.downloadRecu2 = (req: any, res: any) => {
                                 username,
                                 first_tranch,
                                 second_tranch,
-                                third_tranch,
                                 inscription_rest,
                                 first_tranch_rest,
                                 second_tranch_rest,
-                                third_tranch_rest,
-                                totalFees: first_tranch + second_tranch + third_tranch,
+                                totalFees: first_tranch + second_tranch,
                                 total,
                                 totalPayed,
                                 difference: total - totalPayed
@@ -279,28 +271,24 @@ module.exports.downloadInsolvablesList = (req, res) => {
                             ins: 0,
                             ftr: 0,
                             str: 0,
-                            ttr: 0,
                             general: 0
                         },
                         avanced: {
                             ins: 0,
                             ftr: 0,
                             str: 0,
-                            ttr: 0,
                             general: 0
                         },
                         nothing: {
                             ins: 0,
                             ftr: 0,
                             str: 0,
-                            ttr: 0,
                             general: 0
                         },
                         total: {
                             inscription: 0,
                             first_tranch: 0,
                             second_tranch: 0,
-                            third_tranch: 0,
                             general: 0
                         }
                     };
@@ -309,28 +297,24 @@ module.exports.downloadInsolvablesList = (req, res) => {
                             ins: 0,
                             ftr: 0,
                             str: 0,
-                            ttr: 0,
                             general: 0
                         },
                         avanced: {
                             ins: 0,
                             ftr: 0,
                             str: 0,
-                            ttr: 0,
                             general: 0
                         },
                         nothing: {
                             ins: 0,
                             ftr: 0,
                             str: 0,
-                            ttr: 0,
                             general: 0
                         },
                         total: {
                             inscription: 0,
                             first_tranch: 0,
                             second_tranch: 0,
-                            third_tranch: 0,
                             general: 0
                         }
                     };
@@ -631,10 +615,9 @@ module.exports.downloadRecette = (req, res) => {
             const inscription = student.status === 'old' ? student.inscriptions_olds_students : student.inscriptions_news_students
             const first_tranch = student.status === 'old' ? student.first_tranch_olds_students : student.first_tranch_news_students
             const second_tranch = student.status === 'old' ? student.second_tranch_olds_students : student.second_tranch_news_students;
-            const third_tranch = student.status === 'old' ? student.third_tranch_olds_students : student.third_tranch_news_students;
 
-            const restToPay = (inscription + first_tranch + second_tranch + third_tranch ) - (student.inscription + student.first_tranch + student.second_tranch + student.third_tranch);
-            const totalPayed = (student.inscription + student.first_tranch + student.second_tranch + student.third_tranch);
+            const restToPay = (inscription + first_tranch + second_tranch ) - (student.inscription + student.first_tranch + student.second_tranch);
+            const totalPayed = (student.inscription + student.first_tranch + student.second_tranch);
 
             if (student.inscription == 0) {
                 global.nothing.ins += 1
@@ -665,16 +648,6 @@ module.exports.downloadRecette = (req, res) => {
             else {
                 global.payed.str += 1
             }
-
-            if (student.third_tranch == 0) {
-                global.nothing.ttr += 1
-            }
-            else if (student.third_tranch < third_tranch ) {
-                global.avanced.ttr += 1
-            }
-            else {
-                global.payed.ttr += 1
-            }
             
 
             if (totalPayed == 0) {
@@ -689,10 +662,9 @@ module.exports.downloadRecette = (req, res) => {
             global.total.inscription += student.inscription;
             global.total.first_tranch += student.first_tranch;
             global.total.second_tranch += student.second_tranch;
-            global.total.third_tranch += student.third_tranch;
         })
         
-        global.total.general = global.total.inscription + global.total.first_tranch + global.total.second_tranch + global.total.third_tranch
+        global.total.general = global.total.inscription + global.total.first_tranch + global.total.second_tranch;
         req.connection.query(`SELECT p.amount, p.recu_name, p.student_id, p.id, c.name as class_name, s.name, p.created_at
                             FROM payments p 
                             JOIN students s ON s.id = p.student_id 
@@ -789,28 +761,24 @@ module.exports.etat = (req, res) => {
                     ins: 0,
                     ftr: 0,
                     str: 0,
-                    ttr: 0,
                     general: 0
                 },
                 avanced: {
                     ins: 0,
                     ftr: 0,
                     str: 0,
-                    ttr: 0,
                     general: 0
                 },
                 nothing: {
                     ins: 0,
                     ftr: 0,
                     str: 0,
-                    ttr: 0,
                     general: 0
                 },
                 total: {
                     inscription: 0,
                     first_tranch: 0,
                     second_tranch: 0,
-                    third_tranch: 0,
                     general: 0
                 }
             };
@@ -820,17 +788,15 @@ module.exports.etat = (req, res) => {
                 const inscription = student.status === 'old' ? classe.inscriptions_olds_students : classe.inscriptions_news_students
                 const first_tranch = student.status === 'old' ? classe.first_tranch_olds_students : classe.first_tranch_news_students
                 const second_tranch = student.status === 'old' ? classe.second_tranch_olds_students : classe.second_tranch_news_students;
-                const third_tranch = student.status === 'old' ? classe.third_tranch_olds_students : classe.third_tranch_news_students;
 
-                const restToPay = (inscription + first_tranch + second_tranch + third_tranch ) - (student.inscription + student.first_tranch + student.second_tranch + student.third_tranch);
-                const totalToPay = inscription + first_tranch + second_tranch + third_tranch ;
-                const totalPayed = (student.inscription + student.first_tranch + student.second_tranch + student.third_tranch);
+                const restToPay = (inscription + first_tranch + second_tranch ) - (student.inscription + student.first_tranch + student.second_tranch );
+                const totalToPay = inscription + first_tranch + second_tranch ;
+                const totalPayed = (student.inscription + student.first_tranch + student.second_tranch );
 
                 student.totalPayed = totalPayed;
                 student.inscription_scolarity = inscription;
                 student.first_tranch_scolarity = first_tranch;
                 student.second_tranch_scolarity = second_tranch;
-                student.third_tranch_scolarity = third_tranch;
                 student.totalToPay = totalToPay;
 
                 if (student.inscription == 0) {
@@ -863,16 +829,6 @@ module.exports.etat = (req, res) => {
                     global.payed.str += 1
                 }
 
-                if (student.third_tranch == 0) {
-                    global.nothing.ttr += 1
-                }
-                else if (student.third_tranch < third_tranch ) {
-                    global.avanced.ttr += 1
-                }
-                else {
-                    global.payed.ttr += 1
-                }
-
                 if (totalPayed == 0) {
                     global.nothing.general += 1
                 }
@@ -885,17 +841,15 @@ module.exports.etat = (req, res) => {
                 global.total.inscription += student.inscription;
                 global.total.first_tranch += student.first_tranch;
                 global.total.second_tranch += student.second_tranch;
-                global.total.third_tranch += student.third_tranch;
 
 
             })
-            global.total.general =  global.total.inscription + global.total.first_tranch + global.total.second_tranch + global.total.third_tranch;
+            global.total.general =  global.total.inscription + global.total.first_tranch + global.total.second_tranch;
             classes.forEach(classe => {
                 const total = {
                     inscription: 0,
                     first_tranch: 0,
                     second_tranch: 0,
-                    third_tranch: 0,
                     general: 0
                 }
                 let global_by_class = {
@@ -903,28 +857,24 @@ module.exports.etat = (req, res) => {
                         ins: 0,
                         ftr: 0,
                         str: 0,
-                        ttr: 0,
                         general: 0
                     },
                     avanced: {
                         ins: 0,
                         ftr: 0,
                         str: 0,
-                        ttr: 0,
                         general: 0
                     },
                     nothing: {
                         ins: 0,
                         ftr: 0,
                         str: 0,
-                        ttr: 0,
                         general: 0
                     },
                     total: {
                         inscription: 0,
                         first_tranch: 0,
                         second_tranch: 0,
-                        third_tranch: 0,
                         general: 0
                     }
                 };
@@ -932,14 +882,12 @@ module.exports.etat = (req, res) => {
                     const inscription = student.status === 'old' ? classe.inscriptions_olds_students : classe.inscriptions_news_students
                     const first_tranch = student.status === 'old' ? classe.first_tranch_olds_students : classe.first_tranch_news_students
                     const second_tranch = student.status === 'old' ? classe.second_tranch_olds_students : classe.second_tranch_news_students;
-                    const third_tranch = student.status === 'old' ? classe.third_tranch_olds_students : classe.third_tranch_news_students;
     
-                    const restToPay = (inscription + first_tranch + second_tranch + third_tranch ) - (student.inscription + student.first_tranch + student.second_tranch + student.third_tranch);
-                    const totalPayed = (student.inscription + student.first_tranch + student.second_tranch + student.third_tranch );
+                    const restToPay = (inscription + first_tranch + second_tranch ) - (student.inscription + student.first_tranch + student.second_tranch );
+                    const totalPayed = (student.inscription + student.first_tranch + student.second_tranch);
                     total.inscription += student.inscription;
                     total.first_tranch += student.first_tranch;
                     total.second_tranch += student.second_tranch;
-                    total.third_tranch += student.third_tranch;
                     total.general += totalPayed
 
                     
@@ -971,16 +919,6 @@ module.exports.etat = (req, res) => {
                     }
                     else {
                         global_by_class.payed.str += 1
-                    }
-
-                    if (student.third_tranch == 0) {
-                        global_by_class.nothing.ttr += 1
-                    }
-                    else if (student.third_tranch < third_tranch ) {
-                        global_by_class.avanced.ttr += 1
-                    }
-                    else {
-                        global_by_class.payed.ttr += 1
                     }
 
                     if (totalPayed == 0) {
