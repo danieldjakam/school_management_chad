@@ -131,12 +131,6 @@ function StudentsByClass() {
                             Insolvables</a>
                     </th>
                     <th align='center' style={{ textAlign: 'center' }}>
-                        3eme tranche<br />
-                        <a target={'_blank'} rel='noreferrer' 
-                        href={host+'/download/pdf/insolvables/'+id+'/4/'+sessionStorage.user} className="btn btn-secondary">
-                            Insolvables</a>
-                    </th>
-                    <th align='center' style={{ textAlign: 'center' }}>
                         Total <br />
                         <a target={'_blank'} rel='noreferrer' 
                         href={host+'/download/pdf/insolvables/'+id+'/6/'+sessionStorage.user} className="btn btn-secondary">
@@ -164,7 +158,6 @@ function StudentsByClass() {
                                 const inscription = student.status === 'old' ? classs.inscriptions_olds_students : classs.inscriptions_news_students
                                 const first_tranch = student.status === 'old' ? classs.first_tranch_olds_students : classs.first_tranch_news_students
                                 const second_tranch = student.status === 'old' ? classs.second_tranch_olds_students : classs.second_tranch_news_students;
-                                const third_tranch = student.status === 'old' ? classs.third_tranch_olds_students : classs.third_tranch_news_students;
                                 
                                 return <tr key={id}>
                                     <td>{id + 1}</td>
@@ -179,14 +172,11 @@ function StudentsByClass() {
                                         {student.second_tranch} / {second_tranch}
                                     </td>
                                     <td>
-                                        {student.third_tranch} / {third_tranch}
-                                    </td>
-                                    <td>
                                         {
-                                            student.inscription + student.first_tranch + student.second_tranch + student.third_tranch
+                                            student.inscription + student.first_tranch + student.second_tranch
                                         } /
                                         {
-                                            inscription + first_tranch + second_tranch + third_tranch
+                                            inscription + first_tranch + second_tranch 
                                         }
                                     </td>
                                     <td style={{display: 'flex', flexDirection:'column', alignItems:'center', justifyContent: 'space-between'}}>

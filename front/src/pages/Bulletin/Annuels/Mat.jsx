@@ -260,21 +260,21 @@ const MatB = ({type}) => {
 
                             <td align='center'>
                                 {   
-                                    note1 > 5 ? 
+                                    note1 >= 5 ? 
                                             <img src={check} width='20px' alt="" />
                                         : ''
                                 }
                             </td>
                             <td align='center'>
                                 {   
-                                    note2 > 5 ? 
+                                    note2 >= 5 ? 
                                             <img src={check} width='20px' alt="" />
                                         : ''
                                 }
                             </td>
                             <td align='center'>
                                 {   
-                                    note3 > 5 ? 
+                                    note3 >= 5 ? 
                                             <img src={check} width='20px' alt="" />
                                         : ''
                                 }

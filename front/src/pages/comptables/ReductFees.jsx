@@ -25,7 +25,6 @@ const ReductFees = () => {
 	const inscription = student.status === 'old' ? classs.inscriptions_olds_students : classs.inscriptions_news_students
 	const first_tranch = student.status === 'old' ? classs.first_tranch_olds_students : classs.first_tranch_news_students
 	const second_tranch = student.status === 'old' ? classs.second_tranch_olds_students : classs.second_tranch_news_students;
-	const third_tranch = student.status === 'old' ? classs.third_tranch_olds_students : classs.third_tranch_news_students;
 
 	useEffect(() => {
 		(
@@ -67,7 +66,6 @@ const ReductFees = () => {
 			const inscription_rest = inscription - student.inscription;
 			const first_tranch_rest = first_tranch - student.first_tranch;
 			const second_tranch_rest = second_tranch - student.second_tranch;
-			const third_tranch_rest = third_tranch - student.third_tranch;
 
 			if (inscription_rest > 0 && a > 0 ) {
 				const price = a >= inscription_rest ? inscription_rest : a
@@ -86,12 +84,6 @@ const ReductFees = () => {
 				setStudent(val => {return {...val, second_tranch: parseInt(student.second_tranch) + price}});
 				a -= price;
 			}
-
-			if (third_tranch_rest > 0 && a > 0 ) {
-				const price = a >= third_tranch_rest ? third_tranch_rest : a
-				setStudent(val => {return {...val, third_tranch: parseInt(student.third_tranch) + price}});
-				a -= price;
-			}
 		}
 
 
@@ -101,21 +93,18 @@ const ReductFees = () => {
 		setLoading(true);
 		const ft =  parseInt(studentCopy.inscription) + 
 					parseInt(studentCopy.first_tranch) + 
-					parseInt(studentCopy.second_tranch) + 
-					parseInt(studentCopy.third_tranch)
+					parseInt(studentCopy.second_tranch)
 
 		const st =  parseInt(student.inscription) + 
 					parseInt(student.first_tranch) + 
-					parseInt(student.second_tranch) + 
-					parseInt(student.third_tranch) 
+					parseInt(student.second_tranch) 
 
 		const inscription_rest = (inscription - studentCopy.inscription)
 		const first_tranch_rest = (first_tranch - studentCopy.first_tranch)
 		const second_tranch_rest = (second_tranch - studentCopy.second_tranch)
-		const third_tranch_rest = (third_tranch - studentCopy.third_tranch)
 
 		const totalRest =  inscription_rest + first_tranch_rest + 
-							second_tranch_rest + third_tranch_rest
+							second_tranch_rest 
 							
 							
 		let t = st - ft;
@@ -169,9 +158,9 @@ const ReductFees = () => {
 				.then((res) => res.json())
 				.then(res => {
 					if (res.success) {
-						if (totalAmount > (inscription + first_tranch + second_tranch + third_tranch)) {
-							setTotalAmount(inscription + first_tranch + second_tranch + third_tranch);
-							t = inscription + first_tranch + second_tranch + third_tranch;
+						if (totalAmount > (inscription + first_tranch + second_tranch )) {
+							setTotalAmount(inscription + first_tranch + second_tranch );
+							t = inscription + first_tranch + second_tranch ;
 						}
 						if (totalAmount > totalRest) {
 							t = totalRest;
@@ -190,7 +179,6 @@ const ReductFees = () => {
 		const val = (parseInt(two) - parseInt(one));
 		const p = val > 0 ? totalAmount += val : totalAmount;
 		setTotalAmount(p);
-		console.log(val, one, two, totalAmount);
 		
 	}
 	const handleCancel = (e) => {
@@ -248,17 +236,6 @@ const ReductFees = () => {
 									}
 								</td>
 							</tr>
-							<tr>
-								<td>3eme tranche</td>
-								<td>
-									<input type="number" className='form-control' min={0} max={third_tranch} readOnly={student.third_tranch >= third_tranch} style={{ width: '150px' }} value={student.third_tranch} onChange={(e) => {addTotalAmount(studentCopy.third_tranch, e.target.value); setStudent(val => {return {...val, third_tranch: e.target.value > third_tranch ? third_tranch : e.target.value}})}}/>
-								</td>
-								<td>
-									{
-										third_tranch
-									}
-								</td>
-							</tr>
 						</tbody>
 					</table>
 					{
@@ -295,10 +272,6 @@ const ReductFees = () => {
                         
                     </th>
                     <th align='center' style={{ textAlign: 'center' }}>
-                        3eme tranche<br />
-                        
-                    </th>
-                    <th align='center' style={{ textAlign: 'center' }}>
                         Total <br />
                     </th>
                 </tr>
@@ -316,14 +289,11 @@ const ReductFees = () => {
 							{student.second_tranch} / {second_tranch}
 						</td>
 						<td>
-							{student.third_tranch} / {third_tranch}
-						</td>
-						<td>
 							{
-								student.inscription + student.first_tranch + student.second_tranch + student.third_tranch
+								student.inscription + student.first_tranch + student.second_tranch
 							} /
 							{
-								inscription + first_tranch + second_tranch + third_tranch
+								inscription + first_tranch + second_tranch 
 							}
 						</td>
 					</tr> 

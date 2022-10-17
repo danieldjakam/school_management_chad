@@ -112,7 +112,7 @@ const MatB = ({type}) => {
                             <td>{subject.name}</td>
                             <td align='center'>
                                 {   
-                                    note > (subject.over / 2) ? 
+                                    note >= (subject.over / 2) ? 
                                             <img src={check} width='20px' alt="" />
                                         : ''
                                 }
