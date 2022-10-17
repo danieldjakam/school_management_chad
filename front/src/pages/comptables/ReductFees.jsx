@@ -56,10 +56,9 @@ const ReductFees = () => {
 	}, [studentToEditId])
 	useEffect(() => {
 
-		if (amount > (inscription + first_tranch + second_tranch + third_tranch)) {
+		if (amount > (inscription + first_tranch + second_tranch )) {
 			// let t = amount;
-			setTotalAmount(inscription + first_tranch + second_tranch + third_tranch);
-			// t = inscription + first_tranch + second_tranch + third_tranch;
+			setTotalAmount(inscription + first_tranch + second_tranch );
 		}
 		if (amount > 0) {
 			let a = amount;
@@ -133,9 +132,9 @@ const ReductFees = () => {
 								.then((res) => res.json())
 								.then(res => {
 									if (res.success) {
-										if (totalAmount > (inscription + first_tranch + second_tranch + third_tranch)) {
-											setTotalAmount(inscription + first_tranch + second_tranch + third_tranch);
-											t = inscription + first_tranch + second_tranch + third_tranch;
+										if (totalAmount > (inscription + first_tranch + second_tranch )) {
+											setTotalAmount(inscription + first_tranch + second_tranch );
+											t = inscription + first_tranch + second_tranch ;
 										}
 										if (totalAmount > totalRest) {
 											t = totalRest;

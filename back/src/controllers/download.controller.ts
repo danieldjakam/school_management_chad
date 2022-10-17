@@ -113,7 +113,7 @@ module.exports.downloadRecu = (req: any, res: any) => {
                     const first_tranch = student.status === 'old' ? classe.first_tranch_olds_students : classe.first_tranch_news_students
                     const second_tranch = student.status === 'old' ? classe.second_tranch_olds_students : classe.second_tranch_news_students;
                     const total = inscription + first_tranch + second_tranch;
-                    const totalPayed = student.inscription + student.first_tranch + student.second_tranch + student.third_tranch;
+                    const totalPayed = student.inscription + student.first_tranch + student.second_tranch;
 
                     const inscription_rest = inscription - student.inscription;
                     const first_tranch_rest = first_tranch - student.first_tranch;
@@ -194,7 +194,7 @@ module.exports.downloadRecu2 = (req: any, res: any) => {
                     const first_tranch = student.status === 'old' ? classe.first_tranch_olds_students : classe.first_tranch_news_students
                     const second_tranch = student.status === 'old' ? classe.second_tranch_olds_students : classe.second_tranch_news_students;
                     const total = inscription + first_tranch + second_tranch;
-                    const totalPayed = student.inscription + student.first_tranch + student.second_tranch + student.third_tranch;
+                    const totalPayed = student.inscription + student.first_tranch + student.second_tranch;
 
                     const inscription_rest = inscription - student.inscription;
                     const first_tranch_rest = first_tranch - student.first_tranch;
@@ -248,11 +248,10 @@ module.exports.downloadInsolvablesList = (req, res) => {
     const {type, payload} = req.params;
     let fileToRead = 'insolvables';
     req.connection.query(`SELECT s.status, s.inscription, s.first_tranch,
-                            s.second_tranch, s.third_tranch,
+                            s.second_tranch,
                             c.inscriptions_olds_students, c.inscriptions_news_students,
                             c.first_tranch_olds_students , c.first_tranch_news_students,
-                            c.second_tranch_olds_students , c.second_tranch_news_students,
-                            c.third_tranch_olds_students , c.third_tranch_news_students
+                            c.second_tranch_olds_students , c.second_tranch_news_students
                             FROM students s JOIN class c ON s.class_id = c.id`, 
                         [], (e, ss) => {
         req.connection.query(`SELECT DISTINCT * FROM students`, 
@@ -384,7 +383,6 @@ module.exports.downloadInsolvablesList = (req, res) => {
                         inscription: 0,
                         first_tranch: 0,
                         second_tranch: 0,
-                        third_tranch: 0,
                         general: 0
                     }
                     students.filter(s => s.class_id === req.params.id).forEach(student => {
@@ -561,16 +559,14 @@ module.exports.downloadRecette = (req, res) => {
             inscription: 0,
             first_tranch: 0,
             second_tranch: 0,
-            third_tranch: 0,
             general: 0
         }
     };
     req.connection.query(`SELECT s.status, s.inscription, s.first_tranch,
-                            s.second_tranch, s.third_tranch,
+                            s.second_tranch,
                             c.inscriptions_olds_students, c.inscriptions_news_students,
                             c.first_tranch_olds_students , c.first_tranch_news_students,
-                            c.second_tranch_olds_students , c.second_tranch_news_students,
-                            c.third_tranch_olds_students , c.third_tranch_news_students
+                            c.second_tranch_olds_students , c.second_tranch_news_students
                             FROM students s JOIN class c ON s.class_id = c.id`, [], (e, stu) => {
         if (e) console.log(e);
         

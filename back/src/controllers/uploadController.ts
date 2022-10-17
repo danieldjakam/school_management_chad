@@ -85,7 +85,6 @@ module.exports.uploadClassCsv = (req: any, res:any ) => {
                     inscriptions_olds_students, inscriptions_news_students, 
                     first_tranch_news_students, first_tranch_olds_students, 
                     second_tranch_news_students, second_tranch_olds_students,
-                    third_tranch_news_students, third_tranch_olds_students,
                 } = classe;
                 req.connection.query('SELECT id FROM sections WHERE type = ? ', [section_type], (err, sections) => {
                     const {id} = sections[0];
@@ -93,15 +92,13 @@ module.exports.uploadClassCsv = (req: any, res:any ) => {
                         inscriptions_olds_students, inscriptions_news_students, 
                         first_tranch_news_students, first_tranch_olds_students, 
                         second_tranch_news_students, second_tranch_olds_students, 
-                        third_tranch_news_students, third_tranch_olds_students,
                         school_id, school_year) 
-                        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
                         [req.jwt.sign(name, req.env.SECRET), 
                             name, level, id,
                             inscriptions_olds_students, inscriptions_news_students, 
                             first_tranch_news_students, first_tranch_olds_students, 
-                            second_tranch_news_students, second_tranch_olds_students, 
-                            third_tranch_news_students, third_tranch_olds_students,
+                            second_tranch_news_students, second_tranch_olds_students,
                             req.payload.school_id, req.school_year], (err2: any, resp : any) => {
                                 if(err2) console.log(err2);
                     })

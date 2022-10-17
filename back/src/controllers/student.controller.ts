@@ -73,7 +73,7 @@ module.exports.updateStudent = (req, res) => {
         else{
             req.connection.query(`UPDATE students SET name = ?, subname = ?, sex = ?, email = ?, 
                                     phone_number = ?, fatherName = ?, profession = ?, birthday_place = ?, 
-                                    status = ?, inscription = ?, first_tranch = ?, second_tranch = ?, 
+                                    status = ?, inscription = ?, first_tranch = ?, second_tranch = ?
                                     WHERE id = ? AND school_id = ?`, 
                                     [name, subname, sex, email, phone_number.toString(), 
                                         fatherName, profession, birthday_place, status, inscription, 
@@ -108,7 +108,7 @@ module.exports.getAllStudent = (req, res) => {
                                 s.fatherName, s.email, s.phone_number,
                                 s.id, s.status, s.phone_number,
                                 s.profession, s.inscription, s.first_tranch,
-                                s.second_tranch, s.third_tranch, s.birthday_place,
+                                s.second_tranch, s.birthday_place,
                                 s.class_id, s.sex, s.class_id
                                 FROM students s JOIN class c ON c.id = s.class_id 
                                 WHERE s.school_year = ? AND s.school_id = ? 
