@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <mate charest="utf-8" />
+        <title>GSB La Semence</title>
+    </head>
+    <body>
+        <style>   
+            .table1, .table2{
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 30px;
+                margin-bottom: 30px;
+                font-size: 12px;
+            }
+            .com{
+                font-weight: bold;
+            }
+            .table1 td, .table1 th{
+                /* text-align: center; */
+                border: 2px solid #000;
+            }  
+
+            .table2 th, .table2 th, td.center{
+                text-align: center;
+            }
+            .th{
+                width:300px;
+            }
+
+            .head > .header h2{
+                font-size: 20px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head > .header h4{
+                font-size: 13px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head{
+                text-align: center;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head .body > h3{
+                font-size: 20px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head img{
+                width: 80px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+        </style>
+            
+        <div>
+            
+        
+            <div class="head">
+                <div class="header">
+                    <h2>REPUBLIQUE DU TCHAD</h2>
+                    <h4>Unité - Travail - Progrès</h4>
+                    <h4>***********</h4>
+                    <h4>MINISTERE DE L'ENSEIGNEMENT PRIMAIRE ET DE L'EDUCATION CIVIQUE</h4>
+                    <h4>INSPECTION PEDAGOGIQUE DE L'ENSEIGNEMENT PRIMAIRE DU 6<sup>eme</sup> ARRONSIDESSEMENT</h4>
+                </div>
+    
+                <div class="body">
+                    <img  src='http://localhost:4000/public/sem.png' height={200} />
+                    <p>
+                        ECOLE PRIVEE FRANCO - ANGLAISE <br/>
+                        "Living Word Missions Chad"
+                    </p>
+                </div>
+            </div>
+
+            
+            <h2 style="text-align: center">
+                {{ name }}
+            </h2>
+
+        <table class="table1">
+            <thead class="table-dark" style="font-size: 1rem;">
+                <tr>
+                    <th>Noms et prenoms de l'eleve</th>
+                    <th>Classe</th>
+                    <th>Nom du recu</th>
+                    <th>Montant verse</th>
+                    <th>Jour</th>
+                </tr>
+            </thead>
+            <tbody style="font-size: 1rem;">
+                {{#ifCond isOverZero '===' true}}
+                    {{#each payments}}
+                        <tr>
+                            <td>{{this.name}} {{this.subname}}</td>
+                            <td>{{this.class_name}}</td>
+                            <td>{{ this.recu_name }}</td>
+                            <td>{{this.amount}}</td>
+                            <td>{{this.payment_date}}</td>
+                        </tr>
+                    {{/each}}
+                {{else}}
+                    <tr>
+                        <td colspan="5">{{error}}</td>
+                    </tr>
+                {{/ifCond}}
+                <tr>
+                    <td colspan="3">Total</td>
+                    <td>{{total}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>
+            Nombre d'eleves enregistres au total: {{ student_nber }}
+        </h3>
+
+
+        <table class="table1">
+            <thead class="table-dark" style="font-size: 1rem;">
+                <tr>
+                    <th rowspan="2">Bilan</th>
+                    <td colspan="5">Etat de la scolarite global</td>
+                </tr>
+                <tr>
+                    <td>
+                        Inscr
+                    </td>
+                    <td>
+                        1ere tran.
+                    </td>
+                    <td>
+                        2eme tran.
+                    </td>
+                    <td>
+                        Total
+                    </td>
+                </tr>
+            </thead>
+            <tbody style="font-size: 1rem;">
+                
+                <tr>
+                    <td>
+                        Nbre d'eleves ayant termine:
+                    </td>
+                    <td>
+                        {{global.payed.ins}}
+                    </td>
+                    <td>
+                        {{global.payed.ftr}}
+                    </td>
+                    <td>
+                        {{global.payed.str}}
+                    </td>
+                    <td>
+                        {{global.payed.general}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Nbre d'eleves ayant avance:
+                    </td>
+                    <td>
+                        {{global.avanced.ins}}
+                    </td>
+                    <td>
+                        {{global.avanced.ftr}}
+                    </td>
+                    <td>
+                        {{global.avanced.str}}
+                    </td>
+                    <td>
+                        {{global.avanced.general}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Nbre d'eleves n'ayant rien verse:
+                    </td>
+                    <td>
+                        {{global.nothing.ins}}
+                    </td>
+                    <td>
+                        {{global.nothing.ftr}}
+                    </td>
+                    <td>
+                        {{global.nothing.str}}
+                    </td>
+                    <td>
+                        {{global.nothing.general}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Montant général encaissé dans l'ecole:
+                    </td>
+                    <td>
+                        {{global.total.inscription}}
+                    </td>
+                    <td>
+                        {{global.total.first_tranch}}
+                    </td>
+                    <td>
+                        {{global.total.second_tranch}}
+                    </td>
+                    <td>
+                        {{global.total.general}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

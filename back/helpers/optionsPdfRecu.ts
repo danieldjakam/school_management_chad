@@ -1,5 +1,5 @@
 module.exports =  {
-    format: "A3",
+    format: "A4",
     orientation: "portrait",
     border: "10mm",
     header: {

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <mate charest="utf-8" />
+        <title>GSB La Semence</title>
+    </head>
+    <body>
+        <style>   
+            .table1, .table2{
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 30px;
+                margin-bottom: 30px;
+                font-size: 12px;
+            }
+            .com{
+                font-weight: bold;
+            }
+            .table1 td, .table1 th{
+                /* text-align: center; */
+                border: 2px solid #000;
+            }  
+
+            .table2 th, .table2 th, td.center{
+                text-align: center;
+            }
+            .th{
+                width:300px;
+            }
+
+            .head > .header h2{
+                font-size: 20px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head > .header h4{
+                font-size: 13px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head{
+                text-align: center;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head .body > h3{
+                font-size: 20px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .head img{
+                width: 80px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+        </style>
+            
+        <div>
+            
+        
+            <div class="head">
+                <div class="header">
+                    <h2>REPUBLIQUE DU TCHAD</h2>
+                    <h4>Unité - Travail - Progrès</h4>
+                    <h4>***********</h4>
+                    <h4>MINISTERE DE L'ENSEIGNEMENT PRIMAIRE ET DE L'EDUCATION CIVIQUE</h4>
+                    <h4>INSPECTION PEDAGOGIQUE DE L'ENSEIGNEMENT PRIMAIRE DU 6<sup>eme</sup> ARRONSIDESSEMENT</h4>
+                </div>
+    
+                <div class="body">
+                    <img  src='http://localhost:4000/public/sem.png' height={200} />
+                    <p>
+                        ECOLE PRIVEE FRANCO - ANGLAISE <br/>
+                        "Living Word Missions Chad"
+                    </p>
+                </div>
+            </div>
+
+            
+            <h2 style="text-align: center">
+                Liste des insolvables en {{info.className}} au compte de {{ name }}
+            </h2>
+    
+        <div>
+            <table class="table1" style="font-size: 1rem; color: #000; font-weight: 600;">
+                <tbody>
+                    <tr>
+                        <td>Classe</td>
+                        <td>{{info.className}}</td>
+                    </tr>
+                    <tr>
+                        <td>Opérateur</td>
+                        <td>
+                            {{info.operator}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+        <table class="table1">
+            <thead class="table-dark" style="font-size: 1.7rem;">
+                <tr>
+                    <th rowspan="2">Noms</th>
+                    <td colspan="5">Reste a payer</td>
+                </tr>
+                <tr>
+                    <td>
+                        Inscriptions
+                    </td>
+                    <td>
+                        1ere tranche
+                    </td>
+                    <td>
+                        2eme tranche
+                    </td>
+                    <td>
+                        Total
+                    </td>
+                </tr>
+            </thead>
+            <tbody style="font-size: 1.3rem;">
+                {{#each students}}
+                    <tr>
+                        <td>{{this.name}}</td>
+                        <td>{{this.inscription_rest}}</td>
+                        <td>{{this.first_tranch_rest}}</td>
+                        <td>{{this.second_tranch_rest}}</td>
+                        <td>
+                            {{this.restToPay}}
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </body>
+</html>
